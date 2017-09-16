@@ -36,7 +36,7 @@ public class PlayerController : MonoBehaviour
         Move();
         if (transform.childCount > 0)
         {
-            MoveBoxes();
+            //MoveBoxes();
         }
     }
 

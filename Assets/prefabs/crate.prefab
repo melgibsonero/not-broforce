@@ -61,7 +61,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 4
+  m_Constraints: 5
 --- !u!61 &61446273195168132
 BoxCollider2D:
   m_ObjectHideFlags: 1
@@ -120,7 +120,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: c4b938423d2d7db4fa7b55fa2b971534, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.672}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.709}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
