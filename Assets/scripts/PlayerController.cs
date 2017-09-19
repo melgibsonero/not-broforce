@@ -10,7 +10,7 @@ public class PlayerController : MonoBehaviour
     
     private bool CanJump = true;
     private bool left = false;
-    private float xoffset = 0.175f;
+    private float xoffset = 0.225f;
     private float distance;
     
 
@@ -34,9 +34,17 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         Move();
+        if (left)
+        {
+            sr.flipX = true;
+        }
+        else
+        {
+            sr.flipX = false;
+        }
         if (transform.childCount > 0)
         {
-            //MoveBoxes();
+            MoveBoxes();
         }
     }
 
@@ -47,26 +55,22 @@ public class PlayerController : MonoBehaviour
 
     void Move()
     {
-        if (Input.GetKey(KeyCode.A)){ //left
-            transform.Translate(Vector3.left * Time.deltaTime * speed);
+        if (Mathf.Abs(Input.GetAxis("Horizontal")) > 0.1) {
+            float horizontal = Input.GetAxis("Horizontal") * speed;
+            if (horizontal < 0)
+            {
             left = true;
-            sr.flipX = true;
-            //animator.SetBool("moving", true);
-        }
-        if (Input.GetKey(KeyCode.D)){ //right
-            transform.Translate(Vector3.right * Time.deltaTime * speed);
+            }
+            else
+            {
             left = false;
-            sr.flipX = false;
-            //animator.SetBool("moving", true);
+            }
+            transform.Translate(horizontal, 0, 0);
         }
-        if (Input.GetKeyDown(KeyCode.W))
-        { //jumpkey
-            Debug.Log("clickety W");
-            rb.AddForce(transform.up * thrust, ForceMode2D.Impulse);
-        }
-        if (!Input.GetKey(KeyCode.A) && !Input.GetKey(KeyCode.D))
+
+        if (Input.GetKeyDown(KeyCode.Joystick1Button0) || Input.GetKeyDown(KeyCode.W))
         {
-            //animator.SetBool("moving", false);
+            rb.AddForce(transform.up * thrust, ForceMode2D.Impulse);
         } 
         if (Input.GetKey(KeyCode.F))
         {
@@ -74,11 +78,11 @@ public class PlayerController : MonoBehaviour
             box.GetComponent<BoxCollider2D>().enabled = false;
             if (left)
             {
-                xoffset = -0.175f;
+                xoffset = -0.225f;
             }
             else
             {
-                xoffset = 0.175f;
+                xoffset = 0.225f;
             }
             box.transform.position = new Vector3(transform.position.x + xoffset, transform.position.y + 0.025f, 0);
             animator.SetBool("setcrate", true);
