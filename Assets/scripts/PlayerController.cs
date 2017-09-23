@@ -8,15 +8,22 @@ public class PlayerController : MonoBehaviour
     private SpriteRenderer sr;
     private Rigidbody2D rb;
     
-    private bool CanJump = true;
+    private bool Grounded = true;
+    private bool Walled = false;
+    private bool CanBox = true;
     private bool left = false;
-    private float xoffset = 0.225f;
-    private float distance;
+    private float xoffset = 0.275f;
+    private Vector2 walljumpdir;
+    public float distancey = 0.4f;
+    public float distancex = 0.2f;
+
+    public float jumpray = 0f;
     
 
     public GameObject box;
     public float speed;
     public float thrust;
+    public float wallthrust;
     public float boxDistance;
     public float minDistance;
     public float boxSpeed;
@@ -24,10 +31,10 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         animator = GetComponent<Animator>();
-        sr = GetComponent<SpriteRenderer>();
-        rb = GetComponent<Rigidbody2D>();
 
-        box = transform.GetChild(0).gameObject;
+        sr = GetComponent<SpriteRenderer>();
+
+        rb = GetComponent<Rigidbody2D>();
     }
 
     // Update is called once per frame
@@ -42,40 +49,80 @@ public class PlayerController : MonoBehaviour
         {
             sr.flipX = false;
         }
-        if (transform.childCount > 0)
-        {
-            MoveBoxes();
-        }
     }
 
     void FixedUpdate()
     {
+        //Grounded 
+        Physics2D.queriesStartInColliders = false;
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, distancey);
         
+        if (hit.collider != null)
+        {
+            Grounded = true;
+            Walled = false;
+        }
+        else{ //Walljump raycasts
+            Grounded = false;
+            RaycastHit2D walljump = left==true ? Physics2D.Raycast(transform.position, Vector2.left, distancex) : 
+                Physics2D.Raycast(transform.position, Vector2.right, distancex);
+            if(walljump.collider != null)
+            {
+                Walled = true;
+                walljumpdir = left == true ? new Vector2(wallthrust, thrust) : new Vector2(wallthrust*-1, thrust);
+            }
+            else
+            {
+                Walled = false;
+            }
+        }
     }
 
     void Move()
     {
-        if (Mathf.Abs(Input.GetAxis("Horizontal")) > 0.1) {
+        if (Mathf.Abs(Input.GetAxis("Horizontal")) > 0.1)
+        {
             float horizontal = Input.GetAxis("Horizontal") * speed;
-            if (horizontal < 0)
+            if (Grounded)
             {
-            left = true;
-            }
-            else
-            {
-            left = false;
+                if (horizontal < 0)
+                {
+                    left = true;
+                }
+                else
+                {
+                    left = false;
+                }
             }
             transform.Translate(horizontal, 0, 0);
+            //rb.AddForce(new Vector2(horizontal,0), ForceMode2D.Force);
         }
 
         if (Input.GetKeyDown(KeyCode.Joystick1Button0) || Input.GetKeyDown(KeyCode.W))
         {
-            rb.AddForce(transform.up * thrust, ForceMode2D.Impulse);
-        } 
+            if (Grounded)
+            {
+                rb.velocity = Vector2.zero;
+                rb.AddForce(transform.up * thrust, ForceMode2D.Impulse);
+                Grounded = false;
+            }
+            if (Walled)
+            {
+                rb.velocity = Vector2.zero;
+                rb.AddForce(walljumpdir, ForceMode2D.Impulse);
+                left = left == true ? false : true;
+                Walled = false;
+            }
+        }
         if (Input.GetKey(KeyCode.F))
         {
-            box.GetComponent<Rigidbody2D>().simulated = false;
-            box.GetComponent<BoxCollider2D>().enabled = false;
+            if (CanBox)
+            {
+                CanBox = false;
+                box = Instantiate(box);
+                box.GetComponent<Rigidbody2D>().simulated = false;
+                box.GetComponent<BoxCollider2D>().enabled = false;
+            }
             if (left)
             {
                 xoffset = -0.225f;
@@ -94,24 +141,25 @@ public class PlayerController : MonoBehaviour
             box.GetComponent<BoxCollider2D>().enabled = true;
             box.GetComponent<SpriteRenderer>().color = Color.white;
             box.transform.parent = null;
+            CanBox = true;
             animator.SetBool("setcrate", false);
         }
     }
-    void MoveBoxes()
+
+    private void OnDrawGizmos()
     {
-        distance = Vector3.Distance(gameObject.transform.position, transform.GetChild(0).gameObject.transform.position);
-        Debug.Log(distance);
-        Vector3 newPosition = gameObject.transform.position; //basically same as not having it but saved for later use.
-        float T = Time.deltaTime * distance * minDistance * boxSpeed;
+        Gizmos.color = Color.red;
 
-        if (T > 0.2f)
+        Gizmos.DrawLine(transform.position, transform.position + Vector3.down * distancey);
+
+        Gizmos.color = Color.green;
+        if (!left)
         {
-            T = 0.2f;
+            Gizmos.DrawLine(transform.position, transform.position + Vector3.right * distancex);
         }
-
-        if (distance > boxDistance)
+        else
         {
-            transform.GetChild(0).gameObject.transform.position = Vector3.Lerp(box.transform.position, newPosition, T);
+            Gizmos.DrawLine(transform.position, transform.position + Vector3.left * distancex);
         }
     }
 }
