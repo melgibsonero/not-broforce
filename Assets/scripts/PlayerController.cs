@@ -7,6 +7,7 @@ public class PlayerController : MonoBehaviour
     private Animator animator;
     private SpriteRenderer sr;
     private Rigidbody2D rb;
+    private BoxCollider2D bc;
     
     private bool Grounded = true;
     private bool Walled = false;
@@ -23,6 +24,7 @@ public class PlayerController : MonoBehaviour
     public GameObject box;
     public float speed;
     public float maxSpeed;
+    public float deceleration_speed = 0.5f;
     public float thrust;
     public float wallthrust;
     public float boxDistance;
@@ -36,38 +38,61 @@ public class PlayerController : MonoBehaviour
         sr = GetComponent<SpriteRenderer>();
 
         rb = GetComponent<Rigidbody2D>();
+
+        bc = GetComponent<BoxCollider2D>();
     }
 
     // Update is called once per frame
     void Update()
     {
         Move();
-        if (left)
-        {
-            sr.flipX = true;
-        }
-        else
-        {
-            sr.flipX = false;
-        }
+        Animations();
     }
+    bool CheckGrounded() //Grounded raycasts
+    {
+        bool result = false;        
+        Vector3 size = new Vector3(bc.size.x, 0, 0);
 
-    void FixedUpdate()
+        RaycastHit2D middle = Physics2D.Raycast(transform.position, Vector2.down, distancey);
+        RaycastHit2D left = Physics2D.Raycast(transform.position+-size, Vector2.down, distancey);
+        RaycastHit2D right = Physics2D.Raycast(transform.position+size, Vector2.down, distancey);
+
+        if(middle.collider != null || left.collider != null || right.collider != null)
+        {
+            result = true;
+        }
+
+        return result;
+    } 
+
+    bool CheckWalljump()
+    {
+        bool result = false;
+        RaycastHit2D walljumpright = Physics2D.Raycast(transform.position, Vector2.right, distancex);
+        RaycastHit2D walljumpleft = Physics2D.Raycast(transform.position, Vector2.left, distancex);
+        if(walljumpright.collider != null ||walljumpleft.collider != null)
+        {
+            result = true;
+        }
+        return result;
+    }
+        void FixedUpdate()
     {
         //Grounded 
         Physics2D.queriesStartInColliders = false;
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, distancey);
         
-        if (hit.collider != null)
+        if (CheckGrounded())
         {
             Grounded = true;
             Walled = false;
         }
-        else{ //Walljump raycasts
+        else
+        { //Walljump raycasts
             Grounded = false;
             RaycastHit2D walljump = left ? Physics2D.Raycast(transform.position, Vector2.left, distancex) : 
                 Physics2D.Raycast(transform.position, Vector2.right, distancex);
             if(walljump.collider != null)
+            if(CheckWalljump())
             {
                 Walled = true;
                 walljumpdir = left ? new Vector2(wallthrust, thrust) : new Vector2(wallthrust*-1, thrust);
@@ -82,11 +107,11 @@ public class PlayerController : MonoBehaviour
     void Move()
     {
         Debug.Log(rb.velocity);
-        if (Mathf.Abs(Input.GetAxis("Horizontal")) > 0.1)
+        if (Mathf.Abs(Input.GetAxis("Horizontal")) > 0.1) //Horizontal movement
         {
             float horizontal = Input.GetAxis("Horizontal") * speed;
-            if (Grounded)
-            {
+ //           if (Grounded)
+ //           {
                 if (horizontal < 0)
                 {
                     left = true;
@@ -95,17 +120,18 @@ public class PlayerController : MonoBehaviour
                 {
                     left = false;
                 }
-            }
+ //           }
             //transform.Translate(horizontal, 0, 0);
-            rb.AddForce(new Vector2(horizontal,0), ForceMode2D.Force);
             if (rb.velocity.x > maxSpeed)
             {
                 rb.velocity = new Vector2(maxSpeed, rb.velocity.y);
             }
-            if(rb.velocity.x < -maxSpeed)
+            if (rb.velocity.x < -maxSpeed)
             {
                 rb.velocity = new Vector2(-maxSpeed, rb.velocity.y);
             }
+            rb.AddForce(new Vector2(horizontal,0), ForceMode2D.Force);
+            
             
         }
         else
@@ -113,11 +139,16 @@ public class PlayerController : MonoBehaviour
             //zeroing movement speed to 0
             if (Grounded)
             {
-                rb.velocity = new Vector2(0, rb.velocity.y);
+                var newSpeed = rb.velocity.x;
+                if (Mathf.Approximately(newSpeed, 0))
+                {
+                    newSpeed = 0;
+                }
+                rb.velocity = new Vector2(newSpeed*deceleration_speed, rb.velocity.y);
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.Joystick1Button0) || Input.GetKeyDown(KeyCode.W))
+        if (Input.GetKeyDown(KeyCode.Joystick1Button0) || Input.GetKeyDown(KeyCode.W)) //vertical movement
         {
             if (Grounded)
             {
@@ -151,7 +182,6 @@ public class PlayerController : MonoBehaviour
                 xoffset = 0.225f;
             }
             box.transform.position = new Vector3(transform.position.x + xoffset, transform.position.y + 0.025f, 0);
-            animator.SetBool("setcrate", true);
         }
         if (Input.GetKeyUp(KeyCode.Joystick1Button2) || Input.GetKeyUp(KeyCode.F))
         {
@@ -161,14 +191,46 @@ public class PlayerController : MonoBehaviour
             box.GetComponent<SpriteRenderer>().color = Color.white;
             box.transform.parent = null;
             CanBox = true;
-            animator.SetBool("setcrate", false);
         }
     }
 
-    private void OnDrawGizmos()
+    void Animations()
+    {
+        if (left)
+        {
+            sr.flipX = true;
+        }
+        else
+        {
+            sr.flipX = false;
+        }
+
+        if (CanBox)
+        {
+            animator.SetBool("setcrate", false);
+        }
+        else
+        {
+            animator.SetBool("setcrate", true);
+        }
+
+        if (Grounded)
+        {
+            animator.SetBool("jumping", false);
+        }
+        else
+        {
+            animator.SetBool("jumping", true);
+        }
+    }
+    /*private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
 
+        Vector3 size = new Vector3(bc.size.x, 0, 0);
+
+        Gizmos.DrawLine(transform.position + size, transform.position + size + Vector3.down * distancey);
+        Gizmos.DrawLine(transform.position + -size, transform.position + -size + Vector3.down * distancey);
         Gizmos.DrawLine(transform.position, transform.position + Vector3.down * distancey);
 
         Gizmos.color = Color.green;
@@ -181,5 +243,7 @@ public class PlayerController : MonoBehaviour
             Gizmos.DrawLine(transform.position, transform.position + Vector3.left * distancex);
         }
     }
+    //*/
+    
 }
 
