@@ -15,7 +15,9 @@ namespace not_broforce {
 
         // Update is called once per frame
         void Update() {
-
+            if(Input.GetKeyDown(KeyCode.L)) {
+                removeBox();
+            }
         }
 
         public void addBox (BoxMovement box) {
@@ -31,6 +33,13 @@ namespace not_broforce {
                     boxes[i].AddFollowTarget(boxes[i - 1].transform);
                 } 
             }
+        }
+
+        public void removeBox() {
+            boxes[0].removeFollowTarget();
+            boxes.RemoveAt(0);
+            RefreshFollowTargets();
+
         }
     }
 }

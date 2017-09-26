@@ -87,5 +87,9 @@ namespace not_broforce {
             }
         }
 
+        public void removeFollowTarget () {
+            _target = null;
+        }
+
     }
 }
