@@ -36,9 +36,11 @@ namespace not_broforce {
         }
 
         public void removeBox() {
-            boxes[0].removeFollowTarget();
-            boxes.RemoveAt(0);
-            RefreshFollowTargets();
+            if (boxes.Count > 0) {
+                boxes[0].removeFollowTarget();
+                boxes.RemoveAt(0);
+                RefreshFollowTargets();
+            }
 
         }
     }
