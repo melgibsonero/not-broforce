@@ -65,12 +65,12 @@ public class PlayerController : MonoBehaviour
         }
         else{ //Walljump raycasts
             Grounded = false;
-            RaycastHit2D walljump = left==true ? Physics2D.Raycast(transform.position, Vector2.left, distancex) : 
+            RaycastHit2D walljump = left ? Physics2D.Raycast(transform.position, Vector2.left, distancex) : 
                 Physics2D.Raycast(transform.position, Vector2.right, distancex);
             if(walljump.collider != null)
             {
                 Walled = true;
-                walljumpdir = left == true ? new Vector2(wallthrust, thrust) : new Vector2(wallthrust*-1, thrust);
+                walljumpdir = left ? new Vector2(wallthrust, thrust) : new Vector2(wallthrust*-1, thrust);
             }
             else
             {
@@ -129,7 +129,7 @@ public class PlayerController : MonoBehaviour
             {
                 rb.velocity = new Vector2(rb.velocity.x, 0);
                 rb.AddForce(walljumpdir, ForceMode2D.Impulse);
-                left = left == true ? false : true;
+                left = !left;
                 Walled = false;
             }
         }
