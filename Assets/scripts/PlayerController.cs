@@ -70,7 +70,11 @@ public class PlayerController : MonoBehaviour
         bool result = false;
         RaycastHit2D walljumpright = Physics2D.Raycast(transform.position, Vector2.right, distancex);
         RaycastHit2D walljumpleft = Physics2D.Raycast(transform.position, Vector2.left, distancex);
-        if(walljumpright.collider != null ||walljumpleft.collider != null)
+        if(walljumpright.collider != null)
+        {
+            result = true;
+        }
+        if(walljumpleft.collider != null && left)
         {
             result = true;
         }
@@ -107,8 +111,8 @@ public class PlayerController : MonoBehaviour
         if (Mathf.Abs(Input.GetAxis("Horizontal")) > 0.1) //Horizontal movement
         {
             float horizontal = Input.GetAxis("Horizontal") * speed;
- //           if (Grounded)
- //           {
+            if (Grounded)
+            {
                 if (horizontal < 0)
                 {
                     left = true;
@@ -117,7 +121,7 @@ public class PlayerController : MonoBehaviour
                 {
                     left = false;
                 }
- //           }
+            }
             //transform.Translate(horizontal, 0, 0);
             if (rb.velocity.x > maxSpeed)
             {
