@@ -6,6 +6,22 @@ namespace not_broforce
 {
     class Utils
     {
+        public static bool CollidersIntersect(BoxCollider2D collider1,
+                                              BoxCollider2D collider2)
+        {
+            return (collider1.bounds.Intersects(collider2.bounds));
+        }
+
+        public static bool CollidersIntersect(BoxCollider2D collider1,
+                                              BoxCollider2D collider2,
+                                              float sizeOffset)
+        {
+            Bounds c1NewBounds = new Bounds(collider1.bounds.center,
+                                            collider1.bounds.size * sizeOffset);
+
+            return (c1NewBounds.Intersects(collider2.bounds));
+        }
+
         /// <summary>
         /// Checks if the given character is a number.
         /// </summary>

@@ -51,6 +51,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\scripts\BoxController.cs" />
+     <Compile Include="Assets\scripts\BoxMovement.cs" />
+     <Compile Include="Assets\scripts\BoxPlacement.cs" />
      <Compile Include="Assets\scripts\PlayerController.cs" />
      <Compile Include="Assets\scripts\Timer.cs" />
      <Compile Include="Assets\scripts\Utils.cs" />

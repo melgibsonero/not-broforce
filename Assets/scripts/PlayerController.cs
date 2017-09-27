@@ -93,6 +93,9 @@ public class PlayerController : MonoBehaviour
         else
         { //Walljump raycasts
             Grounded = false;
+            RaycastHit2D walljump = left ? Physics2D.Raycast(transform.position, Vector2.left, distancex) : 
+                Physics2D.Raycast(transform.position, Vector2.right, distancex);
+            if(walljump.collider != null)
             if(CheckWalljump())
             {
                 Walled = true;
