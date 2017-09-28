@@ -6,6 +6,67 @@ namespace not_broforce
 {
     class Utils
     {
+        /// <summary>
+        /// Calculates the difference between two points' coordinates.
+        /// </summary>
+        /// <param name="start">a start point</param>
+        /// <param name="end">an end point</param>
+        /// <returns>the difference between the points' coordinates</returns>
+        public static Vector2 Difference(Vector2 start, Vector2 end)
+        {
+            return new Vector2(end.x - start.x, end.y - start.y);
+        }
+
+        /// <summary>
+        /// Calculates the absolute difference between two points' x-coordinates.
+        /// </summary>
+        /// <param name="start">a start point</param>
+        /// <param name="end">an end point</param>
+        /// <returns>the difference between the points' x-coordinates</returns>
+        public static int XDifference(Vector2 start, Vector2 end)
+        {
+            return (int) (Mathf.Abs(end.x - start.x) + 0.5f);
+        }
+
+        /// <summary>
+        /// Calculates the absolute difference between two points' y-coordinates.
+        /// </summary>
+        /// <param name="start">a start point</param>
+        /// <param name="end">an end point</param>
+        /// <returns>the difference between the points' y-coordinates</returns>
+        public static int YDifference(Vector2 start, Vector2 end)
+        {
+            return (int) (Mathf.Abs(end.y - start.y) + 0.5f);
+        }
+
+        /// <summary>
+        /// Calculates the distance between two points.
+        /// </summary>
+        /// <param name="start">a start point</param>
+        /// <param name="end">an end point</param>
+        /// <returns>the distance between the two points</returns>
+        public static float Distance(Vector2 start, Vector2 end)
+        {
+            return Mathf.Sqrt(Mathf.Pow(end.x - start.x, 2) + Mathf.Pow(end.y - start.y, 2));
+        }
+
+        /// <summary>
+        /// Calculates the rotation of a line between two points.
+        /// </summary>
+        /// <param name="start">the start point</param>
+        /// <param name="end">the end point</param>
+        /// <returns>an angle in radians</returns>
+        public static float LineAngle(Vector2 start, Vector2 end)
+        {
+            if (start.x - end.x < 0)
+                return (Mathf.Atan((end.y - start.y) / (end.x - start.x)));       //...
+            else if (XDifference(start, end) == 0 && end.y - start.y < 0)
+                return -Mathf.PI / 2f;                                            //-90 degrees
+            else if (XDifference(start, end) == 0)
+                return Mathf.PI / 2f;                                             //90 degrees
+            return (Mathf.PI + Mathf.Atan((end.y - start.y) / (end.x - start.x))); //180 degrees + ...
+        }
+
         public static bool CollidersIntersect(BoxCollider2D collider1,
                                               BoxCollider2D collider2)
         {

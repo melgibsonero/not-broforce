@@ -30,6 +30,12 @@ public class PlayerController : MonoBehaviour
     public float boxDistance;
     public float minDistance;
     public float boxSpeed;
+
+    public bool GetGrounded()
+    {
+        return Grounded;
+    }
+
     // Use this for initialization
     void Start()
     {
@@ -110,7 +116,7 @@ public class PlayerController : MonoBehaviour
 
     void Move()
     {
-        Debug.Log(rb.velocity);
+        //Debug.Log(rb.velocity);
         if (Mathf.Abs(Input.GetAxis("Horizontal")) > 0.1) //Horizontal movement
         {
             float horizontal = Input.GetAxis("Horizontal") * speed;

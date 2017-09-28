@@ -147,6 +147,11 @@ Prefab:
       propertyPath: m_RootOrder
       value: 5
       objectReference: {fileID: 0}
+    - target: {fileID: 114389540089063752, guid: f1e381e0a47f807489db8e5a4fa31a23,
+        type: 2}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 224486876}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f1e381e0a47f807489db8e5a4fa31a23, type: 2}
   m_IsPrefabParent: 0
@@ -344,6 +349,11 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
+--- !u!1 &224486876 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 1835372702143204, guid: 561093469824d6241b2be19048d0f84d,
+    type: 2}
+  m_PrefabInternal: {fileID: 1097904897}
 --- !u!1 &240768571
 GameObject:
   m_ObjectHideFlags: 0
@@ -595,95 +605,6 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
---- !u!1 &1020006312
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 5
-  m_Component:
-  - component: {fileID: 1020006313}
-  - component: {fileID: 1020006317}
-  - component: {fileID: 1020006316}
-  - component: {fileID: 1020006315}
-  - component: {fileID: 1020006314}
-  m_Layer: 0
-  m_Name: Main Camera
-  m_TagString: MainCamera
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1020006313
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1020006312}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -5}
-  m_LocalScale: {x: 0.1, y: 0.1, z: 0.5}
-  m_Children: []
-  m_Father: {fileID: 1189749089}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!81 &1020006314
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1020006312}
-  m_Enabled: 1
---- !u!124 &1020006315
-Behaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1020006312}
-  m_Enabled: 1
---- !u!92 &1020006316
-Behaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1020006312}
-  m_Enabled: 1
---- !u!20 &1020006317
-Camera:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1020006312}
-  m_Enabled: 1
-  serializedVersion: 2
-  m_ClearFlags: 2
-  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
-  m_NormalizedViewPortRect:
-    serializedVersion: 2
-    x: 0
-    y: 0
-    width: 1
-    height: 1
-  near clip plane: 0.3
-  far clip plane: 1000
-  field of view: 60
-  orthographic: 1
-  orthographic size: 2
-  m_Depth: -10
-  m_CullingMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_RenderingPath: -1
-  m_TargetTexture: {fileID: 0}
-  m_TargetDisplay: 0
-  m_TargetEye: 3
-  m_HDR: 1
-  m_AllowMSAA: 1
-  m_ForceIntoRT: 0
-  m_OcclusionCulling: 1
-  m_StereoConvergence: 10
-  m_StereoSeparation: 0.022
-  m_StereoMirrorMode: 0
 --- !u!1001 &1097904897
 Prefab:
   m_ObjectHideFlags: 0
@@ -723,29 +644,9 @@ Prefab:
       propertyPath: m_RootOrder
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 50866075413207778, guid: 561093469824d6241b2be19048d0f84d,
-        type: 2}
-      propertyPath: m_CollisionDetection
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114354156538036838, guid: 561093469824d6241b2be19048d0f84d,
-        type: 2}
-      propertyPath: speed
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 114354156538036838, guid: 561093469824d6241b2be19048d0f84d,
-        type: 2}
-      propertyPath: maxSpeed
-      value: 5
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 561093469824d6241b2be19048d0f84d, type: 2}
   m_IsPrefabParent: 0
---- !u!4 &1189749089 stripped
-Transform:
-  m_PrefabParentObject: {fileID: 4414100764411388, guid: 561093469824d6241b2be19048d0f84d,
-    type: 2}
-  m_PrefabInternal: {fileID: 1097904897}
 --- !u!1 &1265053196
 GameObject:
   m_ObjectHideFlags: 0

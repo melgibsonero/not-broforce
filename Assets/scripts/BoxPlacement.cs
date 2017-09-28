@@ -12,6 +12,9 @@ namespace not_broforce
         private GameObject referenceBox;
 
         [SerializeField]
+        private GameObject player;
+
+        [SerializeField]
         private Color validPlacementColor;
 
         [SerializeField]
@@ -23,8 +26,19 @@ namespace not_broforce
         [SerializeField]
         private float smoothMovingSpeed;
 
+        [SerializeField]
+        private float maxDistanceFromPlayer = 2;
+
+        /// <summary>
+        /// The renderer of the object. Needed to
+        /// hide the object but still handle input.
+        /// </summary>
+        private Renderer visibility;
+
+        //private Transform player;
         private List<GameObject> boxes;
         private GameObject selectedBox;
+        private Vector2 boxSize;
 
         /// <summary>
         /// Is it possible to place a box to the position of the selector
@@ -41,8 +55,11 @@ namespace not_broforce
         /// </summary>
         private bool snapsToBoxGrid;
 
-        private Transform player;
-        private Vector2 boxSize;
+        /// <summary>
+        /// Was the selector moved
+        /// </summary>
+        private bool moved;
+
 
         /// <summary>
         /// Initializes the game object.
@@ -50,32 +67,47 @@ namespace not_broforce
         private void Start()
         {
             // Gets the player character
-            player = GameObject.FindGameObjectWithTag("Player").transform;
+            //player = GameObject.FindGameObjectWithTag("Player").transform;
 
             if (referenceBox == null)
             {
-                throw (new System.Exception("Box not set to the selector."));
+                throw new System.Exception("Box not set to the selector.");
             }
 
+            // Sets the box list
             boxes = new List<GameObject>();
+
+            // Finds all existing boxes in the level
             FindBoxesInLevel();
 
+            // Finds all existing boxes in the level
+            // and adds them to the box list
+            SetSize();
+
+            visibility = GetComponent<Renderer>();
+            visibility.enabled = false;
+
+            validPlacement = true;
+            validRemove = false;
+            snapsToBoxGrid = false;
+            moved = false;
+        }
+
+        /// <summary>
+        /// Gets the boxes' size and sets the selector to the same size as the box.
+        /// </summary>
+        private void SetSize()
+        {
             // Gets the size of the box
             boxSize = referenceBox.GetComponent<SpriteRenderer>().bounds.size;
 
-            // Sets the size of the selector the same as the boxes'
-            float scaleX = 
+            float scaleX =
                 boxSize.x / GetComponent<SpriteRenderer>().bounds.size.x;
-            float scaleY = 
+            float scaleY =
                 boxSize.y / GetComponent<SpriteRenderer>().bounds.size.y;
 
             transform.localScale = new Vector3(transform.localScale.x * scaleX,
                                                 transform.localScale.y * scaleY, Z_AXIS);
-
-            GetComponent<Renderer>().enabled = false;
-            validPlacement = false;
-            validRemove = false;
-            snapsToBoxGrid = false;
         }
 
         /// <summary>
@@ -96,34 +128,43 @@ namespace not_broforce
         /// </summary>
         private void Update()
         {
+            HandleInput();
+
+            if (visibility.enabled)
+            {
+                CheckPlacementValidity();
+            }
+        }
+
+        private void HandleInput()
+        {
             if (Input.GetKeyDown(KeyCode.Q))
             {
-                // Displays or hides the selector
-                GetComponent<Renderer>().enabled = !GetComponent<Renderer>().enabled;
-
-                // If the selector is visible, its position is set next to
-                // the player character and placement validity is checked
-                if (GetComponent<Renderer>().enabled)
+                if (visibility.enabled ||
+                    player.GetComponent<PlayerController>().GetGrounded())
                 {
-                    // Calculates the ground level based on the player character's position
-                    float groundY = player.position.y - 
-                        player.GetComponent<SpriteRenderer>().bounds.size.y / 2;
+                    // Displays or hides the selector
+                    visibility.enabled = !visibility.enabled;
 
-                    // Gets the player character's looking direction
-                    bool lookingLeft = player.GetComponent<SpriteRenderer>().flipX;
-
-                    transform.position = player.position + (lookingLeft ? Vector3.left : Vector3.right) / 2;
-                    transform.position = new Vector3(transform.position.x, groundY + boxSize.y / 2, Z_AXIS);
-
-                    snapsToBoxGrid = false;
-
-                    CheckPlacementValidity();
+                    // If the selector was made visible, its position is set next to
+                    // the player character and placement validity is checked
+                    if (visibility.enabled)
+                    {
+                        ShowSelector();
+                    }
+                    // Otherwise any selected box is unselected
+                    else
+                    {
+                        HideSelector();
+                    }
                 }
             }
 
             // Only accepts input for the selector if it is visible
-            if (GetComponent<Renderer>().enabled)
+            else if (visibility.enabled)
             {
+                moved = false;
+
                 // Checks input for moving the selector
                 // (snapping to a box grid)
                 if (snapsToBoxGrid)
@@ -133,28 +174,28 @@ namespace not_broforce
                         transform.position +=
                             new Vector3(0, 1 * boxSize.y);
 
-                        CheckPlacementValidity();
+                        moved = true;
                     }
                     else if (Input.GetKeyDown(KeyCode.DownArrow))
                     {
                         transform.position +=
                             new Vector3(0, -1 * boxSize.y);
 
-                        CheckPlacementValidity();
+                        moved = true;
                     }
                     else if (Input.GetKeyDown(KeyCode.LeftArrow))
                     {
                         transform.position +=
                             new Vector3(-1 * boxSize.x, 0);
 
-                        CheckPlacementValidity();
+                        moved = true;
                     }
                     else if (Input.GetKeyDown(KeyCode.RightArrow))
                     {
                         transform.position +=
                             new Vector3(1 * boxSize.x, 0);
 
-                        CheckPlacementValidity();
+                        moved = true;
                     }
                 }
                 // Checks input for moving the selector
@@ -163,17 +204,17 @@ namespace not_broforce
                 {
                     if (Input.GetKey(KeyCode.LeftArrow))
                     {
-                        transform.position += Vector3.left * 
+                        transform.position += Vector3.left *
                             smoothMovingSpeed * Time.deltaTime;
 
-                        CheckPlacementValidity();
+                        moved = true;
                     }
                     else if (Input.GetKey(KeyCode.RightArrow))
                     {
-                        transform.position += Vector3.right * 
+                        transform.position += Vector3.right *
                             smoothMovingSpeed * Time.deltaTime;
 
-                        CheckPlacementValidity();
+                        moved = true;
                     }
                 }
 
@@ -186,6 +227,38 @@ namespace not_broforce
                     RemoveBox();
                 }
             }
+        }
+
+        private void ShowSelector()
+        {
+            if (!visibility.enabled)
+            {
+                visibility.enabled = true;
+            }
+
+            // Calculates the ground level based on the player character's position
+            float groundY = player.transform.position.y -
+                player.GetComponent<SpriteRenderer>().bounds.size.y / 2;
+
+            // Gets the player character's looking direction
+            bool lookingLeft = player.GetComponent<SpriteRenderer>().flipX;
+
+            transform.position = player.transform.position + (lookingLeft ? Vector3.left : Vector3.right) / 2;
+            transform.position = new Vector3(transform.position.x, groundY + boxSize.y / 2, Z_AXIS);
+
+            snapsToBoxGrid = false;
+            moved = true;
+        }
+
+        private void HideSelector()
+        {
+            if (visibility.enabled)
+            {
+                visibility.enabled = false;
+            }
+
+            moved = false;
+            UnselectBox();
         }
 
         private void PlaceBox()
@@ -239,27 +312,37 @@ namespace not_broforce
             ChangeColor();
         }
 
+        private void InvalidateAll()
+        {
+            validPlacement = false;
+            validRemove = false;
+        }
+
         /// <summary>
         /// Checks if a box can be placed to the selector's position.
         /// </summary>
         /// <returns>can a box be placed to the selector's position</returns>
         private void CheckPlacementValidity()
         {
-            // Sets the default value (true) for the box placement validity
-            validPlacement = true;
-
-            // Sets the default value (false) for the box removal validity
-            validRemove = false;
-
-            // Checks if the selector intersects with the player character
-            // and if so, sets box placement validity false
-            if (Utils.CollidersIntersect(GetComponent<BoxCollider2D>(),
+            if (Utils.Distance(transform.position, player.transform.position) > maxDistanceFromPlayer)
+            {
+                HideSelector();
+            }
+            // If the selector intersects with the player
+            // character, sets box placement validity false
+            else if (Utils.CollidersIntersect(GetComponent<BoxCollider2D>(),
                 player.GetComponent<BoxCollider2D>()))
             {
-                validPlacement = false;
+                InvalidateAll();
             }
-            else
+            else if (moved)
             {
+                // Sets the default value (true) for the box placement validity
+                validPlacement = true;
+
+                // Sets the default value (false) for the box removal validity
+                validRemove = false;
+
                 // The selector snaps to a box grid
                 if (snapsToBoxGrid)
                 {
@@ -296,7 +379,7 @@ namespace not_broforce
                     // Checks if the selector intersects the ground or the player
                     // character and if so, sets placement validity false
 
-                    // ...
+                    // TODO
 
                     // Goes through each existing box
                     foreach (GameObject box in boxes)
@@ -318,15 +401,11 @@ namespace not_broforce
                     }
                 }
             }
-
-            // Checks if the selector intersects an existing box
-            // and if so, sets placement validity false
-            //if (box.GetComponent<BoxCollider2D>().bounds.
-            //    Intersects(GetComponent<BoxCollider2D>().bounds))
-            //{
-            //    validPlacement = false;
-            //    break;
-            //}
+            // If removal is possible, a box can not be placed
+            else if (!validRemove)
+            {
+                validPlacement = true;
+            }
 
             ChangeColor();
         }
@@ -348,6 +427,12 @@ namespace not_broforce
             {
                 GetComponent<SpriteRenderer>().color = invalidPlacementColor;
             }
+        }
+
+        private void OnDrawGizmos()
+        {
+            Gizmos.color = Color.white;
+            Gizmos.DrawLine(transform.position, player.transform.position);
         }
     }
 }
