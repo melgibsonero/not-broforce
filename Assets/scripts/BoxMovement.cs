@@ -29,11 +29,15 @@ namespace not_broforce {
 
         private Vector2 _moveDirection;
 
+        private bool canMove;
+
         void Start() {
             GameObject.FindGameObjectWithTag("crate").GetComponent<BoxController>().addBox(this);
             _RB = gameObject.GetComponent<Rigidbody2D>();
             
             mask = ~mask;
+
+            canMove = true;
         }
 
         // Update is called once per frame
@@ -63,11 +67,19 @@ namespace not_broforce {
                     int mask = (1 << 8);
                     mask = ~mask;
                     RaycastHit2D hit = Physics2D.Raycast(transform.position, _moveDirection, distanceX,mask);
+
+                    canMove = true;
+
                     if (hit.collider != null) {
                         
                         Jump();
+                        canMove = false;
                     }
-                    transform.Translate(direction * _speed * Time.deltaTime);
+
+                    if (canMove)
+                    {
+                        transform.Translate(direction * _speed * Time.deltaTime);
+                    }
                 }
             }
         }
