@@ -67,6 +67,16 @@ namespace not_broforce
             return (Mathf.PI + Mathf.Atan((end.y - start.y) / (end.x - start.x))); //180 degrees + ...
         }
 
+        public static bool ColliderContainsPoint(BoxCollider2D collider,
+                                                 Vector3 point)
+        {
+            return (collider.bounds.Contains(point));
+
+            //Vector3 pointWithSameZ = 
+            //    new Vector3(point.x, point.y, collider.transform.position.z);
+            //return (collider.bounds.Contains(pointWithSameZ));
+        }
+
         public static bool CollidersIntersect(BoxCollider2D collider1,
                                               BoxCollider2D collider2)
         {
