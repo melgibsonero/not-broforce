@@ -16,7 +16,7 @@ namespace not_broforce
 
         /// <summary>
         /// The amount of time which passes before
-        /// an event occurs (milliseconds)
+        /// an event occurs (Seconds)
         /// </summary>
         private float duration;
 
