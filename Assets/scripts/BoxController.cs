@@ -27,6 +27,7 @@ namespace not_broforce {
 
         private void RefreshFollowTargets() {
             for(int i = 0; i < boxes.Count; i++) {
+                boxes[i].GetComponent<SpriteRenderer>().sortingOrder = boxes.Count - i;
                 if(i == 0) {
                     boxes[i].AddFollowTarget(GameObject.FindGameObjectWithTag("Player").transform);
                 } else {
