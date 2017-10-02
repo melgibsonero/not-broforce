@@ -4,8 +4,7 @@ using UnityEngine;
 
 namespace not_broforce
 {
-    class Utils
-    {
+    class Utils {
         /// <summary>
         /// Calculates the difference between two points' coordinates.
         /// </summary>

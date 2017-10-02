@@ -5,6 +5,8 @@ using UnityEngine;
 namespace not_broforce {
     public class BoxMovement : MonoBehaviour {
 
+        
+
         [SerializeField]
         private Transform _target;
 
@@ -25,7 +27,7 @@ namespace not_broforce {
         [SerializeField]
         private float _thrust;
 
-        private int mask = (1 << 8);
+        private int mask;
 
         private Vector2 _moveDirection;
 
@@ -34,11 +36,12 @@ namespace not_broforce {
         private Timer _jumpTimer;
 
         void Start() {
+            mask = LayerMask.GetMask("Environment", "PlacedBoxes");
             _jumpTimer = new Timer(1);
             GameObject.FindGameObjectWithTag("BoxController").GetComponent<BoxController>().addBox(this);
             _RB = gameObject.GetComponent<Rigidbody2D>();
             
-            mask = ~mask;
+            //mask = ~mask;
 
             canMove = true;
         }
@@ -71,8 +74,6 @@ namespace not_broforce {
                     } else {
                         _moveDirection = Vector2.left;
                     }
-                    int mask = (1 << 8);
-                    mask = ~mask;
                     RaycastHit2D hit = Physics2D.Raycast(transform.position, _moveDirection, distanceX,mask);
 
                     canMove = true;
@@ -99,7 +100,7 @@ namespace not_broforce {
                 Grounded = true;
             }
             if (Grounded) {
-                 Debug.Log("jumping");
+                Debug.Log("jumping");
                 _RB.AddForce(transform.up * _thrust, ForceMode2D.Impulse);
                 _jumpTimer.Start();
                 
