@@ -500,7 +500,7 @@ namespace not_broforce
         }
 
         /// <summary>
-        /// Sets the selector's color based on its status
+        /// Sets the selector's color based on its status.
         /// </summary>
         private void ChangeColor()
         {
