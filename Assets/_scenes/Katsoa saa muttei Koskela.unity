@@ -157,9 +157,10 @@ Prefab:
       propertyPath: cursor
       value: 
       objectReference: {fileID: 897968311}
-    - target: {fileID: 1181151671892286, guid: f1e381e0a47f807489db8e5a4fa31a23, type: 2}
-      propertyPath: m_Name
-      value: BoxSelector
+    - target: {fileID: 61583743666643102, guid: f1e381e0a47f807489db8e5a4fa31a23,
+        type: 2}
+      propertyPath: m_IsTrigger
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f1e381e0a47f807489db8e5a4fa31a23, type: 2}
@@ -174,7 +175,7 @@ GameObject:
   - component: {fileID: 198164822}
   - component: {fileID: 198164824}
   - component: {fileID: 198164823}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: seina (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -271,7 +272,7 @@ GameObject:
   - component: {fileID: 210688597}
   - component: {fileID: 210688599}
   - component: {fileID: 210688598}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: seina (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -373,7 +374,7 @@ GameObject:
   - component: {fileID: 240768572}
   - component: {fileID: 240768574}
   - component: {fileID: 240768573}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: lattia (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -455,7 +456,7 @@ GameObject:
   m_Component:
   - component: {fileID: 720744336}
   - component: {fileID: 720744335}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: control_004
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -527,7 +528,7 @@ GameObject:
   - component: {fileID: 808823417}
   - component: {fileID: 808823419}
   - component: {fileID: 808823418}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: lattia (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -653,6 +654,10 @@ Prefab:
       propertyPath: m_RootOrder
       value: 6
       objectReference: {fileID: 0}
+    - target: {fileID: 1107736487894576, guid: 9d7bd589c2363924c81d99411c7c48c5, type: 2}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 9d7bd589c2363924c81d99411c7c48c5, type: 2}
   m_IsPrefabParent: 0
@@ -701,6 +706,14 @@ Prefab:
       propertyPath: m_RootOrder
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1999237154920692, guid: 561093469824d6241b2be19048d0f84d, type: 2}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1835372702143204, guid: 561093469824d6241b2be19048d0f84d, type: 2}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 561093469824d6241b2be19048d0f84d, type: 2}
   m_IsPrefabParent: 0
@@ -714,7 +727,7 @@ GameObject:
   - component: {fileID: 1265053197}
   - component: {fileID: 1265053199}
   - component: {fileID: 1265053198}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: seina (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -810,7 +823,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1417052890}
   - component: {fileID: 1417052889}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: window_001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -883,9 +896,9 @@ GameObject:
   - component: {fileID: 1577561342}
   - component: {fileID: 1577561341}
   - component: {fileID: 1577561340}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: crate
-  m_TagString: crate
+  m_TagString: Box
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -992,7 +1005,7 @@ GameObject:
   - component: {fileID: 1682273485}
   - component: {fileID: 1682273487}
   - component: {fileID: 1682273486}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: lattia
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1089,7 +1102,7 @@ GameObject:
   - component: {fileID: 1783924886}
   - component: {fileID: 1783924888}
   - component: {fileID: 1783924887}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: seina (5)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1186,7 +1199,7 @@ GameObject:
   - component: {fileID: 1843057536}
   - component: {fileID: 1843057538}
   - component: {fileID: 1843057537}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: lattia (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1281,7 +1294,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 1851386219}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Room0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1321,7 +1334,7 @@ GameObject:
   - component: {fileID: 2034137082}
   - component: {fileID: 2034137084}
   - component: {fileID: 2034137083}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: seina
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1418,7 +1431,7 @@ GameObject:
   - component: {fileID: 2129366220}
   - component: {fileID: 2129366222}
   - component: {fileID: 2129366221}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: seina (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}

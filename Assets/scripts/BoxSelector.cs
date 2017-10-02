@@ -136,7 +136,7 @@ namespace not_broforce
         /// </summary>
         private void FindBoxesInLevel()
         {
-            GameObject[] existingBoxes = GameObject.FindGameObjectsWithTag("crate");
+            GameObject[] existingBoxes = GameObject.FindGameObjectsWithTag("Box");
 
             foreach (GameObject box in existingBoxes)
             {

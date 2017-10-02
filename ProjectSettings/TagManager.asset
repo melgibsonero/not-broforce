@@ -6,6 +6,7 @@ TagManager:
   tags:
   - crate
   - BoxController
+  - Box
   layers:
   - Default
   - TransparentFX
@@ -17,10 +18,10 @@ TagManager:
   - 
   - MovingBoxes
   - BoxSelector
-  - 
-  - 
-  - 
-  - 
+  - Environment
+  - Player
+  - PlacedBoxes
+  - Interactable
   - 
   - 
   - 

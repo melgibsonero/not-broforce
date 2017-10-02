@@ -23,7 +23,7 @@ GameObject:
   - component: {fileID: 114389540089063752}
   - component: {fileID: 61583743666643102}
   m_Layer: 9
-  m_Name: BoxPlacementSelector
+  m_Name: BoxSelector
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -36,7 +36,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1181151671892286}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0, y: 0.8, z: 0}
+  m_LocalPosition: {x: -0.015, y: 0.852, z: 0}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0}
   m_Children: []
   m_Father: {fileID: 0}
@@ -117,7 +117,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1231551439
-  m_SortingLayer: 1
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: ba78d776d098fd54cb7906e14b687ca4, type: 3}
   m_Color: {r: 0.29803923, g: 0.47058824, b: 0.83137256, a: 1}
