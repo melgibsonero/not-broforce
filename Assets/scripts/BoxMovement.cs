@@ -34,7 +34,7 @@ namespace not_broforce {
         private Timer _jumpTimer;
 
         void Start() {
-            _jumpTimer = new Timer(1000);
+            _jumpTimer = new Timer(1);
             GameObject.FindGameObjectWithTag("BoxController").GetComponent<BoxController>().addBox(this);
             _RB = gameObject.GetComponent<Rigidbody2D>();
             
@@ -46,7 +46,7 @@ namespace not_broforce {
         // Update is called once per frame
         void Update() {
             Move();
-            Debug.Log(_jumpTimer.TimeLeft());
+            _jumpTimer.Update();
         }
 
         public void AddFollowTarget (Transform target) {
@@ -95,12 +95,11 @@ namespace not_broforce {
             Physics2D.queriesStartInColliders = false;
             RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, distanceY,mask);
             bool Grounded = false;
-            if (hit.collider != null && _jumpTimer.Check(false)) {
-                Debug.Log("jumping");
+            if (hit.collider != null && _jumpTimer.TimeLeft() <= 0) {
                 Grounded = true;
             }
             if (Grounded) {
-                Debug.Log("jumping");
+                 Debug.Log("jumping");
                 _RB.AddForce(transform.up * _thrust, ForceMode2D.Impulse);
                 _jumpTimer.Start();
                 
