@@ -42,7 +42,7 @@ RenderSettings:
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
-  serializedVersion: 11
+  serializedVersion: 9
   m_GIWorkflowMode: 1
   m_GISettings:
     serializedVersion: 2
@@ -54,7 +54,7 @@ LightmapSettings:
     m_EnableBakedLightmaps: 0
     m_EnableRealtimeLightmaps: 0
   m_LightmapEditorSettings:
-    serializedVersion: 9
+    serializedVersion: 8
     m_Resolution: 2
     m_BakeResolution: 40
     m_TextureWidth: 1024
@@ -87,7 +87,7 @@ LightmapSettings:
     m_PVRFilteringAtrousNormalSigma: 1
     m_PVRFilteringAtrousPositionSigma: 1
   m_LightingDataAsset: {fileID: 0}
-  m_UseShadowmask: 1
+  m_ShadowMaskMode: 2
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -118,7 +118,7 @@ GameObject:
   - component: {fileID: 6640785}
   - component: {fileID: 6640787}
   - component: {fileID: 6640786}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: seina (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -203,8 +203,6 @@ SpriteRenderer:
   m_Size: {x: 2.56, y: 20.48}
   m_AdaptiveModeThreshold: 0.25
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
 --- !u!1 &82517865
 GameObject:
   m_ObjectHideFlags: 0
@@ -215,7 +213,7 @@ GameObject:
   - component: {fileID: 82517866}
   - component: {fileID: 82517868}
   - component: {fileID: 82517867}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: lattia (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -300,8 +298,6 @@ SpriteRenderer:
   m_Size: {x: 51.2, y: 2.56}
   m_AdaptiveModeThreshold: 1
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
 --- !u!1 &124005167
 GameObject:
   m_ObjectHideFlags: 0
@@ -401,7 +397,7 @@ GameObject:
   - component: {fileID: 154480960}
   - component: {fileID: 154480962}
   - component: {fileID: 154480961}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: lattia (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -486,8 +482,6 @@ SpriteRenderer:
   m_Size: {x: 51.2, y: 2.56}
   m_AdaptiveModeThreshold: 1
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
 --- !u!1 &211434308
 GameObject:
   m_ObjectHideFlags: 0
@@ -498,7 +492,7 @@ GameObject:
   - component: {fileID: 211434309}
   - component: {fileID: 211434311}
   - component: {fileID: 211434310}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: lattia (6)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -583,8 +577,6 @@ SpriteRenderer:
   m_Size: {x: 51.2, y: 2.56}
   m_AdaptiveModeThreshold: 1
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
 --- !u!1 &290275951
 GameObject:
   m_ObjectHideFlags: 0
@@ -595,7 +587,7 @@ GameObject:
   - component: {fileID: 290275952}
   - component: {fileID: 290275954}
   - component: {fileID: 290275953}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: lattia (13)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -680,8 +672,6 @@ SpriteRenderer:
   m_Size: {x: 7.68, y: 2.56}
   m_AdaptiveModeThreshold: 1
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
 --- !u!1 &303740782
 GameObject:
   m_ObjectHideFlags: 0
@@ -692,7 +682,7 @@ GameObject:
   - component: {fileID: 303740783}
   - component: {fileID: 303740785}
   - component: {fileID: 303740784}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: lattia (12)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -777,8 +767,6 @@ SpriteRenderer:
   m_Size: {x: 7.68, y: 2.56}
   m_AdaptiveModeThreshold: 1
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
 --- !u!1 &325053284
 GameObject:
   m_ObjectHideFlags: 0
@@ -789,7 +777,7 @@ GameObject:
   - component: {fileID: 325053285}
   - component: {fileID: 325053287}
   - component: {fileID: 325053286}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: lattia (10)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -874,8 +862,6 @@ SpriteRenderer:
   m_Size: {x: 7.68, y: 2.56}
   m_AdaptiveModeThreshold: 1
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
 --- !u!1001 &487334767
 Prefab:
   m_ObjectHideFlags: 0
@@ -942,7 +928,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1835372702143204, guid: 561093469824d6241b2be19048d0f84d, type: 2}
       propertyPath: m_Layer
-      value: 10
+      value: 11
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 561093469824d6241b2be19048d0f84d, type: 2}
@@ -1003,8 +989,6 @@ SpriteRenderer:
   m_Size: {x: 6.48, y: 6.48}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
 --- !u!4 &547560075
 Transform:
   m_ObjectHideFlags: 0
@@ -1028,7 +1012,7 @@ GameObject:
   - component: {fileID: 644954831}
   - component: {fileID: 644954833}
   - component: {fileID: 644954832}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: lattia (7)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1113,8 +1097,6 @@ SpriteRenderer:
   m_Size: {x: 51.2, y: 2.56}
   m_AdaptiveModeThreshold: 1
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
 --- !u!1 &790423292
 GameObject:
   m_ObjectHideFlags: 0
@@ -1125,7 +1107,7 @@ GameObject:
   - component: {fileID: 790423293}
   - component: {fileID: 790423295}
   - component: {fileID: 790423294}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: seina (7)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1210,8 +1192,6 @@ SpriteRenderer:
   m_Size: {x: 2.56, y: 20.48}
   m_AdaptiveModeThreshold: 0.25
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
 --- !u!1 &820275733
 GameObject:
   m_ObjectHideFlags: 0
@@ -1222,7 +1202,7 @@ GameObject:
   - component: {fileID: 820275734}
   - component: {fileID: 820275736}
   - component: {fileID: 820275735}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: lattia
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1307,8 +1287,6 @@ SpriteRenderer:
   m_Size: {x: 51.2, y: 2.56}
   m_AdaptiveModeThreshold: 1
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
 --- !u!1 &846205789
 GameObject:
   m_ObjectHideFlags: 0
@@ -1365,8 +1343,6 @@ SpriteRenderer:
   m_Size: {x: 45, y: 4.096}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
 --- !u!4 &846205791
 Transform:
   m_ObjectHideFlags: 0
@@ -1390,7 +1366,7 @@ GameObject:
   - component: {fileID: 1047299102}
   - component: {fileID: 1047299104}
   - component: {fileID: 1047299103}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: seina (5)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1475,8 +1451,6 @@ SpriteRenderer:
   m_Size: {x: 2.56, y: 10.24}
   m_AdaptiveModeThreshold: 0.25
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
 --- !u!1 &1154545657
 GameObject:
   m_ObjectHideFlags: 0
@@ -1485,7 +1459,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 1154545658}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Room0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1537,7 +1511,7 @@ GameObject:
   - component: {fileID: 1247979010}
   - component: {fileID: 1247979012}
   - component: {fileID: 1247979011}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: lattia (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1622,8 +1596,6 @@ SpriteRenderer:
   m_Size: {x: 56.32, y: 7.68}
   m_AdaptiveModeThreshold: 1
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
 --- !u!1 &1393149257
 GameObject:
   m_ObjectHideFlags: 0
@@ -1633,7 +1605,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1393149258}
   - component: {fileID: 1393149260}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: seina
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1693,8 +1665,6 @@ SpriteRenderer:
   m_Size: {x: 2.56, y: 2.56}
   m_AdaptiveModeThreshold: 0.25
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
 --- !u!1 &1491706079
 GameObject:
   m_ObjectHideFlags: 0
@@ -1705,7 +1675,7 @@ GameObject:
   - component: {fileID: 1491706080}
   - component: {fileID: 1491706082}
   - component: {fileID: 1491706081}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: seina (6)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1790,8 +1760,6 @@ SpriteRenderer:
   m_Size: {x: 2.56, y: 10.24}
   m_AdaptiveModeThreshold: 0.25
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
 --- !u!1 &1498052403
 GameObject:
   m_ObjectHideFlags: 0
@@ -1802,7 +1770,7 @@ GameObject:
   - component: {fileID: 1498052404}
   - component: {fileID: 1498052406}
   - component: {fileID: 1498052405}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: seina (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1887,8 +1855,6 @@ SpriteRenderer:
   m_Size: {x: 2.56, y: 2.56}
   m_AdaptiveModeThreshold: 0.25
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
 --- !u!1 &1519667633
 GameObject:
   m_ObjectHideFlags: 0
@@ -1899,7 +1865,7 @@ GameObject:
   - component: {fileID: 1519667634}
   - component: {fileID: 1519667636}
   - component: {fileID: 1519667635}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: lattia (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1984,8 +1950,6 @@ SpriteRenderer:
   m_Size: {x: 51.2, y: 2.56}
   m_AdaptiveModeThreshold: 1
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
 --- !u!1 &1594218052
 GameObject:
   m_ObjectHideFlags: 0
@@ -2042,8 +2006,6 @@ SpriteRenderer:
   m_Size: {x: 4.096, y: 4.096}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
 --- !u!4 &1594218054
 Transform:
   m_ObjectHideFlags: 0
@@ -2067,7 +2029,7 @@ GameObject:
   - component: {fileID: 1645848214}
   - component: {fileID: 1645848216}
   - component: {fileID: 1645848215}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: lattia (11)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2152,8 +2114,6 @@ SpriteRenderer:
   m_Size: {x: 7.68, y: 2.56}
   m_AdaptiveModeThreshold: 1
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
 --- !u!1 &1752866138
 GameObject:
   m_ObjectHideFlags: 0
@@ -2164,7 +2124,7 @@ GameObject:
   - component: {fileID: 1752866139}
   - component: {fileID: 1752866141}
   - component: {fileID: 1752866140}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: seina (8)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2249,8 +2209,6 @@ SpriteRenderer:
   m_Size: {x: 2.56, y: 46.08}
   m_AdaptiveModeThreshold: 0.25
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
 --- !u!1 &1771945879
 GameObject:
   m_ObjectHideFlags: 0
@@ -2261,7 +2219,7 @@ GameObject:
   - component: {fileID: 1771945880}
   - component: {fileID: 1771945882}
   - component: {fileID: 1771945881}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: lattia (9)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2346,8 +2304,6 @@ SpriteRenderer:
   m_Size: {x: 17.92, y: 2.56}
   m_AdaptiveModeThreshold: 1
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
 --- !u!1 &1923976591
 GameObject:
   m_ObjectHideFlags: 0
@@ -2357,7 +2313,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1923976592}
   - component: {fileID: 1923976594}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: seina (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2417,8 +2373,6 @@ SpriteRenderer:
   m_Size: {x: 2.56, y: 2.56}
   m_AdaptiveModeThreshold: 0.25
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
 --- !u!1 &1997911421
 GameObject:
   m_ObjectHideFlags: 0
@@ -2430,7 +2384,7 @@ GameObject:
   - component: {fileID: 1997911422}
   - component: {fileID: 1997911424}
   - component: {fileID: 1997911425}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: crate
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2477,8 +2431,6 @@ SpriteRenderer:
   m_Size: {x: 2.56, y: 2.56}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
 --- !u!4 &1997911423
 Transform:
   m_ObjectHideFlags: 0
@@ -2539,7 +2491,7 @@ GameObject:
   - component: {fileID: 2034719337}
   - component: {fileID: 2034719339}
   - component: {fileID: 2034719338}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: lattia (5)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2624,8 +2576,6 @@ SpriteRenderer:
   m_Size: {x: 51.2, y: 2.56}
   m_AdaptiveModeThreshold: 1
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
 --- !u!4 &2085883061 stripped
 Transform:
   m_PrefabParentObject: {fileID: 4414100764411388, guid: 561093469824d6241b2be19048d0f84d,
@@ -2641,7 +2591,7 @@ GameObject:
   - component: {fileID: 2123524365}
   - component: {fileID: 2123524367}
   - component: {fileID: 2123524366}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: seina (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2726,5 +2676,3 @@ SpriteRenderer:
   m_Size: {x: 2.56, y: 20.48}
   m_AdaptiveModeThreshold: 0.25
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0

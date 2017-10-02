@@ -31,6 +31,8 @@ public class PlayerController : MonoBehaviour
     public float minDistance;
     public float boxSpeed;
 
+    private int mask;
+
     public bool GetGrounded()
     {
         return Grounded;
@@ -39,6 +41,7 @@ public class PlayerController : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        mask = LayerMask.GetMask("Environment", "PlacedBoxes");
         animator = GetComponent<Animator>();
 
         sr = GetComponent<SpriteRenderer>();
@@ -59,9 +62,9 @@ public class PlayerController : MonoBehaviour
         bool result = false;        
         Vector3 size = new Vector3(bc.size.x, 0, 0);
 
-        RaycastHit2D middle = Physics2D.Raycast(transform.position, Vector2.down, distancey);
-        RaycastHit2D left = Physics2D.Raycast(transform.position+-size, Vector2.down, distancey);
-        RaycastHit2D right = Physics2D.Raycast(transform.position+size, Vector2.down, distancey);
+        RaycastHit2D middle = Physics2D.Raycast(transform.position, Vector2.down, distancey, mask);
+        RaycastHit2D left = Physics2D.Raycast(transform.position+-size, Vector2.down, distancey, mask);
+        RaycastHit2D right = Physics2D.Raycast(transform.position+size, Vector2.down, distancey, mask);
 
         if(middle.collider != null || left.collider != null || right.collider != null)
         {
@@ -74,8 +77,8 @@ public class PlayerController : MonoBehaviour
     bool CheckWalljump()
     {
         bool result = false;
-        RaycastHit2D walljumpright = Physics2D.Raycast(transform.position, Vector2.right, distancex);
-        RaycastHit2D walljumpleft = Physics2D.Raycast(transform.position, Vector2.left, distancex);
+        RaycastHit2D walljumpright = Physics2D.Raycast(transform.position, Vector2.right, distancex, mask);
+        RaycastHit2D walljumpleft = Physics2D.Raycast(transform.position, Vector2.left, distancex, mask);
         if(walljumpright.collider != null)
         {
             result = true;
@@ -99,8 +102,8 @@ public class PlayerController : MonoBehaviour
         else
         { //Walljump raycasts
             Grounded = false;
-            RaycastHit2D walljump = left ? Physics2D.Raycast(transform.position, Vector2.left, distancex) : 
-                Physics2D.Raycast(transform.position, Vector2.right, distancex);
+            RaycastHit2D walljump = left ? Physics2D.Raycast(transform.position, Vector2.left, distancex, mask) : 
+                Physics2D.Raycast(transform.position, Vector2.right, distancex, mask);
             if(walljump.collider != null)
             if(CheckWalljump())
             {
