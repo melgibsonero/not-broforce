@@ -41,7 +41,6 @@ namespace not_broforce
         /// </summary>
         private Renderer visibility;
 
-        //private Transform player;
         private List<GameObject> boxes;
         private GameObject selectedBox;
         private Vector2 boxSize;
@@ -78,7 +77,8 @@ namespace not_broforce
             CheckForMissingObjects();
 
             // Sets the box list
-            boxes = new List<GameObject>();
+            //boxes = new List<GameObject>();
+            boxes = boxController.GetBoxes();
 
             // Finds all existing boxes in the level
             FindBoxesInLevel();
@@ -358,9 +358,11 @@ namespace not_broforce
         {
             if (validRemove)
             {
-                boxes.Remove(selectedBox);
-                Destroy(selectedBox);
-                UnselectBox();
+                //boxes.Remove(selectedBox);
+                //Destroy(selectedBox);
+                //UnselectBox();
+
+                // ...
             }
         }
 
@@ -398,7 +400,9 @@ namespace not_broforce
         /// <returns>can a box be placed to the selector's position</returns>
         private void CheckPlacementValidity()
         {
-            if (Utils.Distance(transform.position, player.transform.position) > maxDistanceFromPlayer)
+            if (boxController.BoxAmount() == 0 ||
+                Utils.Distance(transform.position, player.transform.position)
+                    > maxDistanceFromPlayer)
             {
                 InvalidateAll();
             }

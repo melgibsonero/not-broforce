@@ -13,6 +13,17 @@ namespace not_broforce {
 
         }
 
+
+        public List<BoxMovement> GetBoxes()
+        {
+            return boxes;
+        }
+
+        public int BoxAmount()
+        {
+            return boxes.Count;
+        }
+
         // Update is called once per frame
         void Update() {
             if(Input.GetKeyDown(KeyCode.L)) {
@@ -55,10 +66,6 @@ namespace not_broforce {
                 removeBox();
                 obj.TakePosition(followTarget);
             }
-        }
-
-        public int BoxAmount () {
-            return boxes.Count;
         }
     }
 }
