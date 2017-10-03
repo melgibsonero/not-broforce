@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace not_broforce {
-    public class BoxMovement : MonoBehaviour {
+    public class Box : MonoBehaviour {
 
         
 

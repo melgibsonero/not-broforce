@@ -6,10 +6,10 @@ namespace not_broforce {
     public class BoxController : MonoBehaviour {
 
         [SerializeField]
-        private List<BoxMovement> boxes = new List<BoxMovement>();
+        private List<Box> boxes = new List<Box>();
 
         [SerializeField]
-        private List<BoxMovement> placedBoxes = new List<BoxMovement>();
+        private List<Box> placedBoxes = new List<Box>();
 
         // Use this for initialization
         void Start() {
@@ -17,11 +17,11 @@ namespace not_broforce {
         }
 
 
-        public List<BoxMovement> GetBoxes() {
+        public List<Box> GetBoxes() {
             return boxes;
         }
 
-        public int BoxAmount() {
+        public int MovingBoxAmount() {
             return boxes.Count;
         }
 
@@ -32,16 +32,16 @@ namespace not_broforce {
             }
         }
 
-        public void addBox(BoxMovement box) {
+        public void addBox(Box box) {
             boxes.Add(box);
             RefreshFollowTargets();
         }
 
-        public void addPlacedBox(BoxMovement box) {
+        public void addPlacedBox(Box box) {
             placedBoxes.Add(box);
         }
 
-        public List<BoxMovement> GetPlacedBoxes (){
+        public List<Box> GetPlacedBoxes (){
             return placedBoxes;
         }
 
@@ -74,9 +74,18 @@ namespace not_broforce {
         // Places box for player pointed position
         public void PlaceBox (Vector3 followTarget) {
             if (boxes.Count > 0) {
-                BoxMovement obj = boxes[0];
+                Box obj = boxes[0];
                 removeBox();
                 obj.TakePosition(followTarget);
+            }
+        }
+
+        public void RemovePlacedBox (Box box) {
+            for(int i = 0; i < placedBoxes.Count; i++) {
+                if(placedBoxes[i] == box) {
+                    placedBoxes.RemoveAt(i);
+                    addBox(box);
+                }
             }
         }
     }
