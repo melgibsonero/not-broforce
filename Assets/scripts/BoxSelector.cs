@@ -234,7 +234,11 @@ namespace not_broforce
 
         private void DirectionalMovevent()
         {
-            moved = false;
+            //moved = false;
+
+            // Testing purposes only
+            // Always selects the box under the selector
+            moved = true;
 
             // Checks input for moving the selector
             // (snapping to a box grid)
@@ -363,6 +367,7 @@ namespace not_broforce
                 //UnselectBox();
 
                 boxController.RemovePlacedBox(selectedBox);
+                UnselectBox();
             }
         }
 
@@ -400,11 +405,9 @@ namespace not_broforce
         /// <returns>can a box be placed to the selector's position</returns>
         private void CheckPlacementValidity()
         {
-            // If there are no boxes following the player or
-            // the selector is too far away from the player,
-            // placing and removing boxes is made invalid
-            if (boxController.MovingBoxAmount() == 0 ||
-                Utils.Distance(transform.position, player.transform.position)
+            // If the selector is too far away from the player,
+            // placing and removing boxes are made invalid
+            if (Utils.Distance(transform.position, player.transform.position)
                     > maxDistanceFromPlayer)
             {
                 InvalidateAll();
@@ -459,6 +462,14 @@ namespace not_broforce
             else if (!validRemove)
             {
                 validPlacement = true;
+            }
+
+            // A placed box has not been selected and
+            // there are no boxes following the player
+            // -> placement is invalid
+            if (!validRemove && boxController.MovingBoxAmount() == 0)
+            {
+                validPlacement = false;
             }
 
             // Sets the selector's color based on its status
