@@ -44,5 +44,13 @@ namespace not_broforce {
             }
 
         }
+
+        public void PlaceBox (Vector3 followTarget) {
+            if (boxes.Count > 0) {
+                BoxMovement obj = boxes[0];
+                removeBox();
+                obj.takePosition(followTarget);
+            }
+        }
     }
 }

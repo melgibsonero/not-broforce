@@ -35,21 +35,36 @@ namespace not_broforce {
 
         private Timer _jumpTimer;
 
+        private bool _takingPosition;
+
+        private bool _donePositionTaking;
+
+        private BoxController boxController;
+
         void Start() {
             mask = LayerMask.GetMask("Environment", "PlacedBoxes");
             _jumpTimer = new Timer(1);
-            GameObject.FindGameObjectWithTag("BoxController").GetComponent<BoxController>().addBox(this);
+            boxController = GameObject.FindGameObjectWithTag("BoxController").GetComponent<BoxController>();
+            boxController.addBox(this);
             _RB = gameObject.GetComponent<Rigidbody2D>();
-            
-            //mask = ~mask;
 
+            //mask = ~mask;
+            _takingPosition = false;
             canMove = true;
+            _donePositionTaking = false;
         }
 
         // Update is called once per frame
         void Update() {
-            Move();
             _jumpTimer.Update();
+            if(_takingPosition && Vector3.Distance(transform.position,
+                _target.position) < _followDistance && !_donePositionTaking) {
+                changeProperties();
+            } else  if (_donePositionTaking){
+                //Do something if structure is broken
+            } else {
+                Move();
+            }
         }
 
         public void AddFollowTarget (Transform target) {
@@ -58,7 +73,8 @@ namespace not_broforce {
 
         private void Move() {
             if(Input.GetKeyDown(KeyCode.M)) {
-                Jump();
+                _takingPosition = true;
+                _followDistance = 0.4f;
             }
             if(_target != null) {
                 if (Vector3.Distance(transform.position,
@@ -107,8 +123,25 @@ namespace not_broforce {
             }
         }
 
+        private void changeProperties () {
+            transform.position = _target.position;
+            gameObject.layer = LayerMask.NameToLayer("PlacedBoxes");
+            gameObject.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Static;
+            _donePositionTaking = true;
+        }
+
         public void removeFollowTarget () {
-            _target = null;
+            _target.position = transform.position;
+        }
+
+        public void takePosition (Vector3 followTarget) {
+            _target.position = followTarget;
+            _takingPosition = true;
+            _followDistance = 0.2f;
+        }
+
+        public void BackToLine () {
+            // Back to follow mode
         }
 
     }
