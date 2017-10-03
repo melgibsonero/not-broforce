@@ -143,7 +143,7 @@ namespace not_broforce {
         public void TakePosition (Vector3 followTarget) {
             _followTarget = followTarget;
             _takingPosition = true;
-            _followDistance = 0.2f;
+            _followDistance = 0.6f;
         }
 
         public void BackToLine () {
