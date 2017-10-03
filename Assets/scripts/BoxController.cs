@@ -8,33 +8,45 @@ namespace not_broforce {
         [SerializeField]
         private List<BoxMovement> boxes = new List<BoxMovement>();
 
+        [SerializeField]
+        private List<BoxMovement> placedBoxes = new List<BoxMovement>();
+
         // Use this for initialization
         void Start() {
 
         }
 
 
-        public List<BoxMovement> GetBoxes()
-        {
+        public List<BoxMovement> GetBoxes() {
             return boxes;
         }
 
-        public int BoxAmount()
-        {
+        public int BoxAmount() {
             return boxes.Count;
         }
 
         // Update is called once per frame
         void Update() {
-            if(Input.GetKeyDown(KeyCode.L)) {
+            if (Input.GetKeyDown(KeyCode.L)) {
                 removeBox();
             }
         }
 
-        public void addBox (BoxMovement box) {
+        public void addBox(BoxMovement box) {
             boxes.Add(box);
             RefreshFollowTargets();
         }
+
+        public void addPlacedBox(BoxMovement box) {
+            placedBoxes.Add(box);
+        }
+
+        public List<BoxMovement> GetPlacedBoxes (){
+            return placedBoxes;
+        }
+
+
+
 
 
         // Refreshes following order for active boxes.

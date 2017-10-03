@@ -133,6 +133,7 @@ namespace not_broforce {
             gameObject.layer = LayerMask.NameToLayer("PlacedBoxes");
             gameObject.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Static;
             _donePositionTaking = true;
+            boxController.addPlacedBox(this);
         }
 
         public void RemoveFollowTarget () {
