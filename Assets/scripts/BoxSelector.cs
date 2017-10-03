@@ -41,8 +41,8 @@ namespace not_broforce
         /// </summary>
         private Renderer visibility;
 
-        private List<GameObject> boxes;
-        private GameObject selectedBox;
+        private List<Box> placedBoxes;
+        private Box selectedBox;
         private Vector2 boxSize;
 
         /// <summary>
@@ -78,10 +78,10 @@ namespace not_broforce
 
             // Sets the box list
             //boxes = new List<GameObject>();
-            boxes = boxController.GetBoxes();
+            placedBoxes = boxController.GetPlacedBoxes();
 
             // Finds all existing boxes in the level
-            FindBoxesInLevel();
+            //FindBoxesInLevel();
 
             // Finds all existing boxes in the level
             // and adds them to the box list
@@ -118,7 +118,7 @@ namespace not_broforce
         }
 
         /// <summary>
-        /// Gets the boxes' size and sets the selector to the same size as the box.
+        /// Gets the box's size and sets the selector to the same size as the box.
         /// </summary>
         private void SetSize()
         {
@@ -137,15 +137,15 @@ namespace not_broforce
         /// <summary>
         /// Finds all existing boxes in the level and adds them to the box list.
         /// </summary>
-        private void FindBoxesInLevel()
-        {
-            GameObject[] existingBoxes = GameObject.FindGameObjectsWithTag("Box");
+        //private void FindBoxesInLevel()
+        //{
+        //    GameObject[] existingBoxes = GameObject.FindGameObjectsWithTag("Box");
 
-            foreach (GameObject box in existingBoxes)
-            {
-                boxes.Add(box);
-            }
-        }
+        //    foreach (GameObject box in existingBoxes)
+        //    {
+        //        boxes.Add(box);
+        //    }
+        //}
 
         /// <summary>
         /// Updates the game object once per frame.
@@ -362,11 +362,11 @@ namespace not_broforce
                 //Destroy(selectedBox);
                 //UnselectBox();
 
-                // ...
+                boxController.RemovePlacedBox(selectedBox);
             }
         }
 
-        private void SelectBox(GameObject box)
+        private void SelectBox(Box box)
         {
             selectedBox = box;
             validPlacement = false;
@@ -400,7 +400,10 @@ namespace not_broforce
         /// <returns>can a box be placed to the selector's position</returns>
         private void CheckPlacementValidity()
         {
-            if (boxController.BoxAmount() == 0 ||
+            // If there are no boxes following the player or
+            // the selector is too far away from the player,
+            // placing and removing boxes is made invalid
+            if (boxController.MovingBoxAmount() == 0 ||
                 Utils.Distance(transform.position, player.transform.position)
                     > maxDistanceFromPlayer)
             {
@@ -475,8 +478,8 @@ namespace not_broforce
             // TODO: A "possible position" on each side of a placed box;
             // They affect the selector whether it is moved with the cursor or not
 
-            // Goes through each existing box
-            foreach (GameObject box in boxes)
+            // Goes through each placed box
+            foreach (Box box in placedBoxes)
             {
                 bool intersects = false;
 
