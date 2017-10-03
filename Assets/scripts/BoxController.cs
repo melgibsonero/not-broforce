@@ -25,6 +25,8 @@ namespace not_broforce {
             RefreshFollowTargets();
         }
 
+
+        // Refreshes following order for active boxes.
         private void RefreshFollowTargets() {
             for(int i = 0; i < boxes.Count; i++) {
                 boxes[i].GetComponent<SpriteRenderer>().sortingOrder = boxes.Count - i;
@@ -36,6 +38,7 @@ namespace not_broforce {
             }
         }
 
+        // Removes box from follow line.
         public void removeBox() {
             if (boxes.Count > 0) {
                 boxes[0].removeFollowTarget();
@@ -45,6 +48,7 @@ namespace not_broforce {
 
         }
 
+        // Places box for player pointed position
         public void PlaceBox (Vector3 followTarget) {
             if (boxes.Count > 0) {
                 BoxMovement obj = boxes[0];
