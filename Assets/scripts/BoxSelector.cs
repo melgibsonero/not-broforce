@@ -41,6 +41,12 @@ namespace not_broforce
         /// </summary>
         private Renderer visibility;
 
+        /// <summary>
+        /// The sprite renderer of the object.
+        /// Needed to change the object's color.
+        /// </summary>
+        private SpriteRenderer sr;
+
         private List<Box> placedBoxes;
         private Box selectedBox;
         private Vector2 boxSize;
@@ -54,6 +60,11 @@ namespace not_broforce
         /// Is it possible to remove a box from the position of the selector
         /// </summary>
         private bool validRemove;
+
+        /// <summary>
+        /// Is the selector close enough to the player character
+        /// </summary>
+        private bool closeEnoughToPlayer;
 
         /// <summary>
         /// Does the selector snap to a grid of boxes
@@ -90,10 +101,30 @@ namespace not_broforce
             visibility = GetComponent<Renderer>();
             visibility.enabled = false;
 
+            sr = GetComponent<SpriteRenderer>();
+
             validPlacement = true;
+            closeEnoughToPlayer = true;
             validRemove = false;
             snapsToBoxGrid = false;
             moved = false;
+        }
+
+        /// <summary>
+        /// Gets whether te selector usable at its current state.
+        /// Returns true if the selector is visible and
+        /// close enough to the player character.
+        /// </summary>
+        /// <returns>is the selector usable at its current state</returns>
+        private bool IsUsable()
+        {
+            return (visibility.enabled && closeEnoughToPlayer);
+        }
+
+        private bool IsTooFarAwayFromPlayer(Vector3 position)
+        {
+            return (Utils.Distance(position, player.transform.position)
+                    > maxDistanceFromPlayer);
         }
 
         private void CheckForMissingObjects()
@@ -223,8 +254,17 @@ namespace not_broforce
 
         private void MouseMovevent()
         {
-            transform.position = cursor.Position;
             moved = true;
+
+            if (!validRemove)
+            {
+                transform.position = cursor.Position;
+            }
+            else if (Utils.Distance(selectedBox.transform.position, cursor.Position) > boxSize.x)
+            {
+                transform.position = cursor.Position;
+                UnselectBox();
+            }
 
             if (snapsToBoxGrid)
             {
@@ -234,11 +274,11 @@ namespace not_broforce
 
         private void DirectionalMovevent()
         {
-            //moved = false;
+            moved = false;
 
             // Testing purposes only
             // Always selects the box under the selector
-            moved = true;
+            //moved = true;
 
             // Checks input for moving the selector
             // (snapping to a box grid)
@@ -292,6 +332,11 @@ namespace not_broforce
                     moved = true;
                 }
             }
+
+            if (moved)
+            {
+                UnselectBox();
+            }
         }
 
         private void ShowSelector()
@@ -315,6 +360,8 @@ namespace not_broforce
 
                 // Sets the selector's position
                 transform.position = new Vector3(x, groundY + boxSize.y / 2, Z_AXIS);
+
+                closeEnoughToPlayer = true;
             }
 
             moved = true;
@@ -334,63 +381,73 @@ namespace not_broforce
 
         private void PlaceBox()
         {
-            if (validPlacement)
+            if (validPlacement && closeEnoughToPlayer)
             {
-                //// Creates a new instance of the box
-                //GameObject newBox = Instantiate(referenceBox);
-
-                //// Sets the box's position
-                //newBox.transform.position = transform.position;
-
-                //// Sets the box's other features
-                //newBox.GetComponent<Rigidbody2D>().simulated = true;
-                //newBox.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Static;
-                //newBox.GetComponent<BoxCollider2D>().enabled = true;
-                //newBox.GetComponent<SpriteRenderer>().color = Color.white;
-
-                //// Adds the box to the box list
-                //boxes.Add(newBox);
-
-                //// Makes the newly added box selected
-                //SelectBox(newBox);
+                //// Creates a new instance of a box
+                //CreateBox();
 
                 boxController.PlaceBox(transform.position);
+
+                // TODO:
+                // If the selector is not moved, the placed box
+                // is selected when it reaches its destination
             }
         }
 
         private void RemoveBox()
         {
-            if (validRemove)
+            if (validRemove && closeEnoughToPlayer)
             {
-                //boxes.Remove(selectedBox);
-                //Destroy(selectedBox);
-                //UnselectBox();
+                //// Deletes a box entirely
+                //DeleteBox();
 
                 boxController.RemovePlacedBox(selectedBox);
                 UnselectBox();
+
+                // TODO: Fix a box not starting to follow the player sometimes when removed
             }
         }
 
         private void SelectBox(Box box)
         {
-            selectedBox = box;
-            validPlacement = false;
-            validRemove = true;
-
-            if (!cursor.Visible)
+            if (box != selectedBox &&
+                !IsTooFarAwayFromPlayer(box.transform.position))
             {
-                snapsToBoxGrid = true;
-            }
+                transform.position = box.transform.position;
+                selectedBox = box;
+                validPlacement = false;
+                validRemove = true;
 
-            ChangeColor();
+                if (!cursor.Visible)
+                {
+                    snapsToBoxGrid = true;
+                }
+
+                ChangeColor();
+
+                // Prints debug info
+                Debug.Log("Box selected");
+            }
         }
 
         private void UnselectBox()
         {
-            selectedBox = null;
-            validPlacement = true;
-            validRemove = false;
-            ChangeColor();
+            if (validRemove)
+            {
+                selectedBox = null;
+                validPlacement = true;
+                validRemove = false;
+                ChangeColor();
+            }
+        }
+
+        private void ValidatePlacement()
+        {
+            if (!validPlacement &&
+                boxController.MovingBoxAmount() > 0)
+            {
+                validPlacement = true;
+            }
         }
 
         private void InvalidateAll()
@@ -407,73 +464,125 @@ namespace not_broforce
         {
             // If the selector is too far away from the player,
             // placing and removing boxes are made invalid
-            if (Utils.Distance(transform.position, player.transform.position)
-                    > maxDistanceFromPlayer)
+            if (IsTooFarAwayFromPlayer(transform.position))
             {
-                InvalidateAll();
-            }
-            // If the selector intersects with the player
-            // character, sets box placement validity false
-            else if (Utils.CollidersIntersect(GetComponent<BoxCollider2D>(),
-                player.GetComponent<BoxCollider2D>()))
-            {
-                InvalidateAll();
-            }
-            else if (moved)
-            {
-                // Sets the default value (true) for the box placement validity
-                validPlacement = true;
-
-                // Sets the default value (false) for the box removal validity
-                validRemove = false;
-
-                // The selector snaps to a box grid
-                if (snapsToBoxGrid)
+                if (closeEnoughToPlayer)
                 {
-                    // The modifier is less than 1 because otherwise
-                    // the cursor would be stuck on a box
-                    CheckIfIntersectsWithBox(0.9f);
-                }
-                // The selector can be moved smoothly along the ground
-                else
-                {
-                    // TODO:
-                    // Checks if the selector intersects the
-                    // ground or a wall and if so,
-                    // sets placement validity false
-
-
-                    CheckIfIntersectsWithBox(1f);
+                    closeEnoughToPlayer = false;
+                    UnselectBox();
                 }
             }
-            // The selector was too far away but not anymore
-            // -> placement is valid
-            else if (!validRemove && !validPlacement)
+            else if (!closeEnoughToPlayer)
             {
-                // The modifier is less than 1 because otherwise
-                // the cursor would be stuck on a box
-                if ( !CheckIfIntersectsWithBox(0.9f) )
-                {
-                    validPlacement = true;
-                }
-            }
-            // A box can be placed if there's nothing
-            // on the way and removal is not possible
-            else if (!validRemove)
-            {
-                validPlacement = true;
+                closeEnoughToPlayer = true;
             }
 
-            // A placed box has not been selected and
-            // there are no boxes following the player
-            // -> placement is invalid
-            if (!validRemove && boxController.MovingBoxAmount() == 0)
+            // If the selector is in valid distance,
+            // it's checked what the selector can do
+            if (closeEnoughToPlayer)
             {
-                validPlacement = false;
+                //// If the selector intersects with the player
+                //// character, sets box placement validity false
+                //else if (Utils.CollidersIntersect(GetComponent<BoxCollider2D>(),
+                //    player.GetComponent<BoxCollider2D>()))
+                //{
+                //    InvalidateAll();
+                //}
+                //else if (moved)
+                //{
+                //    // Sets the default value (true) for the box placement validity
+                //    validPlacement = true;
+
+                //    // Sets the default value (false) for the box removal validity
+                //    validRemove = false;
+
+                //    // The selector snaps to a box grid
+                //    if (snapsToBoxGrid)
+                //    {
+                //        // The modifier is less than 1 because otherwise
+                //        // the cursor would be stuck on a box
+                //        CheckIfIntersectsWithBox(0.9f);
+                //    }
+                //    // The selector can be moved smoothly along the ground
+                //    else
+                //    {
+                //        // TODO:
+                //        // Checks if the selector intersects the
+                //        // ground or a wall and if so,
+                //        // sets placement validity false
+
+
+                //        CheckIfIntersectsWithBox(1f);
+                //    }
+                //}
+                //// The selector was too far away but not anymore
+                //// -> placement is valid
+                //else if (!validRemove && !validPlacement)
+                //{
+                //    // The modifier is less than 1 because otherwise
+                //    // the cursor would be stuck on a box
+                //    if ( !CheckIfIntersectsWithBox(0.9f) )
+                //    {
+                //        validPlacement = true;
+                //    }
+                //}
+                //// A box can be placed if there's nothing
+                //// on the way and removal is not possible
+                //else if (!validRemove)
+                //{
+                //    validPlacement = true;
+                //}
+
+                // Checks should a box be selected;
+                // the selector must be directly on
+                // the center if the placed box
+                if (!validRemove)
+                {
+                    CheckIfIntersectsWithBox(0.1f);
+                }
+
+                // Placement is invalid if a placed box
+                // has not been selected and there
+                // are no boxes following the player
+                if (validPlacement && !validRemove &&
+                    boxController.MovingBoxAmount() == 0)
+                {
+                    validPlacement = false;
+
+                    // Prints debug info
+                    Debug.Log("Out of boxes to place");
+                }
             }
 
             // Sets the selector's color based on its status
             ChangeColor();
+        }
+
+        private void OnTriggerStay2D(Collider2D other)
+        {
+            if (IsUsable())
+            {
+                Box box = other.gameObject.GetComponent<Box>();
+
+                if (box != null && placedBoxes.Contains(box) &&
+                    Utils.CollidersIntersect(GetComponent<BoxCollider2D>(), box.GetComponent<BoxCollider2D>(), 0.5f))
+                {
+                    SelectBox(box);
+                }
+                else
+                {
+                    InvalidateAll();
+                }
+            }
+        }
+
+        private void OnTriggerExit2D(Collider2D other)
+        {
+            if (visibility.enabled)
+            {
+                UnselectBox();
+                ValidatePlacement();
+            }
         }
 
         /// <summary>
@@ -483,11 +592,37 @@ namespace not_broforce
         /// </summary>
         /// <param name="modifier">the required overlap modifier
         /// (1 = any overlap)</param>
-        /// <returns></returns>
+        /// <returns>was a box selected</returns>
         private bool CheckIfIntersectsWithBox(float modifier)
         {
             // TODO: A "possible position" on each side of a placed box;
             // They affect the selector whether it is moved with the cursor or not
+
+            //Vector3[]
+
+            //for (Utils.Direction dir = 0; dir < (Utils.Direction) 4; dir++)
+            //{
+            //    switch (dir)
+            //    {
+            //        case Utils.Direction.Up:
+            //            {
+            //                Coll
+            //                break;
+            //            }
+            //        case Utils.Direction.Down:
+            //            {
+            //                break;
+            //            }
+            //        case Utils.Direction.Left:
+            //            {
+            //                break;
+            //            }
+            //        case Utils.Direction.Right:
+            //            {
+            //                break;
+            //            }
+            //    }
+            //}
 
             // Goes through each placed box
             foreach (Box box in placedBoxes)
@@ -527,9 +662,13 @@ namespace not_broforce
         /// </summary>
         private void ChangeColor()
         {
-            SpriteRenderer sr = GetComponent<SpriteRenderer>();
+            bool invalid = false;
 
-            if (validRemove)
+            if (!closeEnoughToPlayer)
+            {
+                invalid = true;
+            }
+            else if (validRemove)
             {
                 sr.color = removeColor;
             }
@@ -539,8 +678,47 @@ namespace not_broforce
             }
             else
             {
+                invalid = true;
+            }
+
+            if (invalid)
+            {
                 sr.color = invalidPlacementColor;
             }
+        }
+
+        /// <summary>
+        /// Creates a new instance of a box.
+        /// </summary>
+        private void CreateBox()
+        {
+            // Creates a new instance of the box
+            Box newBox = Instantiate(referenceBox.GetComponent<Box>());
+
+            // Sets the box's position
+            newBox.transform.position = transform.position;
+
+            // Sets the box's other features
+            newBox.GetComponent<Rigidbody2D>().simulated = true;
+            newBox.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Static;
+            newBox.GetComponent<BoxCollider2D>().enabled = true;
+            newBox.GetComponent<SpriteRenderer>().color = Color.white;
+
+            // Adds the box to the box list
+            placedBoxes.Add(newBox);
+
+            // Makes the newly added box selected
+            SelectBox(newBox);
+        }
+
+        /// <summary>
+        /// Deletes a box entirely.
+        /// </summary>
+        private void DeleteBox()
+        {
+            placedBoxes.Remove(selectedBox);
+            Destroy(selectedBox);
+            UnselectBox();
         }
 
         /// <summary>

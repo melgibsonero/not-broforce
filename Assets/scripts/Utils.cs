@@ -5,6 +5,9 @@ using UnityEngine;
 namespace not_broforce
 {
     class Utils {
+
+        public enum Direction { Up, Down, Left, Right}
+
         /// <summary>
         /// Calculates the difference between two points' coordinates.
         /// </summary>
