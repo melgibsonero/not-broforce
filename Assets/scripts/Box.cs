@@ -16,6 +16,9 @@ namespace not_broforce {
         [SerializeField]
         private float _followDistance;
 
+        [SerializeField]
+        private float _followDistanceX;
+
         private Rigidbody2D _RB;
 
         [SerializeField]
@@ -54,6 +57,8 @@ namespace not_broforce {
             _takingPosition = false;
             canMove = true;
             _donePositionTaking = false;
+            _followDistanceX = 0.7f;
+            _followDistance = 0.7f;
         }
 
         // Update is called once per frame
@@ -82,8 +87,7 @@ namespace not_broforce {
                 _followDistance = 0.4f;
             }
             if(_target != null) {
-                if (Vector3.Distance(transform.position,
-                _followTarget) > _followDistance) {
+                if (Mathf.Abs(_followTarget.x - transform.position.x) > _followDistanceX) {
                     Physics2D.queriesStartInColliders = false;
                     
 
@@ -129,6 +133,7 @@ namespace not_broforce {
         }
 
         private void ChangeProperties () {
+            gameObject.GetComponent<BoxCollider2D>().size = new Vector2(2.56f, gameObject.GetComponent<BoxCollider2D>().size.y);
             transform.position = _followTarget;
             gameObject.layer = LayerMask.NameToLayer("PlacedBoxes");
             gameObject.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Static;
@@ -143,15 +148,18 @@ namespace not_broforce {
         public void TakePosition (Vector3 followTarget) {
             _followTarget = followTarget;
             _takingPosition = true;
-            _followDistance = 0.6f;
+            _followDistance = 0.3f;
+            _followDistanceX = 0.03f;
+            gameObject.GetComponent<BoxCollider2D>().size = new Vector2(2.20f, gameObject.GetComponent<BoxCollider2D>().size.y);
         }
 
         public void BackToLine () {
             _takingPosition = false;
-            _followDistance = 0.7f;
+            _followDistanceX = 0.7f;
             _donePositionTaking = false;
             gameObject.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Dynamic;
             gameObject.layer = LayerMask.NameToLayer("MovingBoxes");
+            gameObject.GetComponent<BoxCollider2D>().size = new Vector2(2.40f, gameObject.GetComponent<BoxCollider2D>().size.y);
         }
 
     }
