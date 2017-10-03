@@ -12,6 +12,9 @@ namespace not_broforce
         private GameObject referenceBox;
 
         [SerializeField]
+        private BoxController boxController;
+
+        [SerializeField]
         private GameObject player;
 
         [SerializeField]
@@ -329,23 +332,25 @@ namespace not_broforce
         {
             if (validPlacement)
             {
-                // Creates a new instance of the box
-                GameObject newBox = Instantiate(referenceBox);
+                //// Creates a new instance of the box
+                //GameObject newBox = Instantiate(referenceBox);
 
-                // Sets the box's position
-                newBox.transform.position = transform.position;
+                //// Sets the box's position
+                //newBox.transform.position = transform.position;
 
-                // Sets the box's other features
-                newBox.GetComponent<Rigidbody2D>().simulated = true;
-                newBox.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Static;
-                newBox.GetComponent<BoxCollider2D>().enabled = true;
-                newBox.GetComponent<SpriteRenderer>().color = Color.white;
+                //// Sets the box's other features
+                //newBox.GetComponent<Rigidbody2D>().simulated = true;
+                //newBox.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Static;
+                //newBox.GetComponent<BoxCollider2D>().enabled = true;
+                //newBox.GetComponent<SpriteRenderer>().color = Color.white;
 
-                // Adds the box to the box list
-                boxes.Add(newBox);
+                //// Adds the box to the box list
+                //boxes.Add(newBox);
 
-                // Makes the newly added box selected
-                SelectBox(newBox);
+                //// Makes the newly added box selected
+                //SelectBox(newBox);
+
+                boxController.PlaceBox(transform.position);
             }
         }
 
