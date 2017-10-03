@@ -61,7 +61,7 @@ namespace not_broforce {
             _jumpTimer.Update();
             if(_takingPosition && Vector3.Distance(transform.position,
                 _followTarget) < _followDistance && !_donePositionTaking) {
-                changeProperties();
+                ChangeProperties();
             } else  if (_donePositionTaking){
                 //Do something if structure is broken
             } else  {
@@ -128,18 +128,18 @@ namespace not_broforce {
             }
         }
 
-        private void changeProperties () {
+        private void ChangeProperties () {
             transform.position = _followTarget;
             gameObject.layer = LayerMask.NameToLayer("PlacedBoxes");
             gameObject.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Static;
             _donePositionTaking = true;
         }
 
-        public void removeFollowTarget () {
+        public void RemoveFollowTarget () {
             _followTarget = transform.position;
         }
 
-        public void takePosition (Vector3 followTarget) {
+        public void TakePosition (Vector3 followTarget) {
             _followTarget = followTarget;
             _takingPosition = true;
             _followDistance = 0.2f;

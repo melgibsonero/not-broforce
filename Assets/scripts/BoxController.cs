@@ -41,7 +41,7 @@ namespace not_broforce {
         // Removes box from follow line.
         public void removeBox() {
             if (boxes.Count > 0) {
-                boxes[0].removeFollowTarget();
+                boxes[0].RemoveFollowTarget();
                 boxes.RemoveAt(0);
                 RefreshFollowTargets();
             }
@@ -53,8 +53,12 @@ namespace not_broforce {
             if (boxes.Count > 0) {
                 BoxMovement obj = boxes[0];
                 removeBox();
-                obj.takePosition(followTarget);
+                obj.TakePosition(followTarget);
             }
+        }
+
+        public int BoxAmount () {
+            return boxes.Count;
         }
     }
 }
