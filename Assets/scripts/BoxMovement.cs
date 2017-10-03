@@ -41,6 +41,8 @@ namespace not_broforce {
 
         private BoxController boxController;
 
+        private Vector3 _followTarget;
+
         void Start() {
             mask = LayerMask.GetMask("Environment", "PlacedBoxes");
             _jumpTimer = new Timer(1);
@@ -58,11 +60,14 @@ namespace not_broforce {
         void Update() {
             _jumpTimer.Update();
             if(_takingPosition && Vector3.Distance(transform.position,
-                _target.position) < _followDistance && !_donePositionTaking) {
+                _followTarget) < _followDistance && !_donePositionTaking) {
                 changeProperties();
             } else  if (_donePositionTaking){
                 //Do something if structure is broken
-            } else {
+            } else  {
+                if (!_takingPosition) {
+                    _followTarget = _target.position;
+                }
                 Move();
             }
         }
@@ -78,12 +83,12 @@ namespace not_broforce {
             }
             if(_target != null) {
                 if (Vector3.Distance(transform.position,
-                _target.position) > _followDistance) {
+                _followTarget) > _followDistance) {
                     Physics2D.queriesStartInColliders = false;
                     
 
                    
-                    Vector3 direction = new Vector3 (_target.position.x - transform.position.x,0,0).normalized;
+                    Vector3 direction = new Vector3 (_followTarget.x - transform.position.x,0,0).normalized;
                     if(direction.x > 0) {
                         _moveDirection = Vector2.right;
                         
@@ -124,18 +129,18 @@ namespace not_broforce {
         }
 
         private void changeProperties () {
-            transform.position = _target.position;
+            transform.position = _followTarget;
             gameObject.layer = LayerMask.NameToLayer("PlacedBoxes");
             gameObject.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Static;
             _donePositionTaking = true;
         }
 
         public void removeFollowTarget () {
-            _target.position = transform.position;
+            _followTarget = transform.position;
         }
 
         public void takePosition (Vector3 followTarget) {
-            _target.position = followTarget;
+            _followTarget = followTarget;
             _takingPosition = true;
             _followDistance = 0.2f;
         }
