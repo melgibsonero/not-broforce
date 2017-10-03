@@ -147,7 +147,11 @@ namespace not_broforce {
         }
 
         public void BackToLine () {
-            // Back to follow mode
+            _takingPosition = false;
+            _followDistance = 0.7f;
+            _donePositionTaking = false;
+            gameObject.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Dynamic;
+            gameObject.layer = LayerMask.NameToLayer("MovingBoxes");
         }
 
     }

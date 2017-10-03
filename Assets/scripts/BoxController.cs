@@ -85,6 +85,7 @@ namespace not_broforce {
                 if(placedBoxes[i] == box) {
                     placedBoxes.RemoveAt(i);
                     addBox(box);
+                    box.BackToLine();
                 }
             }
         }
