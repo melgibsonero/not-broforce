@@ -47,8 +47,16 @@ namespace not_broforce
         /// </summary>
         private SpriteRenderer sr;
 
+        /// <summary>
+        /// The layer mask for raycast
+        /// </summary>
+        private int mask;
+
+        //private RaycastHit2D touchesGround;
+
         private List<Box> placedBoxes;
         private Box selectedBox;
+        private NewBoxPlace selectedNewBoxPlace;
         private Vector2 boxSize;
 
         /// <summary>
@@ -103,6 +111,8 @@ namespace not_broforce
 
             sr = GetComponent<SpriteRenderer>();
 
+            mask = LayerMask.GetMask("Environment", "PlacedBoxes");
+
             validPlacement = true;
             closeEnoughToPlayer = true;
             validRemove = false;
@@ -119,6 +129,11 @@ namespace not_broforce
         private bool IsUsable()
         {
             return (visibility.enabled && closeEnoughToPlayer);
+        }
+
+        private bool IsTooFarAwayFromPlayer()
+        {
+            return (IsTooFarAwayFromPlayer(transform.position));
         }
 
         private bool IsTooFarAwayFromPlayer(Vector3 position)
@@ -187,7 +202,27 @@ namespace not_broforce
 
             if (visibility.enabled)
             {
+                //touchesGround = Physics2D.Raycast(transform.position, Vector2.down, boxSize.y / 2 + 0.05f, mask);
+
+                //FallToGround();
+
                 CheckPlacementValidity();
+            }
+        }
+
+        private void FallToGround()
+        {
+            if (!validRemove && selectedNewBoxPlace == null)
+            {
+                RaycastHit2D down = Physics2D.Raycast(transform.position, Vector2.down, boxSize.y / 2, mask);
+
+                for (float distance = 0; down.collider == null && distance < 10; distance += 0.01f)
+                {
+                    transform.position += Vector3.down * 0.01f;
+                    down = Physics2D.Raycast(transform.position, Vector2.down, boxSize.y / 2, mask);
+                }
+
+                ValidatePlacement();
             }
         }
 
@@ -256,14 +291,26 @@ namespace not_broforce
         {
             moved = true;
 
-            if (!validRemove)
+            if (validRemove &&
+                Utils.Distance(selectedBox.transform.position, cursor.Position) > boxSize.x)
             {
-                transform.position = cursor.Position;
-            }
-            else if (Utils.Distance(selectedBox.transform.position, cursor.Position) > boxSize.x)
-            {
-                transform.position = cursor.Position;
                 UnselectBox();
+            }
+            else if (selectedNewBoxPlace != null &&
+                Utils.Distance(selectedNewBoxPlace.transform.position, cursor.Position) > boxSize.x / 2)
+            {
+                selectedNewBoxPlace = null;
+            }
+            
+            if (!validRemove && selectedNewBoxPlace == null)
+            {
+                transform.position = cursor.Position;
+
+                //if (touchesGround.collider == null)
+                //{
+                //    // Prevents placing boxes anywhere but predetermined positions
+                //    InvalidateAll();
+                //} 
             }
 
             if (snapsToBoxGrid)
@@ -319,17 +366,11 @@ namespace not_broforce
             {
                 if (Input.GetKey(KeyCode.LeftArrow))
                 {
-                    transform.position += Vector3.left *
-                        smoothMovingSpeed * Time.deltaTime;
-
-                    moved = true;
+                    SmoothMove(Utils.Direction.Left);
                 }
                 else if (Input.GetKey(KeyCode.RightArrow))
                 {
-                    transform.position += Vector3.right *
-                        smoothMovingSpeed * Time.deltaTime;
-
-                    moved = true;
+                    SmoothMove(Utils.Direction.Right);
                 }
             }
 
@@ -337,6 +378,39 @@ namespace not_broforce
             {
                 UnselectBox();
             }
+        }
+
+        private void SmoothMove(Utils.Direction direction)
+        {
+            Vector3 v3_Dir = Vector3.zero;
+
+            switch (direction)
+            {
+                case Utils.Direction.Up:
+                    {
+                        v3_Dir = Vector3.up;
+                        break;
+                    }
+                case Utils.Direction.Down:
+                    {
+                        v3_Dir = Vector3.down;
+                        break;
+                    }
+                case Utils.Direction.Left:
+                    {
+                        v3_Dir = Vector3.left;
+                        break;
+                    }
+                case Utils.Direction.Right:
+                    {
+                        v3_Dir = Vector3.right;
+                        break;
+                    }
+            }
+
+            transform.position += v3_Dir * smoothMovingSpeed * Time.deltaTime;
+
+            moved = true;
         }
 
         private void ShowSelector()
@@ -377,6 +451,7 @@ namespace not_broforce
             moved = false;
             snapsToBoxGrid = false;
             UnselectBox();
+            selectedNewBoxPlace = null;
         }
 
         private void PlaceBox()
@@ -387,10 +462,6 @@ namespace not_broforce
                 //CreateBox();
 
                 boxController.PlaceBox(transform.position);
-
-                // TODO:
-                // If the selector is not moved, the placed box
-                // is selected when it reaches its destination
             }
         }
 
@@ -405,6 +476,8 @@ namespace not_broforce
                 UnselectBox();
 
                 // TODO: Fix a box not starting to follow the player sometimes when removed
+
+                // TODO: If a box cannot reach its target, it gives up and starts following the player
             }
         }
 
@@ -415,6 +488,7 @@ namespace not_broforce
             {
                 transform.position = box.transform.position;
                 selectedBox = box;
+                selectedNewBoxPlace = null;
                 validPlacement = false;
                 validRemove = true;
 
@@ -427,6 +501,29 @@ namespace not_broforce
 
                 // Prints debug info
                 Debug.Log("Box selected");
+            }
+        }
+
+        private void SelectNewBoxPlace(NewBoxPlace newBoxPlace)
+        {
+            if (newBoxPlace != selectedNewBoxPlace &&
+                !IsTooFarAwayFromPlayer(newBoxPlace.transform.position))
+            {
+                transform.position = newBoxPlace.transform.position;
+                selectedBox = null;
+                selectedNewBoxPlace = newBoxPlace;
+                validPlacement = true;
+                validRemove = false;
+
+                if (!cursor.Visible)
+                {
+                    snapsToBoxGrid = true;
+                }
+
+                ChangeColor();
+
+                // Prints debug info
+                Debug.Log("New box place selected");
             }
         }
 
@@ -443,6 +540,9 @@ namespace not_broforce
 
         private void ValidatePlacement()
         {
+            // TODO: Fix placement being valid even though it should not be.
+            // Going from red to purple might actually change the selector blue!
+
             if (!validPlacement &&
                 boxController.MovingBoxAmount() > 0)
             {
@@ -464,7 +564,7 @@ namespace not_broforce
         {
             // If the selector is too far away from the player,
             // placing and removing boxes are made invalid
-            if (IsTooFarAwayFromPlayer(transform.position))
+            if (IsTooFarAwayFromPlayer())
             {
                 if (closeEnoughToPlayer)
                 {
@@ -538,7 +638,7 @@ namespace not_broforce
                 // the center if the placed box
                 if (!validRemove)
                 {
-                    CheckIfIntersectsWithBox(0.1f);
+                    SelectBoxUnderSelector(0.1f);
                 }
 
                 // Placement is invalid if a placed box
@@ -563,13 +663,19 @@ namespace not_broforce
             if (IsUsable())
             {
                 Box box = other.gameObject.GetComponent<Box>();
+                NewBoxPlace newBoxPlace = other.gameObject.GetComponent<NewBoxPlace>();
 
                 if (box != null && placedBoxes.Contains(box) &&
                     Utils.CollidersIntersect(GetComponent<BoxCollider2D>(), box.GetComponent<BoxCollider2D>(), 0.5f))
                 {
                     SelectBox(box);
                 }
-                else
+                else if (newBoxPlace != null && placedBoxes.Contains(newBoxPlace.ParentBox) && GetBoxUnderSelector(0.8f) == null &&
+                         Utils.CollidersIntersect(GetComponent<BoxCollider2D>(), newBoxPlace.GetComponent<BoxCollider2D>(), 0.2f))
+                {
+                    SelectNewBoxPlace(newBoxPlace);
+                }
+                else if (newBoxPlace == null)
                 {
                     InvalidateAll();
                 }
@@ -581,7 +687,21 @@ namespace not_broforce
             if (visibility.enabled)
             {
                 UnselectBox();
+
+                // Validates placement so boxes can be placed anywhere;
+                // testing purposes only
                 ValidatePlacement();
+
+                // TODO: A box cannot be placed in midair, only on
+                // the ground or fixed to the side of an existing box
+
+                // Prevents placing boxes anywhere but predetermined positions
+                //InvalidateAll();
+
+                //if (touchesGround.collider == null)
+                //{
+                //    InvalidateAll();
+                //}
             }
         }
 
@@ -593,37 +713,64 @@ namespace not_broforce
         /// <param name="modifier">the required overlap modifier
         /// (1 = any overlap)</param>
         /// <returns>was a box selected</returns>
-        private bool CheckIfIntersectsWithBox(float modifier)
+        private bool SelectBoxUnderSelector(float modifier)
         {
-            // TODO: A "possible position" on each side of a placed box;
-            // They affect the selector whether it is moved with the cursor or not
+            Box box = GetBoxUnderSelector(modifier);
 
-            //Vector3[]
+            if (box != null)
+            {
+                SelectBox(box);
 
-            //for (Utils.Direction dir = 0; dir < (Utils.Direction) 4; dir++)
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+
+            //// Goes through each placed box
+            //foreach (Box box in placedBoxes)
             //{
-            //    switch (dir)
+            //    bool intersects = false;
+
+            //    if (cursor.Visible)
             //    {
-            //        case Utils.Direction.Up:
-            //            {
-            //                Coll
-            //                break;
-            //            }
-            //        case Utils.Direction.Down:
-            //            {
-            //                break;
-            //            }
-            //        case Utils.Direction.Left:
-            //            {
-            //                break;
-            //            }
-            //        case Utils.Direction.Right:
-            //            {
-            //                break;
-            //            }
+            //        intersects = Utils.ColliderContainsPoint(
+            //            box.GetComponent<BoxCollider2D>(),
+            //            cursor.Position);
+            //    }
+            //    else
+            //    {
+            //        intersects = Utils.CollidersIntersect(
+            //            GetComponent<BoxCollider2D>(),
+            //            box.GetComponent<BoxCollider2D>(),
+            //            modifier);
+            //    }
+
+            //    // Checks if the selector intersects with an
+            //    // existing box and if so, makes that box selected
+            //    if (intersects)
+            //    {
+            //        transform.position = box.transform.position;
+            //        SelectBox(box);
+
+            //        return true;
             //    }
             //}
 
+            //return false;
+        }
+
+        /// <summary>
+        /// Goes through the box list and checks if a box
+        /// intersects with the selector. The amount of overlap
+        /// needed can be controlled with the modifier.
+        /// </summary>
+        /// <param name="modifier">the required overlap modifier
+        /// (1 = any overlap)</param>
+        /// <returns>a box which the selector intersects with</returns>
+        private Box GetBoxUnderSelector(float modifier)
+        {
             // Goes through each placed box
             foreach (Box box in placedBoxes)
             {
@@ -647,14 +794,11 @@ namespace not_broforce
                 // existing box and if so, makes that box selected
                 if (intersects)
                 {
-                    transform.position = box.transform.position;
-                    SelectBox(box);
-
-                    return true;
+                    return box;
                 }
             }
 
-            return false;
+            return null;
         }
 
         /// <summary>
