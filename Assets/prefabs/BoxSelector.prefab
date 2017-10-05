@@ -99,10 +99,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ccda986fde8c2144ae76209189a20c3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  referenceBox: {fileID: 1138886119736882, guid: 9a8a2eff962d07b4b9e9ba7f589f8a00,
+  referenceBox: {fileID: 1357160579723068, guid: 404435ceccc1e68479b6b8b310007f03,
     type: 2}
   boxController: {fileID: 0}
   player: {fileID: 0}
+  newBoxPlaceNextToPlayer: {fileID: 0}
   cursor: {fileID: 0}
   validPlacementColor: {r: 0.29803923, g: 0.47058824, b: 0.83137256, a: 1}
   invalidPlacementColor: {r: 0.9485294, g: 0.13251515, b: 0.13251515, a: 1}

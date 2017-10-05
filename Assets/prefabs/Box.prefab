@@ -407,8 +407,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c1c403cf7732933428700dd4c99f0d79, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parentBox: {fileID: 1357160579723068}
+  box: {fileID: 1357160579723068}
   side: 2
+  nextToPlayer: 0
 --- !u!114 &114474511374113022
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -420,8 +421,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c1c403cf7732933428700dd4c99f0d79, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parentBox: {fileID: 1357160579723068}
+  box: {fileID: 1357160579723068}
   side: 1
+  nextToPlayer: 0
 --- !u!114 &114646206266132560
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -451,8 +453,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c1c403cf7732933428700dd4c99f0d79, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parentBox: {fileID: 1357160579723068}
+  box: {fileID: 1357160579723068}
   side: 0
+  nextToPlayer: 0
 --- !u!114 &114815599769132236
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -464,8 +467,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c1c403cf7732933428700dd4c99f0d79, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parentBox: {fileID: 1357160579723068}
+  box: {fileID: 1357160579723068}
   side: 3
+  nextToPlayer: 0
 --- !u!212 &212596485734348412
 SpriteRenderer:
   m_ObjectHideFlags: 1

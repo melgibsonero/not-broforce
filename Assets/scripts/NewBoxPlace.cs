@@ -7,10 +7,15 @@ namespace not_broforce
     public class NewBoxPlace : MonoBehaviour
     {
         [SerializeField]
-        private GameObject parentBox;
+        private GameObject box;
 
         [SerializeField]
         private Utils.Direction side = Utils.Direction.Up;
+
+        [SerializeField]
+        private bool nextToPlayer;
+
+        private PlayerController player;
 
         private float boxSideLength;
 
@@ -19,15 +24,31 @@ namespace not_broforce
         /// </summary>
         private void Start()
         {
-            if (parentBox != null)
+            if (box != null)
             {
-                boxSideLength = parentBox.GetComponent<SpriteRenderer>().bounds.size.x;
+                boxSideLength = box.GetComponent<SpriteRenderer>().bounds.size.x;
+
+                if (nextToPlayer)
+                {
+                    player = FindObjectOfType<PlayerController>();
+                    side = Utils.Direction.Right;
+                }
             }
         }
 
         public Box ParentBox
         {
-            get { return parentBox.GetComponent<Box>(); }
+            get
+            {
+                if (!nextToPlayer)
+                {
+                    return box.GetComponent<Box>();
+                }
+                else
+                {
+                    return null;
+                }
+            }
         }
 
         /// <summary>
@@ -35,15 +56,38 @@ namespace not_broforce
         /// </summary>
         void Update()
         {
-            if (parentBox != null)
+            if (box != null)
             {
-                UpdatePosition();
+                if (nextToPlayer)
+                {
+                    UpdatePositionNextToPlayer();
+                }
+                else
+                {
+                    UpdatePositionNextToBox();
+                }
             }
         }
 
-        private void UpdatePosition()
+        private void UpdatePositionNextToPlayer()
         {
-            Vector3 boxPosition = parentBox.transform.position;
+            // Calculates the ground level based on the player character's position
+            float groundY = player.transform.position.y -
+                player.GetComponent<SpriteRenderer>().bounds.size.y / 2;
+
+            // Sets the side based the player character's looking direction
+            side = player.GetComponent<SpriteRenderer>().flipX ? Utils.Direction.Left : Utils.Direction.Right;
+
+            // Calculates the x-coordinate
+            float x = (player.transform.position + Utils.DirectionToVector3(side) / 2).x;
+
+            // Sets the selector's position
+            transform.position = new Vector3(x, groundY + boxSideLength / 2);
+        }
+
+        private void UpdatePositionNextToBox()
+        {
+            Vector3 boxPosition = box.transform.position;
 
             switch (side)
             {

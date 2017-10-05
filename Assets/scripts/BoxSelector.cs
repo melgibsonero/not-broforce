@@ -18,6 +18,9 @@ namespace not_broforce
         private GameObject player;
 
         [SerializeField]
+        private NewBoxPlace newBoxPlaceNextToPlayer;
+
+        [SerializeField]
         private MouseCursorController cursor;
 
         [SerializeField]
@@ -75,6 +78,11 @@ namespace not_broforce
         private bool closeEnoughToPlayer;
 
         /// <summary>
+        /// Is the player character standing on the ground
+        /// </summary>
+        private bool playerGrounded;
+
+        /// <summary>
         /// Does the selector snap to a grid of boxes
         /// </summary>
         private bool snapsToBoxGrid;
@@ -115,20 +123,22 @@ namespace not_broforce
 
             validPlacement = true;
             closeEnoughToPlayer = true;
+            playerGrounded = true;
             validRemove = false;
             snapsToBoxGrid = false;
             moved = false;
         }
 
         /// <summary>
-        /// Gets whether te selector usable at its current state.
+        /// Gets whether the selector usable at its current state.
         /// Returns true if the selector is visible and
         /// close enough to the player character.
         /// </summary>
         /// <returns>is the selector usable at its current state</returns>
         private bool IsUsable()
         {
-            return (visibility.enabled && closeEnoughToPlayer);
+            return (visibility.enabled &&
+                closeEnoughToPlayer && playerGrounded);
         }
 
         private bool IsTooFarAwayFromPlayer()
@@ -154,6 +164,13 @@ namespace not_broforce
             {
                 throw new System.NullReferenceException
                     ("Player not set to the selector.");
+            }
+
+            if (newBoxPlaceNextToPlayer == null)
+            {
+                throw new System.NullReferenceException
+                    ("NewBoxPlace next to the player character " +
+                     "not set to the selector.");
             }
 
             if (cursor == null)
@@ -202,6 +219,15 @@ namespace not_broforce
 
             if (visibility.enabled)
             {
+                if (player.GetComponent<PlayerController>().GetGrounded())
+                {
+                    playerGrounded = true;
+                }
+                else
+                {
+                    playerGrounded = false;
+                }
+
                 //touchesGround = Physics2D.Raycast(transform.position, Vector2.down, boxSize.y / 2 + 0.05f, mask);
 
                 //FallToGround();
@@ -306,11 +332,14 @@ namespace not_broforce
             {
                 transform.position = cursor.Position;
 
+                // Prevents placing boxes anywhere but predetermined positions
+                InvalidateAll();
+
                 //if (touchesGround.collider == null)
                 //{
                 //    // Prevents placing boxes anywhere but predetermined positions
                 //    InvalidateAll();
-                //} 
+                //}
             }
 
             if (snapsToBoxGrid)
@@ -382,6 +411,8 @@ namespace not_broforce
 
         private void SmoothMove(Utils.Direction direction)
         {
+            // TODO: SmoothMove when not snapping to boxes or new box places
+
             Vector3 v3_Dir = Vector3.zero;
 
             switch (direction)
@@ -422,19 +453,7 @@ namespace not_broforce
 
             if (!cursor.Visible)
             {
-                // Calculates the ground level based on the player character's position
-                float groundY = player.transform.position.y -
-                    player.GetComponent<SpriteRenderer>().bounds.size.y / 2;
-
-                // Gets the player character's looking direction
-                bool lookingLeft = player.GetComponent<SpriteRenderer>().flipX;
-
-                // Calculates the x-coordinate
-                float x = (player.transform.position + (lookingLeft ? Vector3.left : Vector3.right) / 2).x;
-
-                // Sets the selector's position
-                transform.position = new Vector3(x, groundY + boxSize.y / 2, Z_AXIS);
-
+                transform.position = newBoxPlaceNextToPlayer.transform.position;
                 closeEnoughToPlayer = true;
             }
 
@@ -456,22 +475,20 @@ namespace not_broforce
 
         private void PlaceBox()
         {
-            if (validPlacement && closeEnoughToPlayer)
+            if (validPlacement &&
+                closeEnoughToPlayer &&
+                playerGrounded)
             {
-                //// Creates a new instance of a box
-                //CreateBox();
-
                 boxController.PlaceBox(transform.position);
             }
         }
 
         private void RemoveBox()
         {
-            if (validRemove && closeEnoughToPlayer)
+            if (validRemove &&
+                closeEnoughToPlayer &&
+                playerGrounded)
             {
-                //// Deletes a box entirely
-                //DeleteBox();
-
                 boxController.RemovePlacedBox(selectedBox);
                 UnselectBox();
 
@@ -500,7 +517,7 @@ namespace not_broforce
                 ChangeColor();
 
                 // Prints debug info
-                Debug.Log("Box selected");
+                //Debug.Log("Box selected");
             }
         }
 
@@ -523,7 +540,7 @@ namespace not_broforce
                 ChangeColor();
 
                 // Prints debug info
-                Debug.Log("New box place selected");
+                //Debug.Log("New box place selected");
             }
         }
 
@@ -535,6 +552,9 @@ namespace not_broforce
                 validPlacement = true;
                 validRemove = false;
                 ChangeColor();
+
+                // Prints debug info
+                //Debug.Log("Box unselected");
             }
         }
 
@@ -562,6 +582,12 @@ namespace not_broforce
         /// <returns>can a box be placed to the selector's position</returns>
         private void CheckPlacementValidity()
         {
+            // TODO: Fix the selector turning red when snapping to a valid new box place
+
+            // TODO: If the player moves, the selector on the new box place next to it becomes red
+
+            // TODO: The selector can select the new box place next to the player character in arrow keys mode 
+
             // If the selector is too far away from the player,
             // placing and removing boxes are made invalid
             if (IsTooFarAwayFromPlayer())
@@ -579,7 +605,7 @@ namespace not_broforce
 
             // If the selector is in valid distance,
             // it's checked what the selector can do
-            if (closeEnoughToPlayer)
+            if (closeEnoughToPlayer && playerGrounded)
             {
                 //// If the selector intersects with the player
                 //// character, sets box placement validity false
@@ -660,6 +686,8 @@ namespace not_broforce
 
         private void OnTriggerStay2D(Collider2D other)
         {
+            // TODO: Fix the selector rapidly alternating between two positions
+
             if (IsUsable())
             {
                 Box box = other.gameObject.GetComponent<Box>();
@@ -670,8 +698,12 @@ namespace not_broforce
                 {
                     SelectBox(box);
                 }
-                else if (newBoxPlace != null && placedBoxes.Contains(newBoxPlace.ParentBox) && GetBoxUnderSelector(0.8f) == null &&
-                         Utils.CollidersIntersect(GetComponent<BoxCollider2D>(), newBoxPlace.GetComponent<BoxCollider2D>(), 0.2f))
+                else if (newBoxPlace != null &&
+                         (newBoxPlace == newBoxPlaceNextToPlayer ||
+                          placedBoxes.Contains(newBoxPlace.ParentBox)) &&
+                         GetBoxUnderSelector(0.8f) == null &&
+                         Utils.CollidersIntersect(GetComponent<BoxCollider2D>(),
+                                                  newBoxPlace.GetComponent<BoxCollider2D>(), 0.2f))
                 {
                     SelectNewBoxPlace(newBoxPlace);
                 }
@@ -686,22 +718,37 @@ namespace not_broforce
         {
             if (visibility.enabled)
             {
-                UnselectBox();
+                NewBoxPlace nbp = other.GetComponent<NewBoxPlace>();
 
-                // Validates placement so boxes can be placed anywhere;
-                // testing purposes only
-                ValidatePlacement();
+                if (nbp != null)
+                {
 
-                // TODO: A box cannot be placed in midair, only on
-                // the ground or fixed to the side of an existing box
+                }
+                else
+                {
+                    UnselectBox();
 
-                // Prevents placing boxes anywhere but predetermined positions
-                //InvalidateAll();
+                    // Validates placement so boxes can be placed anywhere;
+                    // testing purposes only
+                    //ValidatePlacement();
 
-                //if (touchesGround.collider == null)
-                //{
-                //    InvalidateAll();
-                //}
+                    // TODO: A box cannot be placed in midair, only on
+                    // the ground or fixed to the side of an existing box
+
+                    // Prevents placing boxes anywhere but predetermined positions
+                    //InvalidateAll();
+
+                    //if (touchesGround.collider == null)
+                    //{
+                    //    InvalidateAll();
+                    //}
+                }
+
+                if (!validRemove && selectedNewBoxPlace == null)
+                {
+                    // Prevents placing boxes anywhere but predetermined positions
+                    InvalidateAll();
+                }
             }
         }
 
@@ -808,7 +855,7 @@ namespace not_broforce
         {
             bool invalid = false;
 
-            if (!closeEnoughToPlayer)
+            if (!closeEnoughToPlayer || !playerGrounded)
             {
                 invalid = true;
             }
