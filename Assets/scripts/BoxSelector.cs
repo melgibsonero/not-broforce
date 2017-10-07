@@ -33,6 +33,12 @@ namespace not_broforce
         private Color removeColor;
 
         [SerializeField]
+        private float placedBoxSnapAccuracy;
+
+        [SerializeField]
+        private float newBoxPlaceSnapAccuracy;
+
+        [SerializeField]
         private float smoothMovingSpeed;
 
         [SerializeField]
@@ -88,11 +94,6 @@ namespace not_broforce
         private bool snapsToBoxGrid;
 
         /// <summary>
-        /// Was the selector moved during the frame
-        /// </summary>
-        private bool moved;
-
-        /// <summary>
         /// Initializes the game object.
         /// </summary>
         private void Start()
@@ -120,7 +121,6 @@ namespace not_broforce
             playerGrounded = true;
             validRemove = false;
             snapsToBoxGrid = false;
-            moved = false;
         }
 
         /// <summary>
@@ -132,7 +132,17 @@ namespace not_broforce
         private bool IsUsable()
         {
             return (visibility.enabled &&
-                closeEnoughToPlayer && playerGrounded);
+                    closeEnoughToPlayer && playerGrounded);
+        }
+
+        private bool BoxCanBePlaced()
+        {
+            return (IsUsable() && validPlacement);
+        }
+
+        private bool BoxCanBeRemoved()
+        {
+            return (IsUsable() && validRemove);
         }
 
         private bool IsTooFarAwayFromPlayer()
@@ -229,6 +239,7 @@ namespace not_broforce
                 {
                     MouseMovevent();
 
+                    // Input for placing and removing a box
                     if (Input.GetKeyDown(KeyCode.E) || Input.GetMouseButtonDown(0))
                     {
                         PlaceBox();
@@ -242,6 +253,7 @@ namespace not_broforce
                 {
                     DirectionalMovevent();
 
+                    // Input for placing and removing a box
                     if (Input.GetKeyDown(KeyCode.E))
                     {
                         PlaceBox();
@@ -278,8 +290,6 @@ namespace not_broforce
 
         private void MouseMovevent()
         {
-            moved = true;
-
             if (validRemove &&
                 Utils.Distance(selectedBox.transform.position, cursor.Position) > boxSize.x)
             {
@@ -313,16 +323,12 @@ namespace not_broforce
 
         private void DirectionalMovevent()
         {
-            moved = false;
-
-            // Testing purposes only
-            // Always selects the box under the selector
-            //moved = true;
-
             // Checks input for moving the selector
             // (snapping to a box grid)
             if (snapsToBoxGrid)
             {
+                bool moved = false;
+
                 if (Input.GetKeyDown(KeyCode.UpArrow))
                 {
                     transform.position +=
@@ -351,12 +357,25 @@ namespace not_broforce
 
                     moved = true;
                 }
+
+                if (moved)
+                {
+                    UnselectBox();
+                }
             }
             // Checks input for moving the selector
             // (smooth horizontal movement)
             else
             {
-                if (Input.GetKey(KeyCode.LeftArrow))
+                if (Input.GetKey(KeyCode.UpArrow))
+                {
+                    SmoothMove(Utils.Direction.Up);
+                }
+                else if (Input.GetKey(KeyCode.DownArrow))
+                {
+                    SmoothMove(Utils.Direction.Down);
+                }
+                else if(Input.GetKey(KeyCode.LeftArrow))
                 {
                     SmoothMove(Utils.Direction.Left);
                 }
@@ -365,46 +384,14 @@ namespace not_broforce
                     SmoothMove(Utils.Direction.Right);
                 }
             }
-
-            if (moved)
-            {
-                UnselectBox();
-            }
         }
 
         private void SmoothMove(Utils.Direction direction)
         {
             // TODO: SmoothMove when not snapping to boxes or new box places
 
-            Vector3 v3_Dir = Vector3.zero;
-
-            switch (direction)
-            {
-                case Utils.Direction.Up:
-                    {
-                        v3_Dir = Vector3.up;
-                        break;
-                    }
-                case Utils.Direction.Down:
-                    {
-                        v3_Dir = Vector3.down;
-                        break;
-                    }
-                case Utils.Direction.Left:
-                    {
-                        v3_Dir = Vector3.left;
-                        break;
-                    }
-                case Utils.Direction.Right:
-                    {
-                        v3_Dir = Vector3.right;
-                        break;
-                    }
-            }
-
-            transform.position += v3_Dir * smoothMovingSpeed * Time.deltaTime;
-
-            moved = true;
+            transform.position += Utils.DirectionToVector3(direction) *
+                smoothMovingSpeed * Time.deltaTime;
         }
 
         private void ShowSelector()
@@ -419,8 +406,6 @@ namespace not_broforce
                 transform.position = newBoxPlaceNextToPlayer.transform.position;
                 closeEnoughToPlayer = true;
             }
-
-            moved = true;
         }
 
         private void HideSelector()
@@ -430,7 +415,6 @@ namespace not_broforce
                 visibility.enabled = false;
             }
 
-            moved = false;
             snapsToBoxGrid = false;
             UnselectBox();
             selectedNewBoxPlace = null;
@@ -438,9 +422,7 @@ namespace not_broforce
 
         private void PlaceBox()
         {
-            if (validPlacement &&
-                closeEnoughToPlayer &&
-                playerGrounded)
+            if (BoxCanBePlaced())
             {
                 boxController.PlaceBox(transform.position);
             }
@@ -448,9 +430,7 @@ namespace not_broforce
 
         private void RemoveBox()
         {
-            if (validRemove &&
-                closeEnoughToPlayer &&
-                playerGrounded)
+            if (BoxCanBeRemoved())
             {
                 boxController.RemovePlacedBox(selectedBox);
                 UnselectBox();
@@ -515,6 +495,11 @@ namespace not_broforce
                 validPlacement = true;
                 validRemove = false;
                 ChangeColor();
+
+                if (snapsToBoxGrid)
+                {
+                    snapsToBoxGrid = false;
+                }
 
                 // Prints debug info
                 //Debug.Log("Box unselected");
@@ -758,6 +743,14 @@ namespace not_broforce
         }
     }
 }
+
+
+
+
+
+
+
+
 
 /*
 using System.Collections;
