@@ -2,62 +2,59 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent (typeof (Controller2D))]
 public class PlayerController : MonoBehaviour
 {
-    private Animator animator;
-    private SpriteRenderer sr;
-    private Rigidbody2D rb;
-    private BoxCollider2D bc;
-    
-    private bool Grounded = true;
-    private bool Walled = false;
-    private bool CanBox = true;
-    private bool left = false;
-    private float xoffset = 0.275f;
-    private Vector2 walljumpdir;
-    public float distancey = 0.4f;
-    public float distancex = 0.2f;
 
-    public float jumpray = 0f;
-    
+    public float jumpHeight = 4;
+    public float timetoJumpApex = .4f;
+    float accelerationTimeAirborne = .2f;
+    float accelerationTimeGrounded = .1f;
+    public float moveSpeed = 6;
 
-    public GameObject box;
-    public float speed;
-    public float maxSpeed;
-    public float deceleration_speed = 0.5f;
-    public float thrust;
-    public float wallthrust;
-    public float boxDistance;
-    public float minDistance;
-    public float boxSpeed;
+    float gravity;
+    float jumpVelocity;
+    Vector3 velocity;
+    float velocityXSmoothing;
 
-    private int mask;
+    Controller2D controller;
+
+    private void Start()
+    {
+        controller = GetComponent<Controller2D>();
+
+        gravity = -(2 * jumpHeight) / Mathf.Pow(timetoJumpApex, 2);
+        jumpVelocity = Mathf.Abs(gravity) * timetoJumpApex;
+        print("Gravity: " + gravity + "VelocityJump: " + jumpVelocity);
+    }
+
+    private void Update()
+    {
+        if(controller.collisions.above || controller.collisions.below)
+        {
+            velocity.y = 0;
+        }
+
+        Vector2 input = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+
+        if(Input.GetKeyDown(KeyCode.Space) && controller.collisions.below)
+        {
+            velocity.y = jumpVelocity;
+        }
+
+        float targetVelocityX = input.x * moveSpeed;
+        velocity.x = Mathf.SmoothDamp(velocity.x, targetVelocityX, ref velocityXSmoothing, (controller.collisions.below) ? accelerationTimeGrounded : accelerationTimeAirborne);
+        velocity.y += gravity * Time.deltaTime;
+        controller.Move(velocity * Time.deltaTime);
+    }
 
     public bool GetGrounded()
     {
-        return Grounded;
+        return true;
     }
 
-    // Use this for initialization
-    void Start()
-    {
-        mask = LayerMask.GetMask("Environment", "PlacedBoxes");
-        animator = GetComponent<Animator>();
-
-        sr = GetComponent<SpriteRenderer>();
-
-        rb = GetComponent<Rigidbody2D>();
-
-        bc = GetComponent<BoxCollider2D>();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        Move();
-        Animations();
-    }
-    bool CheckGrounded() //Grounded raycasts
+}
+    /*bool CheckGrounded() //Grounded raycasts
     {
         bool result = false;        
         Vector3 size = new Vector3(bc.size.x, 0, 0);
@@ -89,7 +86,7 @@ public class PlayerController : MonoBehaviour
         }
         return result;
     }
-        void FixedUpdate()
+    void FixedUpdate()
     {
         //Grounded 
         Physics2D.queriesStartInColliders = false;
@@ -99,30 +96,21 @@ public class PlayerController : MonoBehaviour
             Grounded = true;
             Walled = false;
         }
-        else
-        { //Walljump raycasts
-            Grounded = false;
-            RaycastHit2D walljump = left ? Physics2D.Raycast(transform.position, Vector2.left, distancex, mask) : 
-                Physics2D.Raycast(transform.position, Vector2.right, distancex, mask);
-            if(walljump.collider != null)
-            if(CheckWalljump())
-            {
-                Walled = true;
-                walljumpdir = left ? new Vector2(wallthrust, thrust) : new Vector2(wallthrust*-1, thrust);
-            }
-            else
-            {
-                Walled = false;
-            }
-        }
     }
-
+    void ApplyGravity()
+    {
+        transform.Translate(0, -gravity * Time.deltaTime, 0);
+    }
+    void Jump()
+    {
+    }
     void Move()
     {
-        //Debug.Log(rb.velocity);
+        //if (!Grounded) ApplyGravity();
+        
         if (Mathf.Abs(Input.GetAxis("Horizontal")) > 0.1) //Horizontal movement
         {
-            float horizontal = Input.GetAxis("Horizontal") * speed;
+            float horizontal = Input.GetAxis("Horizontal") * speed * Time.deltaTime;
             if (Grounded)
             {
                 if (horizontal < 0)
@@ -134,39 +122,14 @@ public class PlayerController : MonoBehaviour
                     left = false;
                 }
             }
-            //transform.Translate(horizontal, 0, 0);
-            if (rb.velocity.x > maxSpeed)
-            {
-                rb.velocity = new Vector2(maxSpeed, rb.velocity.y);
-            }
-            if (rb.velocity.x < -maxSpeed)
-            {
-                rb.velocity = new Vector2(-maxSpeed, rb.velocity.y);
-            }
-            rb.AddForce(new Vector2(horizontal,0), ForceMode2D.Force);
-            
-            
-        }
-        else
-        {
-            //zeroing movement speed to 0
-            if (Grounded)
-            {
-                var newSpeed = rb.velocity.x;
-                if (Mathf.Approximately(newSpeed, 0))
-                {
-                    newSpeed = 0;
-                }
-                rb.velocity = new Vector2(newSpeed*deceleration_speed, rb.velocity.y);
-            }
+            transform.Translate(horizontal, 0, 0);
         }
 
-        if (Input.GetKeyDown(KeyCode.Joystick1Button0) || Input.GetKeyDown(KeyCode.W)) //vertical movement
+        if (Input.GetKeyDown(KeyCode.Joystick1Button0) || Input.GetKeyDown(KeyCode.W) || Input.GetKey(KeyCode.Space)) //vertical movement
         {
             if (Grounded)
             {
-                rb.velocity = new Vector2(rb.velocity.x, 0);
-                rb.AddForce(transform.up * thrust, ForceMode2D.Impulse);
+                Jumping = true;
                 Grounded = false;
             }
             if (Walled)
@@ -205,8 +168,9 @@ public class PlayerController : MonoBehaviour
             box.transform.parent = null;
             CanBox = true;
         }
+        Jump();
     }
-
+    
     void Animations()
     {
         if (left)
@@ -236,6 +200,7 @@ public class PlayerController : MonoBehaviour
             animator.SetBool("jumping", true);
         }
     }
+    */
     /*private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
@@ -257,6 +222,5 @@ public class PlayerController : MonoBehaviour
         }
     }
     //*/
-    
-}
+
 
