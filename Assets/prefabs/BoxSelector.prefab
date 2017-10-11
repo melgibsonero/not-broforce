@@ -22,6 +22,7 @@ GameObject:
   - component: {fileID: 212459223278678076}
   - component: {fileID: 114389540089063752}
   - component: {fileID: 61583743666643102}
+  - component: {fileID: 50302377013773600}
   m_Layer: 9
   m_Name: BoxSelector
   m_TagString: Untagged
@@ -42,6 +43,26 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!50 &50302377013773600
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1181151671892286}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!61 &61583743666643102
 BoxCollider2D:
   m_ObjectHideFlags: 1
@@ -51,7 +72,7 @@ BoxCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
@@ -65,7 +86,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.64, y: 0.64}
+  m_Size: {x: 0.5, y: 0.5}
   m_EdgeRadius: 0
 --- !u!114 &114389540089063752
 MonoBehaviour:
@@ -78,9 +99,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ccda986fde8c2144ae76209189a20c3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  referenceBox: {fileID: 1138886119736882, guid: 9a8a2eff962d07b4b9e9ba7f589f8a00,
+  referenceBox: {fileID: 1357160579723068, guid: 404435ceccc1e68479b6b8b310007f03,
     type: 2}
+  boxController: {fileID: 0}
   player: {fileID: 0}
+  newBoxPlaceNextToPlayer: {fileID: 0}
   cursor: {fileID: 0}
   validPlacementColor: {r: 0.29803923, g: 0.47058824, b: 0.83137256, a: 1}
   invalidPlacementColor: {r: 0.9485294, g: 0.13251515, b: 0.13251515, a: 1}

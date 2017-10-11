@@ -5,6 +5,36 @@ using UnityEngine;
 namespace not_broforce
 {
     class Utils {
+
+        public enum Direction { Up, Down, Left, Right}
+
+        public static Vector3 DirectionToVector3(Direction direction)
+        {
+            switch (direction)
+            {
+                case Direction.Up:
+                    {
+                        return Vector3.up;
+                    }
+                case Direction.Down:
+                    {
+                        return Vector3.down;
+                    }
+                case Direction.Left:
+                    {
+                        return Vector3.left;
+                    }
+                case Direction.Right:
+                    {
+                        return Vector3.right;
+                    }
+                default:
+                    {
+                        return Vector3.zero;
+                    }
+            }
+        }
+
         /// <summary>
         /// Calculates the difference between two points' coordinates.
         /// </summary>
