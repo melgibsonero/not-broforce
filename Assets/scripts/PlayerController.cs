@@ -6,14 +6,24 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
 
-    public float jumpHeight = 4;
+    public float maxJumpHeight = 4;
+    public float minJumpHeight = 1;
     public float timetoJumpApex = .4f;
     public float accelerationTimeAirborne = .2f;
     public float accelerationTimeGrounded = .1f;
     public float moveSpeed = 6;
 
+    public Vector2 wallJump;
+    //public Vector2 wallJumpOff;
+    //public Vector2 wallLeap;
+
+    public float wallSlideSpeedMax;
+    public float wallStickTime = .15f;
+    private float timeToWallUnstick;
+
     float gravity;
-    float jumpVelocity;
+    float maxJumpVelocity;
+    float minJumpVelocity;
     Vector3 velocity;
     float velocityXSmoothing;
 
@@ -25,26 +35,102 @@ public class PlayerController : MonoBehaviour
         controller = GetComponent<Controller2D>();
         spriterer = GetComponent<SpriteRenderer>();
 
-        gravity = -(2 * jumpHeight) / Mathf.Pow(timetoJumpApex, 2);
-        jumpVelocity = Mathf.Abs(gravity) * timetoJumpApex;
-        print("Gravity: " + gravity + "VelocityJump: " + jumpVelocity);
+        gravity = -(2 * maxJumpHeight) / Mathf.Pow(timetoJumpApex, 2);
+        maxJumpVelocity = Mathf.Abs(gravity) * timetoJumpApex;
+        minJumpVelocity = Mathf.Sqrt(2 * Mathf.Abs(gravity) * minJumpHeight);
+        wallSlideSpeedMax = -gravity / 2;
+        print("Gravity: " + gravity + " VelocityJump: " + maxJumpVelocity + " wallSlideSpeed = " + wallSlideSpeedMax);
     }
-
+    
     private void Update()
     {
+        Vector2 input = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+        int wallDirX = (controller.collisions.left) ? -1 : 1;
+
+        float targetVelocityX = input.x * moveSpeed;
+        velocity.x = Mathf.SmoothDamp(velocity.x, 
+            targetVelocityX, 
+            ref velocityXSmoothing, 
+            (controller.collisions.below) ? accelerationTimeGrounded : accelerationTimeAirborne);
+
+
+        bool wallSliding = false;
+        if((controller.collisions.left||controller.collisions.right) && !controller.collisions.below && velocity.y < 0)
+        {
+            wallSliding = true;
+            print("begin wallSlide" + Time.time);
+
+            if (velocity.y < -wallSlideSpeedMax){
+                velocity.y = -wallSlideSpeedMax;
+            }
+
+            if(timeToWallUnstick > 0)
+            {
+                velocityXSmoothing = 0;
+                velocity.x = 0;
+
+                if(input.x != wallDirX && input.x != 0)
+                {
+                    timeToWallUnstick -= Time.deltaTime;
+                }
+                else
+                {
+                    timeToWallUnstick = wallStickTime;
+                }
+            }
+            else
+            {
+                timeToWallUnstick = wallStickTime;
+            }
+        }
+
         if(controller.collisions.above || controller.collisions.below)
         {
             velocity.y = 0;
         }
 
-        Vector2 input = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
-        if (Input.GetKeyDown(KeyCode.Space) && controller.collisions.below)
+        if (Input.GetKeyDown(KeyCode.Space))
         {
-            velocity.y = jumpVelocity;
+            print("press speace"+Time.time);
+            if (wallSliding)
+            {
+                velocity.x = -wallDirX * wallJump.x;
+                velocity.y = wallJump.y;
+                print("jump towards" + Time.time);
+                /*
+                if (wallDirX == input.x) //towards the wall
+                {
+                    velocity.x = -wallDirX * wallJumpClimb.x;
+                    velocity.y = wallJumpClimb.y;
+                    print("jump towards" + Time.time);
+                }
+                else if(input.x == 0) //no input
+                {
+                    velocity.x = -wallDirX * wallJumpOff.x;
+                    velocity.y = wallJumpOff.y;
+                    print("jump no input" + Time.time);
+                }
+                else //away from wall
+                {
+                    velocity.x = -wallDirX * wallLeap.x;
+                    velocity.y = wallLeap.y;
+                    print("jump away" + Time.time);
+                }
+                */
+            }
+            if (controller.collisions.below)
+            {
+                velocity.y = maxJumpVelocity;
+            }
+        }
+        if (Input.GetKeyUp(KeyCode.Space))
+        {
+            if (velocity.y > minJumpVelocity)
+            {
+                velocity.y = minJumpVelocity;
+            }
         }
 
-        float targetVelocityX = input.x * moveSpeed;
-        velocity.x = Mathf.SmoothDamp(velocity.x, targetVelocityX, ref velocityXSmoothing, (controller.collisions.below) ? accelerationTimeGrounded : accelerationTimeAirborne);
         velocity.y += gravity * Time.deltaTime;
         controller.Move(velocity * Time.deltaTime);
 
@@ -58,9 +144,8 @@ public class PlayerController : MonoBehaviour
 
     void Animate()
     {
-        if (Input.GetAxisRaw("Horizontal") != 0)
-        {
-            float directionX = Mathf.Sign(velocity.x);
+        int directionX = controller.collisions.faceDir; //check facing direction
+
 
             if (directionX == -1)
             {
@@ -70,7 +155,6 @@ public class PlayerController : MonoBehaviour
             {
                 spriterer.flipX = false;
             }
-        }
 
     }
 
