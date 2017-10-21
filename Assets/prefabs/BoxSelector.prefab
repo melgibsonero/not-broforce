@@ -37,8 +37,8 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1181151671892286}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.015, y: 0.852, z: 0}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 0}
+  m_LocalPosition: {x: 0.42, y: 1.24, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 0}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -86,7 +86,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.5, y: 0.5}
+  m_Size: {x: 0.64, y: 0.64}
   m_EdgeRadius: 0
 --- !u!114 &114389540089063752
 MonoBehaviour:
@@ -99,8 +99,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ccda986fde8c2144ae76209189a20c3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  referenceBox: {fileID: 1357160579723068, guid: 404435ceccc1e68479b6b8b310007f03,
-    type: 2}
+  levelController: {fileID: 0}
   boxController: {fileID: 0}
   player: {fileID: 0}
   newBoxPlaceNextToPlayer: {fileID: 0}
@@ -108,8 +107,10 @@ MonoBehaviour:
   validPlacementColor: {r: 0.29803923, g: 0.47058824, b: 0.83137256, a: 1}
   invalidPlacementColor: {r: 0.9485294, g: 0.13251515, b: 0.13251515, a: 1}
   removeColor: {r: 0.4646821, g: 0.11678201, b: 0.58823526, a: 1}
+  placedBoxSnapAccuracy: 0
+  newBoxPlaceSnapAccuracy: 0
   smoothMovingSpeed: 2
-  maxDistanceFromPlayer: 2
+  maxDistanceFromPlayer: 3.5
 --- !u!212 &212459223278678076
 SpriteRenderer:
   m_ObjectHideFlags: 1

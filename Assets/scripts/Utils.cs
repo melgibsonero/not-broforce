@@ -35,6 +35,51 @@ namespace not_broforce
             }
         }
 
+        public static Vector2 GetPositionFromGridCoord(Vector2 gridCoordinates,
+                                                       float gridCellWidth,
+                                                       Vector2 gridOffset)
+        {
+            return new Vector2(gridCoordinates.x * gridCellWidth
+                                   + gridOffset.x,
+                               gridCoordinates.y * gridCellWidth
+                                   + gridOffset.y);
+        }
+
+        public static Vector2 GetGridCoordinates(Vector2 position,
+                                                 float gridCellWidth,
+                                                 Vector2 gridOffset)
+        {
+            // Modifies the current position to be
+            // in line with the grid coordinates
+            float positionX = position.x
+                + gridCellWidth / 2
+                - gridOffset.x;
+            float positionY = position.y
+                + gridCellWidth / 2
+                - gridOffset.y;
+
+            // Decreases the current position's coordinates by one grid
+            // cell width when they're in the negatives (rounds them down)
+            // to compensate integer rounding towards zero
+            if (positionX < 0)
+            {
+                positionX -= gridCellWidth;
+            }
+            if (positionY < 0)
+            {
+                positionY -= gridCellWidth;
+            }
+
+            // Calculates the current position's grid coordinates
+            int gridX =
+                (int) (positionX / gridCellWidth);
+            int gridY =
+                (int) (positionY / gridCellWidth);
+
+            // Returns the grid coordinates
+            return new Vector2(gridX, gridY);
+        }
+
         /// <summary>
         /// Calculates the difference between two points' coordinates.
         /// </summary>
