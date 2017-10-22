@@ -1,13 +1,14 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace not_broforce
 {
-    public class BoxSelector : MonoBehaviour
+    public class BoxSelector : MonoBehaviour, IGridObject
     {
         [SerializeField]
-        private LevelController levelController;
+        private LevelController level;
 
         [SerializeField]
         private BoxController boxController;
@@ -31,24 +32,16 @@ namespace not_broforce
         private Color removeColor;
 
         [SerializeField]
-        private float placedBoxSnapAccuracy;
+        private Color generalInvalidColor;
 
         [SerializeField]
-        private float newBoxPlaceSnapAccuracy;
-
-        [SerializeField]
-        private float smoothMovingSpeed;
-
-        [SerializeField]
-        private float maxDistanceFromPlayer = 2;
+        private float maxDistanceFromPlayer = 3;
 
         /// <summary>
         /// The renderer of the object. Needed to
         /// hide the object but still update it.
         /// </summary>
         private Renderer visibility;
-
-        private bool showAfterMoving;
 
         /// <summary>
         /// The sprite renderer of the object.
@@ -59,14 +52,12 @@ namespace not_broforce
         /// <summary>
         /// The layer mask for raycast
         /// </summary>
-        private int mask;
-
-        //private RaycastHit2D touchesGround;
+        //private int mask;
 
         private Vector2 gridCoordinates;
 
         private List<Box> placedBoxes;
-        private List<Box> newBoxPlaces;
+        private List<NewBoxPlace> newBoxPlaces;
         private Box selectedBox;
         private NewBoxPlace selectedNewBoxPlace;
 
@@ -81,6 +72,12 @@ namespace not_broforce
         private bool validRemove;
 
         /// <summary>
+        /// Does the selector collide with the player character
+        /// or any part of the environment
+        /// </summary>
+        private bool collidesWithObstacle;
+
+        /// <summary>
         /// Is the selector close enough to the player character
         /// </summary>
         private bool closeEnoughToPlayer;
@@ -90,10 +87,11 @@ namespace not_broforce
         /// </summary>
         private bool playerGrounded;
 
-        /// <summary>
-        /// Does the selector snap to a grid of boxes
-        /// </summary>
-        private bool snapsToBoxGrid;
+        public Vector2 GridCoordinates
+        {
+            get { return gridCoordinates; }
+            set { gridCoordinates = value; }
+        }
 
         /// <summary>
         /// Initializes the game object.
@@ -103,41 +101,37 @@ namespace not_broforce
             // Checks if any necessary objects are not attached
             CheckForMissingObjects();
 
-            // Sets the box list
-            //boxes = new List<GameObject>();
+            // Initializes the box list
             placedBoxes = boxController.GetPlacedBoxes();
 
+            // Initializes the new box place list
+            InitNewBoxPlaceList();
 
-            // TODO: New box place list
-            //newBoxPlaces = 
-
+            // Initializes visibility
+            visibility = GetComponent<Renderer>();
+            visibility.enabled = false;
 
             // Sets the selector's size
             SetSize();
 
             // Sets the selector's starting position (testing purposes only)
             gridCoordinates = Vector2.zero;
-            transform.position = levelController.GridOffset;
-
-            visibility = GetComponent<Renderer>();
-            visibility.enabled = false;
-            showAfterMoving = false;
+            transform.position = level.GridOffset;
 
             sr = GetComponent<SpriteRenderer>();
 
-            mask = LayerMask.GetMask("Environment", "PlacedBoxes");
+            //mask = LayerMask.GetMask("Environment", "PlacedBoxes");
 
-            validPlacement = true;
+            validPlacement = false;
+            validRemove = false;
             closeEnoughToPlayer = true;
             playerGrounded = true;
-            validRemove = false;
-            snapsToBoxGrid = false;
         }
 
         /// <summary>
         /// Gets whether the selector usable at its current state.
-        /// Returns true if the selector is visible and
-        /// close enough to the player character.
+        /// Returns true if the selector is visible, close enough to
+        /// the player character and the player character is on ground.
         /// </summary>
         /// <returns>is the selector usable at its current state</returns>
         private bool IsUsable()
@@ -148,7 +142,8 @@ namespace not_broforce
 
         private bool BoxCanBePlaced()
         {
-            return (IsUsable() && validPlacement);
+            return (IsUsable() && validPlacement &&
+                    !collidesWithObstacle);
         }
 
         private bool BoxCanBeRemoved()
@@ -169,7 +164,7 @@ namespace not_broforce
 
         private void CheckForMissingObjects()
         {
-            if (levelController == null)
+            if (level == null)
             {
                 throw new System.NullReferenceException
                     ("LevelController not set to the selector.");
@@ -187,13 +182,6 @@ namespace not_broforce
                     ("Player not set to the selector.");
             }
 
-            if (newBoxPlaceNextToPlayer == null)
-            {
-                throw new System.NullReferenceException
-                    ("NewBoxPlace next to the player character " +
-                     "not set to the selector.");
-            }
-
             if (cursor == null)
             {
                 throw new System.NullReferenceException
@@ -201,10 +189,160 @@ namespace not_broforce
             }
         }
 
+        private void InitNewBoxPlaceList()
+        {
+            newBoxPlaces = new List<NewBoxPlace>();
+
+            int amountBefore = 0;
+            int amountAfter = 0;
+
+            // The new box place next to the player
+            if (newBoxPlaceNextToPlayer != null)
+            {
+                newBoxPlaces.Add(newBoxPlaceNextToPlayer);
+            }
+            amountAfter = newBoxPlaces.Count;
+
+            // Prints debug info
+            Debug.Log("New box places found next to player: " + (amountAfter - amountBefore));
+
+            // New box places next to placed boxes
+            amountBefore = amountAfter;
+            FetchNewBoxPlacesNextToPlacedBoxes();
+            amountAfter = newBoxPlaces.Count;
+
+            // Prints debug info
+            Debug.Log("New box places found next to placed boxes: " + (amountAfter - amountBefore));
+
+            // New box places in the level
+            amountBefore = amountAfter;
+            FetchNewBoxPlacesInLevel();
+            amountAfter = newBoxPlaces.Count;
+
+            // Prints debug info
+            Debug.Log("New box places found in the level: " + (amountAfter - amountBefore));
+
+            // Prints debug info
+            Debug.Log("New box places found, total: " + amountAfter);
+        }
+
+        private void FetchNewBoxPlacesNextToPlacedBoxes()
+        {
+            foreach (Box box in placedBoxes)
+            {
+                for (int i = 0; i < 4; i++)
+                {
+                    Utils.Direction side = (Utils.Direction) i;
+
+                    // Testing purposes only
+                    // TODO: add IGridObject to Box and use GridCoordinates
+                    Vector2 boxGridCoordinates =
+                        Utils.GetGridCoordinates(box.transform.position,
+                        level.GridCellWidth, level.GridOffset);
+
+                    // The new box place's grid coordinates
+                    Vector2 gridCoordinatesNBP =
+                        Utils.GetAdjacentGridCoordinates(boxGridCoordinates,
+                                                         side);
+
+                    // Only if there is not already a new box place at
+                    // the same coordinates, the nbp is created
+                    if (GetExistingNewBoxPlace(gridCoordinatesNBP) == null)
+                    {
+                        NewBoxPlace nbp = new NewBoxPlace();
+
+                        nbp.Initialize(gridCoordinatesNBP, level,
+                                       NewBoxPlace.Parent.Box);
+
+                        //nbp.Initialize(
+                        //    Utils.GetGridCoordinates(box.GridCoordinates, side),
+                        //    levelController,
+                        //    NewBoxPlace.Parent.Box);
+
+                        newBoxPlaces.Add(nbp);
+                    }
+                }
+            }
+        }
+
+        private void FetchNewBoxPlacesInLevel()
+        {
+            foreach (NewBoxPlace nbp in FindObjectsOfType<NewBoxPlace>())
+            {
+                // Only if there is not already a new box place at
+                // the same coordinates, the nbp is added to the list
+                if (GetExistingNewBoxPlace(nbp.GridCoordinates) == null)
+                {
+                    newBoxPlaces.Add(nbp);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Removes all new box places next to
+        /// placed boxes and fetches them all again.
+        /// </summary>
+        /// <returns>was anything changed</returns>
+        private bool ResetNewBoxPlacesNextToPlacedBoxes()
+        {
+            int amountBefore = newBoxPlaces.Count;
+            int amountAfter = 0;
+
+            foreach (NewBoxPlace nbp in newBoxPlaces)
+            {
+                if (nbp.Owner == NewBoxPlace.Parent.Box)
+                {
+                    newBoxPlaces.Remove(nbp);
+                }
+            }
+
+            FetchNewBoxPlacesNextToPlacedBoxes();
+
+            amountAfter = newBoxPlaces.Count;
+            return (amountBefore != amountAfter);
+        }
+
+        /// <summary>
+        /// Removes all new box places in the level
+        /// from the list and fetches them all again.
+        /// </summary>
+        /// <returns>was anything changed</returns>
+        private bool ResetNewBoxPlacesInLevel()
+        {
+            int amountBefore = newBoxPlaces.Count;
+            int amountAfter = 0;
+
+            foreach (NewBoxPlace nbp in newBoxPlaces)
+            {
+                if (nbp.Owner == NewBoxPlace.Parent.Environment)
+                {
+                    newBoxPlaces.Remove(nbp);
+                }
+            }
+
+            FetchNewBoxPlacesInLevel();
+
+            amountAfter = newBoxPlaces.Count;
+            return (amountBefore != amountAfter);
+        }
+
+        private NewBoxPlace GetExistingNewBoxPlace(Vector2 gridCoordinatesNBP)
+        {
+            foreach (NewBoxPlace existingNBP in newBoxPlaces)
+            {
+                if (existingNBP.GridCoordinates == gridCoordinatesNBP)
+                {
+                    return existingNBP;
+                }
+            }
+
+            return null;
+        }
+
         private void SetSize()
         {
             Vector3 gridScale =
-                levelController.GetGridScale(GetComponent<SpriteRenderer>().bounds.size);
+                level.GetGridScale(GetComponent<SpriteRenderer>().bounds.size);
 
             transform.localScale = new Vector3(transform.localScale.x * gridScale.x,
                                                transform.localScale.y * gridScale.y);
@@ -302,8 +440,8 @@ namespace not_broforce
         {
             Vector2 newGridCoordinates = Utils.GetGridCoordinates(
                 cursor.Position,
-                levelController.GridCellWidth,
-                levelController.GridOffset);
+                level.GridCellWidth,
+                level.GridOffset);
 
             // If the new cell is different to the old one,
             // the selector is moved to the new position
@@ -316,50 +454,6 @@ namespace not_broforce
                 MoveToGridCoordinates();
             }
         }
-
-        ///// <summary>
-        ///// Moves the selector to where the cursor is while snapping to a grid.
-        ///// </summary>
-        //private void MouseMovevent()
-        //{
-        //    // Calculates the cursor's grid coordinates
-        //    float cursorX = cursor.Position.x
-        //        + levelController.GridCellWidth / 2
-        //        - levelController.GridOffset.x;
-        //    float cursorY = cursor.Position.y
-        //        + levelController.GridCellWidth / 2
-        //        - levelController.GridOffset.y;
-
-        //    // Rounds the cursor's grid coordinates
-        //    // down when they're in the negatives
-        //    if (cursorX < 0)
-        //    {
-        //        cursorX -= levelController.GridCellWidth;
-        //    }
-        //    if (cursorY < 0)
-        //    {
-        //        cursorY -= levelController.GridCellWidth;
-        //    }
-
-        //    // Gets the grid coordinates in which the cursor currently is
-        //    int gridX = 
-        //        (int) (cursorX / levelController.GridCellWidth);
-        //    int gridY = 
-        //        (int) (cursorY / levelController.GridCellWidth);
-
-        //    Vector2 newGridCoordinates = new Vector2(gridX, gridY);
-
-        //    // If the new cell is different to the old one,
-        //    // the selector is moved to the new position
-        //    if (newGridCoordinates != gridCoordinates)
-        //    {
-        //        // Updates the grid coordinates
-        //        gridCoordinates = newGridCoordinates;
-
-        //        // Moves the selector to the coordinates
-        //        MoveToGridCoordinates();
-        //    }
-        //}
 
         /// <summary>
         /// Checks input for moving the selector with directional buttons.
@@ -399,34 +493,45 @@ namespace not_broforce
         /// <summary>
         /// Moves the selector to the saved grid coordinates.
         /// </summary>
-        private void MoveToGridCoordinates()
+        public void MoveToGridCoordinates()
         {
-            transform.position = Utils.GetPositionFromGridCoord(
+            transform.position = Utils.GetPosFromGridCoord(
                 gridCoordinates,
-                levelController.GridCellWidth,
-                levelController.GridOffset);
+                level.GridCellWidth,
+                level.GridOffset);
 
-
-            // TODO: Change the selector's color based on what is in the grid cell
-            UnselectBox();
-
+            UnselectAll();
 
             // Prints debug info
-            Debug.Log("BoxSelector - New grid coordinates: " + gridCoordinates);
+            //Debug.Log("BoxSelector - New grid coordinates: " + gridCoordinates);
         }
 
         private void ShowSelector()
         {
-            if (!visibility.enabled)
-            {
-                visibility.enabled = true;
-            }
+            // Makes the selector visible
+            visibility.enabled = true;
 
+            // The selector is moved with directional buttons
             if (!cursor.Visible)
             {
-                transform.position = newBoxPlaceNextToPlayer.transform.position;
+                // Does the player character look left or right
+                bool playerLooksLeft = player.GetComponent<SpriteRenderer>().flipX;
+
+                // Calculates a new position next to the player character
+                Vector3 newPosition = player.transform.position +
+                    (playerLooksLeft ? Vector3.left : Vector3.right) * level.GridCellWidth;
+
+                // Gets the grid coordinates of the position
+                gridCoordinates = Utils.GetGridCoordinates(newPosition, level.GridCellWidth, level.GridOffset);
+
+                // Moves the selector to the grid coordinates
+                MoveToGridCoordinates();
+
+                //transform.position = newBoxPlaceNextToPlayer.transform.position;
+
                 closeEnoughToPlayer = true;
             }
+            // The selector is moved with the mouse
             else
             {
                 MouseMovevent();
@@ -435,13 +540,9 @@ namespace not_broforce
 
         private void HideSelector()
         {
-            if (visibility.enabled)
-            {
-                visibility.enabled = false;
-            }
-
-            snapsToBoxGrid = false;
-            InvalidateAll();
+            visibility.enabled = false;
+            collidesWithObstacle = false;
+            UnselectAll();
         }
 
         private void PlaceBox()
@@ -449,6 +550,13 @@ namespace not_broforce
             if (BoxCanBePlaced())
             {
                 boxController.PlaceBox(transform.position);
+                newBoxPlaces.Remove(GetExistingNewBoxPlace(gridCoordinates));
+
+                if (boxController.MovingBoxAmount() == 0)
+                {
+                    // Prints debug info
+                    Debug.Log("Out of boxes to place");
+                }
             }
         }
 
@@ -459,50 +567,42 @@ namespace not_broforce
                 boxController.RemovePlacedBox(selectedBox);
                 UnselectBox();
 
-                // TODO: Fix a box not starting to follow the player sometimes when removed
+                // TODO: Make sure resetting new box places works. Or come up with a new system entirely.
 
-                // TODO: If a box cannot reach its target, it gives up and starts following the player
+                // Resets new box places so the removed box leaves a place for another
+                // (NOTE: not every removed box should leave an nbp)
+                bool nextToBox = ResetNewBoxPlacesNextToPlacedBoxes();
+                if (!nextToBox)
+                {
+                    ResetNewBoxPlacesInLevel();
+                }
             }
         }
 
         private void SelectBox(Box box)
         {
-            if (box != selectedBox &&
-                !IsTooFarAwayFromPlayer(box.transform.position))
+            if (box != selectedBox)
             {
-                transform.position = box.transform.position;
                 selectedBox = box;
                 selectedNewBoxPlace = null;
                 validPlacement = false;
                 validRemove = true;
 
-                if (!cursor.Visible)
-                {
-                    snapsToBoxGrid = true;
-                }
-
                 ChangeColor();
 
                 // Prints debug info
-                //Debug.Log("Box selected");
+                Debug.Log("Box selected");
             }
         }
 
         private void SelectNewBoxPlace(NewBoxPlace newBoxPlace)
         {
-            if (newBoxPlace != selectedNewBoxPlace &&
-                !IsTooFarAwayFromPlayer(newBoxPlace.transform.position))
+            if (newBoxPlace != selectedNewBoxPlace)
             {
-                transform.position = newBoxPlace.transform.position;
                 selectedBox = null;
                 selectedNewBoxPlace = newBoxPlace;
                 validPlacement = true;
                 validRemove = false;
-
-                if (!cursor.Visible)
-                {
-                    snapsToBoxGrid = true;
-                }
 
                 ChangeColor();
 
@@ -516,8 +616,9 @@ namespace not_broforce
             if (validRemove)
             {
                 selectedBox = null;
-                validPlacement = true;
+                //validPlacement = false;
                 validRemove = false;
+
                 ChangeColor();
 
                 // Prints debug info
@@ -531,7 +632,8 @@ namespace not_broforce
             {
                 selectedNewBoxPlace = null;
                 validPlacement = false;
-                validRemove = false;
+                //validRemove = false;
+
                 ChangeColor();
 
                 // Prints debug info
@@ -539,19 +641,10 @@ namespace not_broforce
             }
         }
 
-        private void ValidatePlacement()
-        {
-            // TODO: Fix placement being valid even though it should not be.
-            // Going from red to purple might actually change the selector blue!
-
-            if (!validPlacement &&
-                boxController.MovingBoxAmount() > 0)
-            {
-                validPlacement = true;
-            }
-        }
-
-        private void InvalidateAll()
+        /// <summary>
+        /// Unselects a possible selected box or a new box place.
+        /// </summary>
+        private void UnselectAll()
         {
             UnselectBox();
             UnselectNewBoxPlace();
@@ -563,20 +656,16 @@ namespace not_broforce
         /// <returns>can a box be placed to the selector's position</returns>
         private void CheckPlacementValidity()
         {
-            // TODO: Fix the selector turning red when snapping to a valid new box place
-
-            // TODO: If the player moves, the selector on the new box place next to it becomes red
-
-            // TODO: The selector can select the new box place next to the player character in arrow keys mode 
-
             // If the selector is too far away from the player,
             // placing and removing boxes are made invalid
             if (IsTooFarAwayFromPlayer())
             {
+                // (This condition is here to prevent unnecessary invalidation)
                 if (closeEnoughToPlayer)
                 {
                     closeEnoughToPlayer = false;
-                    UnselectBox();
+                    collidesWithObstacle = false;
+                    UnselectAll();
                 }
             }
             else if (!closeEnoughToPlayer)
@@ -584,98 +673,89 @@ namespace not_broforce
                 closeEnoughToPlayer = true;
             }
 
-            // If the selector is in valid distance,
-            // it's checked what the selector can do
-            if (closeEnoughToPlayer && playerGrounded)
+            // If the selector is in a usable state, it's 
+            // checked what is in the current grid coordinates
+            if (IsUsable())
             {
-                // Checks should a box be selected;
-                // the selector must be directly on
-                // the center if the placed box
-                //if (!validRemove)
-                //{
-                //    SelectBoxUnderSelector(0.1f);
-                //}
-
-                // Placement is invalid if a placed box
-                // has not been selected and there
-                // are no boxes following the player
-                if (validPlacement && !validRemove &&
-                    boxController.MovingBoxAmount() == 0)
-                {
-                    validPlacement = false;
-
-                    // Prints debug info
-                    Debug.Log("Out of boxes to place");
-                }
+                CheckGridCoordinates();
             }
 
             // Sets the selector's color based on its status
             ChangeColor();
         }
 
-        //private void CheckGridCell()
-        //{
-        //    foreach (Box placedBox in placedBoxes)
-        //    {
-        //        if (gridCoordinates == placedBox.GridCoordinates)
-        //        {
-        //            SelectBox(placedBox);
-        //            return;
-        //        }
-        //    }
+        /// <summary>
+        /// Checks the content of the current grid coordinates.
+        /// If there's a placed box or a new box place, it is selected.
+        /// </summary>
+        private void CheckGridCoordinates()
+        {
+            // TODO: Fix a box never being added to the placed box list
+            //Debug.Log("Placed boxes: " + placedBoxes.Count);
 
-        //    foreach (NewBoxPlace newBoxPlace in newBoxPlaces)
-        //    {
-        //        if (gridCoordinates == newBoxPlace.GridCoordinates)
-        //        {
-        //            SelectNewBoxPlace(newBoxPlace);
-        //            return;
-        //        }
-        //    }
-        //}
+            // Checks if there's a placed box in the same grid coordinates
+            foreach (Box placedBox in placedBoxes)
+            {
+                // Testing purposes only
+                // TODO: add IGridObject to Box and use GridCoordinates
+                Vector2 boxGridCoordinates =
+                    Utils.GetGridCoordinates(placedBox.transform.position,
+                    level.GridCellWidth, level.GridOffset);
+
+                if (gridCoordinates == boxGridCoordinates)
+                {
+                    SelectBox(placedBox);
+                    return;
+                }
+            }
+
+            // Checks if there's a new box place in the same grid coordinates
+            // (only if there are placeable boxes following the player)
+            if (boxController.MovingBoxAmount() > 0)
+            {
+                foreach (NewBoxPlace newBoxPlace in newBoxPlaces)
+                {
+                    if (gridCoordinates == newBoxPlace.GridCoordinates)
+                    {
+                        SelectNewBoxPlace(newBoxPlace);
+                        return;
+                    }
+                }
+            }
+
+            // If nothing was selected, placement and removing are invalid
+            UnselectAll();
+        }
 
         private void OnTriggerStay2D(Collider2D other)
         {
-            // TODO: The selector determines the object under it from grid coordinates, not from collision
-
             if (IsUsable())
             {
-                Box box = other.gameObject.GetComponent<Box>();
-                NewBoxPlace newBoxPlace = other.gameObject.GetComponent<NewBoxPlace>();
+                // The collider which collides with the selector
+                BoxCollider2D trigger = other.GetComponent<BoxCollider2D>();
 
-                if (box != null && placedBoxes.Contains(box))
+                if (trigger != null)
                 {
-                    SelectBox(box);
+                    // If the collision is deeper than just a touch,
+                    // the selector is set to collide with an obstacle
+                    if (Utils.CollidersIntersect(GetComponent<BoxCollider2D>(), trigger, 0.9f))
+                    {
+                        collidesWithObstacle = true;
+                    }
+                    // Otherwise the collision is ignored
+                    else
+                    {
+                        collidesWithObstacle = false;
+                    }
                 }
-                else if (newBoxPlace != null && newBoxPlace.GridCoordinates == gridCoordinates
-                    && (placedBoxes.Contains(newBoxPlace.ParentBox) || newBoxPlace.NBPOwner == NewBoxPlace.Owner.Environment))
-                {
-                    SelectNewBoxPlace(newBoxPlace);
-                }
-                else if (newBoxPlace == null)
-                {
-                    InvalidateAll();
-                }
+            }
+        }
 
-                //Box box = other.gameObject.GetComponent<Box>();
-                //NewBoxPlace newBoxPlace = other.gameObject.GetComponent<NewBoxPlace>();
-
-                //if (box != null && placedBoxes.Contains(box) &&
-                //    Utils.CollidersIntersect(GetComponent<BoxCollider2D>(), box.GetComponent<BoxCollider2D>(), 0.5f))
-                //{
-                //    SelectBox(box);
-                //}
-                //else if (newBoxPlace != null &&
-                //         GetBoxUnderSelector(0.8f) == null &&
-                //         Utils.CollidersIntersect(GetComponent<BoxCollider2D>(),
-                //                                  newBoxPlace.GetComponent<BoxCollider2D>(), 0.2f))
-                //{
-                //    SelectNewBoxPlace(newBoxPlace);
-                //}
-                //else if (newBoxPlace == null)
-                //{
-                //    InvalidateAll();
-                //}
+        private void OnTriggerExit2D(Collider2D other)
+        {
+            if (IsUsable())
+            {
+                collidesWithObstacle = false;
             }
         }
 
@@ -687,21 +767,21 @@ namespace not_broforce
         /// <param name="modifier">the required overlap modifier
         /// (1 = any overlap)</param>
         /// <returns>was a box selected</returns>
-        private bool SelectBoxUnderSelector(float modifier)
-        {
-            Box box = GetBoxUnderSelector(modifier);
+        //private bool SelectBoxUnderSelector(float modifier)
+        //{
+        //    Box box = GetBoxUnderSelector(modifier);
 
-            if (box != null)
-            {
-                SelectBox(box);
+        //    if (box != null)
+        //    {
+        //        SelectBox(box);
 
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
+        //        return true;
+        //    }
+        //    else
+        //    {
+        //        return false;
+        //    }
+        //}
 
         /// <summary>
         /// Goes through the box list and checks if a box
@@ -711,48 +791,46 @@ namespace not_broforce
         /// <param name="modifier">the required overlap modifier
         /// (1 = any overlap)</param>
         /// <returns>a box which the selector intersects with</returns>
-        private Box GetBoxUnderSelector(float modifier)
-        {
-            // Goes through each placed box
-            foreach (Box box in placedBoxes)
-            {
-                bool intersects = false;
+        //private Box GetBoxUnderSelector(float modifier)
+        //{
+        //    // Goes through each placed box
+        //    foreach (Box box in placedBoxes)
+        //    {
+        //        bool intersects = false;
 
-                if (cursor.Visible)
-                {
-                    intersects = Utils.ColliderContainsPoint(
-                        box.GetComponent<BoxCollider2D>(),
-                        cursor.Position);
-                }
-                else
-                {
-                    intersects = Utils.CollidersIntersect(
-                        GetComponent<BoxCollider2D>(),
-                        box.GetComponent<BoxCollider2D>(),
-                        modifier);
-                }
+        //        if (cursor.Visible)
+        //        {
+        //            intersects = Utils.ColliderContainsPoint(
+        //                box.GetComponent<BoxCollider2D>(),
+        //                cursor.Position);
+        //        }
+        //        else
+        //        {
+        //            intersects = Utils.CollidersIntersect(
+        //                GetComponent<BoxCollider2D>(),
+        //                box.GetComponent<BoxCollider2D>(),
+        //                modifier);
+        //        }
 
-                // Checks if the selector intersects with an
-                // existing box and if so, makes that box selected
-                if (intersects)
-                {
-                    return box;
-                }
-            }
+        //        // Checks if the selector intersects with an
+        //        // existing box and if so, makes that box selected
+        //        if (intersects)
+        //        {
+        //            return box;
+        //        }
+        //    }
 
-            return null;
-        }
+        //    return null;
+        //}
 
         /// <summary>
         /// Sets the selector's color based on its status.
         /// </summary>
         private void ChangeColor()
         {
-            bool invalid = false;
-
-            if (!closeEnoughToPlayer || !playerGrounded)
+            if (!closeEnoughToPlayer || !playerGrounded || collidesWithObstacle)
             {
-                invalid = true;
+                sr.color = generalInvalidColor;
             }
             else if (validRemove)
             {
@@ -763,11 +841,6 @@ namespace not_broforce
                 sr.color = validPlacementColor;
             }
             else
-            {
-                invalid = true;
-            }
-
-            if (invalid)
             {
                 sr.color = invalidPlacementColor;
             }

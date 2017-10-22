@@ -1,29 +1,34 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 //using UnityEditor;
 
 namespace not_broforce
 {
-    public class NewBoxPlace : MonoBehaviour
+    public class NewBoxPlace : MonoBehaviour, IGridObject
     {
+        //[SerializeField]
+        //private bool usable;
+
+        [SerializeField]
+        private Vector2 gridCoordinates;
+
         [SerializeField]
         private LevelController levelController;
 
         [SerializeField]
-        private Owner owner;
+        private Parent owner;
 
-        [SerializeField]
-        private GameObject box;
+        //[SerializeField]
+        //private GameObject box;
 
-        [SerializeField]
-        private Utils.Direction side = Utils.Direction.Up;
+        //[SerializeField]
+        //private Utils.Direction side = Utils.Direction.Up;
 
-        private PlayerController player;
+        //private PlayerController player;
 
-        private Vector2 gridCoordinates;
-
-        public enum Owner { Box, Environment, Player };
+        public enum Parent { Environment, Box, Player };
 
         /// <summary>
         /// Initializes the game object.
@@ -32,44 +37,47 @@ namespace not_broforce
         {
             if (levelController != null)
             {
-                // Sets the size
-                SetSize();
-
                 // Sets the grid coordinates
-                gridCoordinates = Vector2.zero;
-                if (owner == Owner.Environment)
-                {
-                    // Gets the grid coordinates from the curretn position
-                    gridCoordinates = Utils.GetGridCoordinates(
-                        transform.position,
-                        levelController.GridCellWidth,
-                        levelController.GridOffset);
+                //gridCoordinates = Vector2.zero;
+                //if (owner == Owner.Environment)
+                //{
+                //    // Gets the grid coordinates from the current position
+                //    gridCoordinates = Utils.GetGridCoordinates(
+                //        transform.position,
+                //        levelController.GridCellWidth,
+                //        levelController.GridOffset);
 
-                    // Sets the position to the center of the grid cell
-                    transform.position = Utils.GetPositionFromGridCoord(
-                        gridCoordinates,
-                        levelController.GridCellWidth,
-                        levelController.GridOffset);
-                }
+                //    // Sets the position to the center of the grid cell
+                //    transform.position = Utils.GetPosFromGridCoord(
+                //        gridCoordinates,
+                //        levelController.GridCellWidth,
+                //        levelController.GridOffset);
+                //}
+
                 // Sets everything relating to the player 
-                else if (owner == Owner.Player)
-                {
-                    player = FindObjectOfType<PlayerController>();
-                    side = Utils.Direction.Right;
-                }
+                //if (owner == Owner.Player)
+                //{
+                //    player = FindObjectOfType<PlayerController>();
+                //    side = Utils.Direction.Right;
+                //}
             }
         }
 
-        private void SetSize()
+        public void Initialize(Vector2 gridCoordinates,
+                               LevelController levelController,
+                               Parent owner)
         {
-            Vector3 gridScale =
-                levelController.GetGridScale(GetComponent<BoxCollider2D>().bounds.size);
-
-            transform.localScale = new Vector3(transform.localScale.x * gridScale.x,
-                                               transform.localScale.y * gridScale.y);
+            this.gridCoordinates = gridCoordinates;
+            this.levelController = levelController;
+            this.owner = owner;
         }
 
-        public Owner NBPOwner
+        //public bool Usable
+        //{
+        //    get { return usable; }
+        //}
+
+        public Parent Owner
         {
             get { return owner; }
         }
@@ -77,22 +85,27 @@ namespace not_broforce
         public Vector2 GridCoordinates
         {
             get { return gridCoordinates; }
-        }
-
-        public Box ParentBox
-        {
-            get
+            set
             {
-                if (owner == Owner.Box)
-                {
-                    return box.GetComponent<Box>();
-                }
-                else
-                {
-                    return null;
-                }
+                gridCoordinates = value;
+                MoveToGridCoordinates();
             }
         }
+
+        //public Box ParentBox
+        //{
+        //    get
+        //    {
+        //        if (owner == Owner.Box)
+        //        {
+        //            return box.GetComponent<Box>();
+        //        }
+        //        else
+        //        {
+        //            return null;
+        //        }
+        //    }
+        //}
 
         /// <summary>
         /// Update is called once per frame.
@@ -101,68 +114,113 @@ namespace not_broforce
         {
             if (levelController != null)
             {
-                if (owner == Owner.Player)
-                {
-                    UpdatePositionNextToPlayer();
-                }
-                else if (owner == Owner.Box)
-                {
-                    UpdatePositionNextToBox();
-                }
+                //if (owner == Owner.Player)
+                //{
+                //    UpdatePositionNextToPlayer();
+                //}
+                //else if (owner == Owner.Box)
+                //{
+                //    UpdatePositionNextToBox();
+                //}
             }
         }
 
-        private void UpdatePositionNextToPlayer()
+        public void MoveToGridCoordinates()
         {
-            // Calculates the ground level based on the player character's position
-            float groundY = player.transform.position.y -
-                player.GetComponent<SpriteRenderer>().bounds.size.y / 2;
+            transform.position = Utils.GetPosFromGridCoord(
+                gridCoordinates,
+                levelController.GridCellWidth,
+                levelController.GridOffset);
 
-            // Sets the side based the player character's looking direction
-            side = player.GetComponent<SpriteRenderer>().flipX ? Utils.Direction.Left : Utils.Direction.Right;
-
-            // Calculates the x-coordinate
-            float x = (player.transform.position + Utils.DirectionToVector3(side) / 2).x;
-
-            // Sets the position
-            transform.position = new Vector3(x, groundY + levelController.GridCellWidth / 2);
+            // Prints debug info
+            //Debug.Log("NewBoxPlace - New grid coordinates: " + gridCoordinates);
         }
 
-        private void UpdatePositionNextToBox()
+        //private void UpdatePositionNextToPlayer()
+        //{
+        //    // Calculates the ground level based on the player character's position
+        //    float groundY = player.transform.position.y -
+        //        player.GetComponent<SpriteRenderer>().bounds.size.y / 2;
+
+        //    // Sets the side based the player character's looking direction
+        //    side = player.GetComponent<SpriteRenderer>().flipX ? Utils.Direction.Left : Utils.Direction.Right;
+
+        //    // Calculates the x-coordinate
+        //    float x = (player.transform.position + Utils.DirectionToVector3(side) / 2).x;
+
+        //    // Sets the position
+        //    transform.position = new Vector3(x, groundY + levelController.GridCellWidth / 2);
+        //}
+
+        //private void UpdatePositionNextToBox()
+        //{
+        //    Vector3 boxPosition = box.transform.position;
+
+        //    switch (side)
+        //    {
+        //        case Utils.Direction.Up:
+        //            {
+        //                transform.position = boxPosition + new Vector3(0, levelController.GridCellWidth);
+        //                break;
+        //            }
+        //        case Utils.Direction.Down:
+        //            {
+        //                transform.position = boxPosition + new Vector3(0, -1 * levelController.GridCellWidth);
+        //                break;
+        //            }
+        //        case Utils.Direction.Left:
+        //            {
+        //                transform.position = boxPosition + new Vector3(-1 * levelController.GridCellWidth, 0);
+        //                break;
+        //            }
+        //        case Utils.Direction.Right:
+        //            {
+        //                transform.position = boxPosition + new Vector3(levelController.GridCellWidth, 0);
+        //                break;
+        //            }
+        //    }
+
+
+        //    // TODO: NewBoxPlace updates its grid coordinates when the parent box is placed
+
+        //    //if (box._takingPosition)
+        //    //{
+        //    //    GridCoordinates = box.GridCoordinates + side;
+        //    //    usable = true;
+        //    //}
+        //}
+
+        /// <summary>
+        /// Draws a box in the grid cell.
+        /// </summary>
+        private void OnDrawGizmos()
         {
-            Vector3 boxPosition = box.transform.position;
+            // The bottom left corner of the grid cell
+            Vector3 bottomLeft =
+                Utils.GetBottomLeftPosFromGridCoord(
+                    gridCoordinates,
+                    levelController.GridCellWidth,
+                    levelController.GridOffset);
 
-            switch (side)
-            {
-                case Utils.Direction.Up:
-                    {
-                        transform.position = boxPosition + new Vector3(0, levelController.GridCellWidth);
-                        break;
-                    }
-                case Utils.Direction.Down:
-                    {
-                        transform.position = boxPosition + new Vector3(0, -1 * levelController.GridCellWidth);
-                        break;
-                    }
-                case Utils.Direction.Left:
-                    {
-                        transform.position = boxPosition + new Vector3(-1 * levelController.GridCellWidth, 0);
-                        break;
-                    }
-                case Utils.Direction.Right:
-                    {
-                        transform.position = boxPosition + new Vector3(levelController.GridCellWidth, 0);
-                        break;
-                    }
-            }
+            Vector3 point;
+            Vector3 point2;
+            Gizmos.color = Color.blue;
 
+            // Left
+            point = bottomLeft + Vector3.up * levelController.GridCellWidth;
+            Gizmos.DrawLine(bottomLeft, point);
 
-            // TODO: NewBoxPlace updates its grid coordinates when the parent box is placed
+            // Top
+            point2 = point + Vector3.right * levelController.GridCellWidth;
+            Gizmos.DrawLine(point, point2);
 
-            //if (box._takingPosition)
-            //{
-            //    gridCoordinates = box.GridCoordinates + side;
-            //}
+            // Right
+            point = point2 + Vector3.down * levelController.GridCellWidth;
+            Gizmos.DrawLine(point2, point);
+
+            // Bottom
+            point2 = point + Vector3.left * levelController.GridCellWidth;
+            Gizmos.DrawLine(point, point2);
         }
     }
 
