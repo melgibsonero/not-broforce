@@ -8,9 +8,6 @@ namespace not_broforce
 {
     public class NewBoxPlace : MonoBehaviour, IGridObject
     {
-        //[SerializeField]
-        //private bool usable;
-
         [SerializeField]
         private Vector2 gridCoordinates;
 
@@ -19,14 +16,6 @@ namespace not_broforce
 
         [SerializeField]
         private Parent owner;
-
-        //[SerializeField]
-        //private GameObject box;
-
-        //[SerializeField]
-        //private Utils.Direction side = Utils.Direction.Up;
-
-        //private PlayerController player;
 
         public enum Parent { Environment, Box, Player };
 
@@ -61,6 +50,13 @@ namespace not_broforce
                 //    side = Utils.Direction.Right;
                 //}
             }
+        }
+
+        public NewBoxPlace(Vector2 gridCoordinates,
+                           LevelController levelController,
+                           Parent owner)
+        {
+            Initialize(gridCoordinates, levelController, owner);
         }
 
         public void Initialize(Vector2 gridCoordinates,
