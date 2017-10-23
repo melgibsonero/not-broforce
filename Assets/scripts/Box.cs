@@ -5,8 +5,6 @@ using UnityEngine;
 namespace not_broforce {
     public class Box : MonoBehaviour {
 
-        
-
         [SerializeField]
         private Transform _target;
 
@@ -81,43 +79,49 @@ namespace not_broforce {
             this._target = target;
         }
 
-        private void Move() {
-            if(Input.GetKeyDown(KeyCode.M)) {
-                _takingPosition = true;
-                _followDistance = 0.4f;
-            }
-            if(_target != null) {
-                if (Mathf.Abs(_followTarget.x - transform.position.x) > _followDistanceX) {
+        private void Move()
+        {
+            if(_target != null)
+            {
+                if(Mathf.Abs(_followTarget.x - transform.position.x) > _followDistanceX)
+                {
                     Physics2D.queriesStartInColliders = false;
-                    
 
-                   
-                    Vector3 direction = new Vector3 (_followTarget.x - transform.position.x,0,0).normalized;
-                    if(direction.x > 0) {
+
+
+                    Vector3 direction = new Vector3(_followTarget.x - transform.position.x, 0, 0).normalized;
+                    if(direction.x > 0)
+                    {
                         _moveDirection = Vector2.right;
-                        
-                    } else {
+
+                    }
+                    else
+                    {
                         _moveDirection = Vector2.left;
                     }
-                    RaycastHit2D hit = Physics2D.Raycast(transform.position, _moveDirection, distanceX,mask);
+                    RaycastHit2D hit = Physics2D.Raycast(transform.position, _moveDirection, distanceX, mask);
 
                     canMove = true;
 
-                    if (hit.collider != null) {
-                        
+                    if(hit.collider != null)
+                    {
+
                         Jump();
                         canMove = false;
                     }
 
-                    if (canMove)
+                    if(canMove)
                     {
                         transform.Translate(direction * _speed * Time.deltaTime);
                     }
+                } else if ((_followTarget.y - transform.position.y) > _followDistanceX)
+                {
+                    Jump();
                 }
             }
-        }
+         }
 
-        private void Jump () {
+            private void Jump () {
             Physics2D.queriesStartInColliders = false;
             RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, distanceY,mask);
             bool Grounded = false;
