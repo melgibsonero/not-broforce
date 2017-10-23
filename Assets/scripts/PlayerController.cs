@@ -17,28 +17,35 @@ public class PlayerController : MonoBehaviour
     //public Vector2 wallJumpOff;
     //public Vector2 wallLeap;
 
-    public float wallSlideSpeedMax;
+    private float wallSlideSpeedMax;
     public float wallStickTime = .15f;
     private float timeToWallUnstick;
 
-    float gravity;
-    float maxJumpVelocity;
-    float minJumpVelocity;
+    [HideInInspector]
+    public float gravity;
+    [HideInInspector]
+    public float maxJumpVelocity;
+    [HideInInspector]
+    public float minJumpVelocity;
     Vector3 velocity;
     float velocityXSmoothing;
 
     Controller2D controller;
     SpriteRenderer spriterer;
 
+    private void Awake()
+    {
+        gravity = -(2 * maxJumpHeight) / Mathf.Pow(timetoJumpApex, 2);
+        maxJumpVelocity = Mathf.Abs(gravity) * timetoJumpApex;
+        minJumpVelocity = Mathf.Sqrt(2 * Mathf.Abs(gravity) * minJumpHeight);
+        wallSlideSpeedMax = -gravity / 2;
+    }
+
     private void Start()
     {
         controller = GetComponent<Controller2D>();
         spriterer = GetComponent<SpriteRenderer>();
 
-        gravity = -(2 * maxJumpHeight) / Mathf.Pow(timetoJumpApex, 2);
-        maxJumpVelocity = Mathf.Abs(gravity) * timetoJumpApex;
-        minJumpVelocity = Mathf.Sqrt(2 * Mathf.Abs(gravity) * minJumpHeight);
-        wallSlideSpeedMax = -gravity / 2;
         print("Gravity: " + gravity + " VelocityJump: " + maxJumpVelocity + " wallSlideSpeed = " + wallSlideSpeedMax);
     }
     
