@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace not_broforce
 {
-    class Utils {
+    public class Utils {
 
         public enum Direction { Up, Down, Left, Right}
 
@@ -13,26 +13,120 @@ namespace not_broforce
             switch (direction)
             {
                 case Direction.Up:
-                    {
-                        return Vector3.up;
-                    }
+                {
+                    return Vector3.up;
+                }
                 case Direction.Down:
-                    {
-                        return Vector3.down;
-                    }
+                {
+                    return Vector3.down;
+                }
                 case Direction.Left:
-                    {
-                        return Vector3.left;
-                    }
+                {
+                    return Vector3.left;
+                }
                 case Direction.Right:
-                    {
-                        return Vector3.right;
-                    }
+                {
+                    return Vector3.right;
+                }
                 default:
-                    {
-                        return Vector3.zero;
-                    }
+                {
+                    return Vector3.zero;
+                }
             }
+        }
+
+        public static Vector3 GetPosFromGridCoord(Vector2 gridCoordinates,
+                                                       float gridCellWidth,
+                                                       Vector2 gridOffset)
+        {
+            return new Vector3(gridCoordinates.x * gridCellWidth
+                                   + gridOffset.x,
+                               gridCoordinates.y * gridCellWidth
+                                   + gridOffset.y);
+        }
+
+        public static Vector3 GetBottomLeftPosFromGridCoord(
+                                                       Vector2 gridCoordinates,
+                                                       float gridCellWidth,
+                                                       Vector2 gridOffset)
+        {
+            return GetPosFromGridCoord
+                       (gridCoordinates, gridCellWidth, gridOffset) +
+                   new Vector3(-1 * gridCellWidth / 2, -1 * gridCellWidth / 2);
+        }
+
+        public static Vector2 GetGridCoordinates(Vector2 position,
+                                                 float gridCellWidth,
+                                                 Vector2 gridOffset)
+        {
+            // Modifies the current position to be
+            // in line with the grid coordinates
+            float positionX = position.x
+                + gridCellWidth / 2
+                - gridOffset.x;
+            float positionY = position.y
+                + gridCellWidth / 2
+                - gridOffset.y;
+
+            // Decreases the current position's coordinates by one grid
+            // cell width when they're in the negatives (rounds them down)
+            // to compensate integer rounding towards zero
+            if (positionX < 0)
+            {
+                positionX -= gridCellWidth;
+            }
+            if (positionY < 0)
+            {
+                positionY -= gridCellWidth;
+            }
+
+            // Calculates the current position's grid coordinates
+            int gridX =
+                (int) (positionX / gridCellWidth);
+            int gridY =
+                (int) (positionY / gridCellWidth);
+
+            // Returns the grid coordinates
+            return new Vector2(gridX, gridY);
+        }
+
+        /// <summary>
+        /// Gets grid coordinates one cell to the given direction.
+        /// </summary>
+        /// <param name="gridCoordinates">original grid coordinates</param>
+        /// <param name="direction">a direction</param>
+        /// <returns>grid coordinates next to the original</returns>
+        public static Vector3 GetAdjacentGridCoordinates(
+                                            Vector2 gridCoordinates,
+                                            Direction direction)
+        {
+            Vector2 newGridCoordinates = gridCoordinates;
+
+            switch (direction)
+            {
+                case Direction.Up:
+                {
+                    newGridCoordinates.y++;
+                    break;
+                }
+                case Direction.Down:
+                {
+                    newGridCoordinates.y--;
+                    break;
+                }
+                case Direction.Left:
+                {
+                    newGridCoordinates.x--;
+                    break;
+                }
+                case Direction.Right:
+                {
+                    newGridCoordinates.x++;
+                    break;
+                }
+            }
+
+            return newGridCoordinates;
         }
 
         /// <summary>
