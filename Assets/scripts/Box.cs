@@ -117,6 +117,7 @@ namespace not_broforce {
                 } else if ((_followTarget.y - transform.position.y) > _followDistanceX)
                 {
                     Jump();
+
                 }
             }
          }
