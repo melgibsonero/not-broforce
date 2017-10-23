@@ -17,7 +17,7 @@ namespace not_broforce {
         [SerializeField]
         private float _followDistanceX;
 
-        private Rigidbody2D _RB;
+        //private Rigidbody2D _RB;
 
         [SerializeField]
         private float distanceX;
@@ -44,12 +44,24 @@ namespace not_broforce {
 
         private Vector3 _followTarget;
 
+        private float gravity;
+        private float maxJumpVelocity;
+        private float minJumpVelocity;
+        private Vector3 velocity;
+
+        private Controller2D controller;
+
+
+
         void Start() {
-            mask = LayerMask.GetMask("Environment", "PlacedBoxes");
+            PlayerController player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
+            controller = GetComponent<Controller2D>();
+            
+            //mask = LayerMask.GetMask("Environment", "PlacedBoxes");
             _jumpTimer = new Timer(1);
             boxController = GameObject.FindGameObjectWithTag("BoxController").GetComponent<BoxController>();
             boxController.addBox(this);
-            _RB = gameObject.GetComponent<Rigidbody2D>();
+            //_RB = gameObject.GetComponent<Rigidbody2D>();
 
             //mask = ~mask;
             _takingPosition = false;
@@ -57,6 +69,10 @@ namespace not_broforce {
             _donePositionTaking = false;
             _followDistanceX = 0.7f;
             _followDistance = 0.7f;
+          
+            gravity = player.gravity;
+            maxJumpVelocity = player.maxJumpVelocity;
+            minJumpVelocity = player.minJumpVelocity;
         }
 
         // Update is called once per frame
@@ -86,11 +102,8 @@ namespace not_broforce {
                 if(Mathf.Abs(_followTarget.x - transform.position.x) > _followDistanceX)
                 {
                     Physics2D.queriesStartInColliders = false;
-
-
-
-                    Vector3 direction = new Vector3(_followTarget.x - transform.position.x, 0, 0).normalized;
-                    if(direction.x > 0)
+                    float direction = Mathf.Sign(_followTarget.x - transform.position.x);
+                    if(direction > 0)
                     {
                         _moveDirection = Vector2.right;
 
@@ -105,34 +118,45 @@ namespace not_broforce {
 
                     if(hit.collider != null)
                     {
-
                         Jump();
                         canMove = false;
                     }
 
                     if(canMove)
                     {
-                        transform.Translate(direction * _speed * Time.deltaTime);
+                        velocity.x = (direction * _speed);
                     }
-                } else if ((_followTarget.y - transform.position.y) > _followDistanceX)
+                }
+                else
+                {
+                    velocity.x = 0;
+                }
+
+                if (controller.collisions.above || controller.collisions.below)
+                {
+                    velocity.y = 0;
+                }
+
+                if ((_followTarget.y - transform.position.y) > _followDistanceX)
                 {
                     Jump();
-                }
+                }                
+                velocity.y += gravity * Time.deltaTime;               
+                controller.Move(velocity * Time.deltaTime);
             }
          }
 
-            private void Jump () {
+        private void Jump () {
             Physics2D.queriesStartInColliders = false;
-            RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, distanceY,mask);
+            //RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, distanceY,mask);
             bool Grounded = false;
-            if (hit.collider != null && _jumpTimer.TimeLeft() <= 0) {
+            if (controller.collisions.below ) {
                 Grounded = true;
             }
             if (Grounded) {
                 Debug.Log("jumping");
-                _RB.AddForce(transform.up * _thrust, ForceMode2D.Impulse);
-                _jumpTimer.Start();
-                
+                velocity.y = maxJumpVelocity;
+                //_jumpTimer.Start();                
             }
         }
 
@@ -140,7 +164,7 @@ namespace not_broforce {
             gameObject.GetComponent<BoxCollider2D>().size = new Vector2(1f, gameObject.GetComponent<BoxCollider2D>().size.y);
             transform.position = _followTarget;
             gameObject.layer = LayerMask.NameToLayer("PlacedBoxes");
-            gameObject.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Static;
+            //gameObject.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Static;
             _donePositionTaking = true;
             boxController.addPlacedBox(this);
         }

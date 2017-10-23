@@ -70,8 +70,8 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1764311984731204}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.18, z: 0}
-  m_LocalScale: {x: 2, y: 2, z: 2}
+  m_LocalPosition: {x: 2.99, y: -0.94, z: 0}
+  m_LocalScale: {x: 4, y: 4, z: 2}
   m_Children:
   - {fileID: 4511011671452868}
   m_Father: {fileID: 0}
@@ -97,7 +97,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 4
+  orthographic size: 6
   m_Depth: -10
   m_CullingMask:
     serializedVersion: 2
@@ -180,11 +180,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f3a34b55eb03a844871358829d89a76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  jumpHeight: 0.8
+  maxJumpHeight: 1.5
+  minJumpHeight: 0.7
   timetoJumpApex: 0.4
   accelerationTimeAirborne: 0.05
   accelerationTimeGrounded: 0.02
-  moveSpeed: 3.5
+  moveSpeed: 5
+  wallJump: {x: 6, y: 6}
+  wallStickTime: 0.15
+  gravity: 0
+  maxJumpVelocity: 0
+  minJumpVelocity: 0
 --- !u!114 &114502470825926832
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -198,9 +204,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   collisionMask:
     serializedVersion: 2
-    m_Bits: 1024
+    m_Bits: 5120
   horizontalRayCount: 4
   verticalRayCount: 4
+  horizontalRaySpacing: 0
+  verticalRaySpacing: 0
+  bc: {fileID: 0}
 --- !u!124 &124952231253587192
 Behaviour:
   m_ObjectHideFlags: 1
