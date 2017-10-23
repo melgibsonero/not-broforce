@@ -117,7 +117,6 @@ namespace not_broforce {
                 } else if ((_followTarget.y - transform.position.y) > _followDistanceX)
                 {
                     Jump();
-
                 }
             }
          }
@@ -138,7 +137,7 @@ namespace not_broforce {
         }
 
         private void ChangeProperties () {
-            gameObject.GetComponent<BoxCollider2D>().size = new Vector2(2.56f, gameObject.GetComponent<BoxCollider2D>().size.y);
+            gameObject.GetComponent<BoxCollider2D>().size = new Vector2(1f, gameObject.GetComponent<BoxCollider2D>().size.y);
             transform.position = _followTarget;
             gameObject.layer = LayerMask.NameToLayer("PlacedBoxes");
             gameObject.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Static;
@@ -155,7 +154,7 @@ namespace not_broforce {
             _takingPosition = true;
             _followDistance = 0.3f;
             _followDistanceX = 0.03f;
-            gameObject.GetComponent<BoxCollider2D>().size = new Vector2(2.20f, gameObject.GetComponent<BoxCollider2D>().size.y);
+            gameObject.GetComponent<BoxCollider2D>().size = new Vector2(0.8f, gameObject.GetComponent<BoxCollider2D>().size.y);
         }
 
         public void BackToLine () {
@@ -164,7 +163,7 @@ namespace not_broforce {
             _donePositionTaking = false;
             gameObject.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Dynamic;
             gameObject.layer = LayerMask.NameToLayer("MovingBoxes");
-            gameObject.GetComponent<BoxCollider2D>().size = new Vector2(2.40f, gameObject.GetComponent<BoxCollider2D>().size.y);
+            gameObject.GetComponent<BoxCollider2D>().size = new Vector2(1f, gameObject.GetComponent<BoxCollider2D>().size.y);
         }
 
     }
