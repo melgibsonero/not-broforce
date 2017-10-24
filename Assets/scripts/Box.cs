@@ -137,7 +137,8 @@ namespace not_broforce {
                     velocity.y = 0;
                 }
 
-                if ((_followTarget.y - transform.position.y) > _followDistanceX)
+                Debug.Log(_followTarget.x - transform.position.x);
+                if (Mathf.Abs(_followTarget.x - transform.position.x) < _followDistanceX && (_followTarget.y - transform.position.y) > _followDistance)
                 {
                     Jump();
                 }                
