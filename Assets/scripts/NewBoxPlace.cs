@@ -185,39 +185,6 @@ namespace not_broforce
         //    //    usable = true;
         //    //}
         //}
-
-        /// <summary>
-        /// Draws a box in the grid cell.
-        /// </summary>
-        private void OnDrawGizmos()
-        {
-            // The bottom left corner of the grid cell
-            Vector3 bottomLeft =
-                Utils.GetBottomLeftPosFromGridCoord(
-                    gridCoordinates,
-                    levelController.GridCellWidth,
-                    levelController.GridOffset);
-
-            Vector3 point;
-            Vector3 point2;
-            Gizmos.color = Color.blue;
-
-            // Left
-            point = bottomLeft + Vector3.up * levelController.GridCellWidth;
-            Gizmos.DrawLine(bottomLeft, point);
-
-            // Top
-            point2 = point + Vector3.right * levelController.GridCellWidth;
-            Gizmos.DrawLine(point, point2);
-
-            // Right
-            point = point2 + Vector3.down * levelController.GridCellWidth;
-            Gizmos.DrawLine(point2, point);
-
-            // Bottom
-            point2 = point + Vector3.left * levelController.GridCellWidth;
-            Gizmos.DrawLine(point, point2);
-        }
     }
 
     //[CustomEditor(typeof(NewBoxPlace))]
