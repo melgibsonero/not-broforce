@@ -304,47 +304,52 @@ namespace not_broforce
         /// </summary>
         private void PlaceSelectorNextToPlayer()
         {
-            // TODO: Complete this
-
             // The player character's size
             Vector3 playerSize = player.GetComponent<BoxCollider2D>().bounds.size;
-
-            // Does the player character look left or right
-            bool playerLooksLeft = player.GetComponent<SpriteRenderer>().flipX;
 
             // The new position next to the player character
             Vector3 newPosition = player.transform.position;
 
-            // Calculates the x-value for the selector's new position
-            float x = (playerLooksLeft ? -1 : 1) * level.GridCellWidth;
+            // Does the player character look left or right
+            bool playerLooksLeft = player.GetComponent<SpriteRenderer>().flipX;
+
+            // Based on the player character's looking direction, its
+            // left or right edge is used to get the grid coordinates
             if (playerLooksLeft)
             {
-                if (player.transform.position.x - playerSize.y / 2 > 0)
-                {
-                    // TODO
-                }
+                newPosition = player.transform.position - new Vector3(playerSize.x / 2, 0);
             }
-            else if (player.transform.position.x - playerSize.y / 2 > 0)
+            else
             {
-                // TODO
-            }
-
-            // Calculates the y-value for the selector's new position
-            float minimumY = player.transform.position.y - playerSize.y / 2 + level.GridCellWidth / 2;
-
-            // If the selector's position would be too low, it is raised by one grid cell height
-            if (newPosition.y < minimumY)
-            {
-                newPosition.y += level.GridCellWidth;
+                newPosition = player.transform.position + new Vector3(playerSize.x / 2, 0);
             }
 
             // Gets the grid coordinates of the position
             gridCoordinates = Utils.GetGridCoordinates(newPosition, level.GridCellWidth, level.GridOffset);
 
+            // Calculates the y-value for the selector's new position
+            float minimumY = player.transform.position.y - playerSize.y / 2 + level.GridCellWidth / 2;
+
+            // If the selector's position would be too low,
+            // its y-coordinate is increased by 1
+            if (newPosition.y < minimumY)
+            {
+                gridCoordinates.y++;
+            }
+
+            // The x-coordinate is shifted by one to
+            // the player character's looking direction
+            if (playerLooksLeft)
+            {
+                gridCoordinates.x--;
+            }
+            else
+            {
+                gridCoordinates.x++;
+            }
+
             // Moves the selector to the grid coordinates
             MoveToGridCoordinates();
-
-            //transform.position = newBoxPlaceNextToPlayer.transform.position;
         }
 
         /// <summary>
