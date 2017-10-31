@@ -34,8 +34,6 @@ namespace not_broforce {
 
         private bool canMove;
 
-        private Timer _jumpTimer;
-
         private bool _takingPosition;
 
         private bool _donePositionTaking;
@@ -51,14 +49,17 @@ namespace not_broforce {
 
         private Controller2D controller;
 
+        private List<Vector2> followWaypoints;
+
+        private PathFinding1 pathFinder;
+
 
 
         void Start() {
             PlayerController player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
             controller = GetComponent<Controller2D>();
-            
+            followWaypoints = null;
             //mask = LayerMask.GetMask("Environment", "PlacedBoxes");
-            _jumpTimer = new Timer(1);
             boxController = GameObject.FindGameObjectWithTag("BoxController").GetComponent<BoxController>();
             boxController.addBox(this);
             //_RB = gameObject.GetComponent<Rigidbody2D>();
@@ -67,27 +68,59 @@ namespace not_broforce {
             _takingPosition = false;
             canMove = true;
             _donePositionTaking = false;
-            _followDistanceX = 0.7f;
-            _followDistance = 0.7f;
           
             gravity = player.gravity;
-            maxJumpVelocity = player.maxJumpVelocity;
+            maxJumpVelocity = player.maxJumpVelocity * 1.3f;
             minJumpVelocity = player.minJumpVelocity;
+            pathFinder = GameObject.FindGameObjectWithTag("PathFinder").GetComponent<PathFinding1>();
         }
 
         // Update is called once per frame
         void Update() {
-            _jumpTimer.Update();
+            if(Input.GetKeyDown(KeyCode.J)) {
+                Jump();
+            }
             if(_takingPosition && Vector3.Distance(transform.position,
                 _followTarget) < _followDistance && !_donePositionTaking) {
                 ChangeProperties();
             } else  if (_donePositionTaking){
                 //Do something if structure is broken
             } else  {
-                if (!_takingPosition) {
-                    _followTarget = _target.position;
+                if(!_takingPosition && followWaypoints != null) {
+                    _followTarget = followWaypoints[0];
                 }
-                Move();
+                if(Vector3.Distance(transform.position,
+                _target.position) > _followDistance && followWaypoints == null)
+                {
+                    followWaypoints = pathFinder.FindPath(transform.position, _target.position);
+                    Debug.Log("finding way");
+                    if(followWaypoints != null)
+                    {
+                        _followTarget = followWaypoints[0];
+                    }
+                    
+                } else if (Vector3.Distance(transform.position,
+                _followTarget) < _followDistance && followWaypoints != null)
+                {
+                    followWaypoints.RemoveAt(0);
+                    if(followWaypoints.Count <= 0)
+                    {
+                        followWaypoints = null;
+                    } else
+                    {
+                        _followTarget = followWaypoints[0];
+                    }
+                }
+                if(followWaypoints != null)
+                {
+                    Debug.Log("moving");
+                    Move();
+                } else
+                {
+                    velocity.x = 0;
+                }
+                velocity.y += gravity * Time.deltaTime;
+                controller.Move(velocity * Time.deltaTime);
             }
         }
 
@@ -97,26 +130,29 @@ namespace not_broforce {
 
         private void Move()
         {
-            if(_target != null)
+            if(followWaypoints != null)
             {
                 if(Mathf.Abs(_followTarget.x - transform.position.x) > _followDistanceX)
                 {
                     Physics2D.queriesStartInColliders = false;
                     float direction = Mathf.Sign(_followTarget.x - transform.position.x);
-                    if(direction > 0)
-                    {
-                        _moveDirection = Vector2.right;
+                    //if(direction > 0)
+                    //{
+                    //    _moveDirection = Vector2.right;
 
-                    }
-                    else
-                    {
-                        _moveDirection = Vector2.left;
-                    }
-                    RaycastHit2D hit = Physics2D.Raycast(transform.position, _moveDirection, distanceX, mask);
+                    //}
+                    //else
+                    //{
+                    //    _moveDirection = Vector2.left;
+                    //}
+                    //RaycastHit2D hit = Physics2D.Raycast(transform.position, _moveDirection, distanceX, mask);
 
                     canMove = true;
-
-                    if(hit.collider != null)
+                    if((controller.collisions.above || controller.collisions.below))
+                    {
+                        velocity.y = 0;
+                    }
+                    if(controller.collisions.left || controller.collisions.right)
                     {
                         Jump();
                         canMove = false;
@@ -132,32 +168,23 @@ namespace not_broforce {
                     velocity.x = 0;
                 }
 
-                if (controller.collisions.above || controller.collisions.below)
-                {
-                    velocity.y = 0;
-                }
-
-                Debug.Log(_followTarget.x - transform.position.x);
-                if (Mathf.Abs(_followTarget.x - transform.position.x) < _followDistanceX && (_followTarget.y - transform.position.y) > _followDistance)
+               
+                if(Mathf.Abs(_followTarget.x - transform.position.x) < _followDistanceX && (_followTarget.y - transform.position.y) > _followDistance)
                 {
                     Jump();
-                }                
-                velocity.y += gravity * Time.deltaTime;               
-                controller.Move(velocity * Time.deltaTime);
+                }
             }
+            
+            
+           
+            
          }
 
         private void Jump () {
             Physics2D.queriesStartInColliders = false;
             //RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, distanceY,mask);
-            bool Grounded = false;
             if (controller.collisions.below ) {
-                Grounded = true;
-            }
-            if (Grounded) {
-                Debug.Log("jumping");
-                velocity.y = maxJumpVelocity;
-                //_jumpTimer.Start();                
+                velocity.y = maxJumpVelocity;           
             }
         }
 
@@ -186,7 +213,6 @@ namespace not_broforce {
             _takingPosition = false;
             _followDistanceX = 0.7f;
             _donePositionTaking = false;
-            gameObject.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Dynamic;
             gameObject.layer = LayerMask.NameToLayer("MovingBoxes");
             gameObject.GetComponent<BoxCollider2D>().size = new Vector2(1f, gameObject.GetComponent<BoxCollider2D>().size.y);
         }
