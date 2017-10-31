@@ -204,14 +204,13 @@ namespace not_broforce {
         public void TakePosition (Vector3 followTarget) {
             _followTarget = followTarget;
             _takingPosition = true;
-            _followDistance = 0.3f;
-            _followDistanceX = 0.03f;
+            //_followDistance = 0.3f;
+            //_followDistanceX = 0.03f;
             gameObject.GetComponent<BoxCollider2D>().size = new Vector2(0.8f, gameObject.GetComponent<BoxCollider2D>().size.y);
         }
 
         public void BackToLine () {
             _takingPosition = false;
-            _followDistanceX = 0.7f;
             _donePositionTaking = false;
             gameObject.layer = LayerMask.NameToLayer("MovingBoxes");
             gameObject.GetComponent<BoxCollider2D>().size = new Vector2(1f, gameObject.GetComponent<BoxCollider2D>().size.y);

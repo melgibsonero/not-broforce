@@ -46,29 +46,28 @@ namespace not_broforce
         /// </summary>
         private SpriteRenderer sr;
 
-        /// <summary>
-        /// The layer mask for raycast
-        /// </summary>
-        //private int mask;
-
         private Vector2 gridCoordinates;
 
         private Box selectedBox;
         private NewBoxPlace selectedNewBoxPlace;
         private List<Box> placedBoxes;
         private List<NewBoxPlace> newBoxPlacesInLevel;
-        private NewBoxPlace newBoxPlaceNextToPlacedBox;
-        private NewBoxPlace newBoxPlaceNextToPlayer;
+        private NewBoxPlace liquidNewBoxPlace;
 
         /// <summary>
-        /// Is it possible to place a box to the position of the selector
+        /// Is it possible to place a box to the selector's coordinates
         /// </summary>
         private bool validPlacement;
 
         /// <summary>
-        /// Is it possible to remove a box from the position of the selector
+        /// Is it possible to remove a box from the selector's coordinates
         /// </summary>
         private bool validRemove;
+
+        /// <summary>
+        /// Was the selector moved in this frame
+        /// </summary>
+        private bool moved;
 
         /// <summary>
         /// Does the selector collide with the player character
@@ -103,12 +102,13 @@ namespace not_broforce
             // Initializes the box list
             placedBoxes = boxController.GetPlacedBoxes();
 
-            // Initializes new box places next to a
+            // Initializes the new box place next to a
             // placed box and next to the player character
-            newBoxPlaceNextToPlacedBox = 
-                new NewBoxPlace(Vector2.zero, level, NewBoxPlace.Parent.Box);
-            newBoxPlaceNextToPlayer = 
-                new NewBoxPlace(Vector2.zero, level, NewBoxPlace.Parent.Player);
+            liquidNewBoxPlace = GetComponentInChildren<NewBoxPlace>();
+            //newBoxPlaceNextToPlacedBox = 
+            //    new NewBoxPlace(Vector2.zero, level, NewBoxPlace.Parent.Box);
+            //newBoxPlaceNextToPlayer = 
+            //    new NewBoxPlace(Vector2.zero, level, NewBoxPlace.Parent.Player);
 
             // Initializes the level new box place list
             InitNewBoxPlacesInLevel();
@@ -130,6 +130,7 @@ namespace not_broforce
 
             validPlacement = false;
             validRemove = false;
+            moved = false;
             closeEnoughToPlayer = true;
             playerGrounded = true;
         }
@@ -206,144 +207,36 @@ namespace not_broforce
 
         private void InitNewBoxPlacesInLevel()
         {
-            // TODO: Fix adding wrong nbp to the list
-
             newBoxPlacesInLevel = new List<NewBoxPlace>();
 
-            //FetchNewBoxPlacesInLevel();
             foreach (NewBoxPlace nbp in FindObjectsOfType<NewBoxPlace>())
             {
                 // Only if there is not already a new box place at
                 // the same coordinates, the nbp is added to the list
-                AddNewBoxPlaceIfUnique(nbp);
+                AddLevelNewBoxPlaceIfUnique(nbp);
             }
 
             // Prints debug info
-            Debug.Log("New box places found in the level: " + newBoxPlacesInLevel.Count);
+            Debug.Log("New box places found in the level: "
+                      + newBoxPlacesInLevel.Count);
         }
-
-        //private void FetchNewBoxPlacesNextToPlacedBoxes()
-        //{
-        //    foreach (Box box in placedBoxes)
-        //    {
-        //        for (int i = 0; i < 4; i++)
-        //        {
-        //            Utils.Direction side = (Utils.Direction) i;
-
-        //            // Testing purposes only
-        //            // TODO: add IGridObject to Box and use GridCoordinates
-        //            Vector2 boxGridCoordinates =
-        //                Utils.GetGridCoordinates(box.transform.position,
-        //                level.GridCellWidth, level.GridOffset);
-
-        //            // The new box place's grid coordinates
-        //            Vector2 gridCoordinatesNBP =
-        //                Utils.GetAdjacentGridCoordinates(boxGridCoordinates,
-        //                                                 side);
-
-        //            // Only if there is not already a new box place at
-        //            // the same coordinates, the nbp is created
-        //            if (GetExistingNewBoxPlace(gridCoordinatesNBP) == null)
-        //            {
-        //                NewBoxPlace nbp = new NewBoxPlace();
-
-        //                nbp.Initialize(gridCoordinatesNBP, level,
-        //                               NewBoxPlace.Parent.Box);
-
-        //                //nbp.Initialize(
-        //                //    Utils.GetGridCoordinates(box.GridCoordinates, side),
-        //                //    levelController,
-        //                //    NewBoxPlace.Parent.Box);
-
-        //                newBoxPlacesInLevel.Add(nbp);
-        //            }
-        //        }
-        //    }
-        //}
-
-        //private void FetchNewBoxPlacesInLevel()
-        //{
-        //    foreach (NewBoxPlace nbp in FindObjectsOfType<NewBoxPlace>())
-        //    {
-        //        // Only if there is not already a new box place at
-        //        // the same coordinates, the nbp is added to the list
-        //        AddNewBoxPlaceIfUnique(nbp);
-        //    }
-        //}
 
         /// <summary>
         /// Adds the given new box place to the nbp list if
         /// there isn't already one at the same coordinates.
         /// </summary>
         /// <param name="nbp">a new box place</param>
-        private void AddNewBoxPlaceIfUnique(NewBoxPlace nbp)
+        private void AddLevelNewBoxPlaceIfUnique(NewBoxPlace nbp)
         {
-            if (!NewBoxPlaceExists(nbp.GridCoordinates))
+            if (nbp.Owner == NewBoxPlace.Parent.Environment &&
+                !LevelNewBoxPlaceExists(nbp.GridCoordinates))
             {
                 newBoxPlacesInLevel.Add(nbp);
             }
         }
 
-        ///// <summary>
-        ///// Removes all new box places next to
-        ///// placed boxes and fetches them all again.
-        ///// </summary>
-        ///// <returns>was anything changed</returns>
-        //private bool ResetNewBoxPlacesNextToPlacedBoxes()
-        //{
-        //    int amountBefore = newBoxPlacesInLevel.Count;
-        //    int amountAfter = 0;
-
-        //    foreach (NewBoxPlace nbp in newBoxPlacesInLevel)
-        //    {
-        //        if (nbp.Owner == NewBoxPlace.Parent.Box)
-        //        {
-        //            newBoxPlacesInLevel.Remove(nbp);
-        //        }
-        //    }
-
-        //    FetchNewBoxPlacesNextToPlacedBoxes();
-
-        //    amountAfter = newBoxPlacesInLevel.Count;
-        //    return (amountBefore != amountAfter);
-        //}
-
-        ///// <summary>
-        ///// Removes all new box places in the level
-        ///// from the list and fetches them all again.
-        ///// </summary>
-        ///// <returns>was anything changed</returns>
-        //private bool ResetNewBoxPlacesInLevel()
-        //{
-        //    int amountBefore = newBoxPlacesInLevel.Count;
-        //    int amountAfter = 0;
-
-        //    foreach (NewBoxPlace nbp in newBoxPlacesInLevel)
-        //    {
-        //        if (nbp.Owner == NewBoxPlace.Parent.Environment)
-        //        {
-        //            newBoxPlacesInLevel.Remove(nbp);
-        //        }
-        //    }
-
-        //    FetchNewBoxPlacesInLevel();
-
-        //    amountAfter = newBoxPlacesInLevel.Count;
-        //    return (amountBefore != amountAfter);
-        //}
-
-        private bool NewBoxPlaceExists(Vector2 gridCoordinatesNBP)
+        private bool LevelNewBoxPlaceExists(Vector2 gridCoordinatesNBP)
         {
-            if (newBoxPlaceNextToPlacedBox.GridCoordinates == gridCoordinatesNBP)
-            {
-                return true;
-            }
-
-            if (newBoxPlaceNextToPlayer.GridCoordinates == gridCoordinatesNBP)
-            {
-                return true;
-            }
-
             foreach (NewBoxPlace existingNBP in newBoxPlacesInLevel)
             {
                 if (existingNBP.GridCoordinates == gridCoordinatesNBP)
@@ -355,7 +248,7 @@ namespace not_broforce
             return false;
         }
 
-        private bool SelectorNextToPlacedBox()
+        private bool SelectorIsNextToPlacedBox()
         {
             foreach (Box box in placedBoxes)
             {
@@ -364,11 +257,16 @@ namespace not_broforce
                     Utils.GetGridCoordinates(box.transform.position,
                     level.GridCellWidth, level.GridOffset);
 
-                bool horizontalOK = Mathf.Abs(boxGridCoord.x - gridCoordinates.x) == 1;
-                bool verticalOK = Mathf.Abs(boxGridCoord.y - gridCoordinates.y) == 1;
+                bool horNextTo = Mathf.Abs(gridCoordinates.x - boxGridCoord.x) == 1;
+                bool vertNextTo = Mathf.Abs(gridCoordinates.y - boxGridCoord.y) == 1;
 
-                if ((horizontalOK || verticalOK) && !(horizontalOK && verticalOK))
+                bool horTouch = horNextTo && gridCoordinates.y == boxGridCoord.y;
+                bool vertTouch = vertNextTo && gridCoordinates.x == boxGridCoord.x;
+
+                if (horTouch || vertTouch)
                 {
+                    //Debug.Log("The selector is next to a placed box:\n" +
+                    //          "box.x: " + boxGridCoord.x + ", box.y: " + boxGridCoord.y);
                     return true;
                 }
             }
@@ -376,24 +274,69 @@ namespace not_broforce
             return false;
         }
 
-        private bool SelectorNextToPlayer()
+        private bool SelectorIsNextToPlayer()
         {
-            Vector2 playerGridCoord = Utils.GetGridCoordinates(player.transform.position, level.GridCellWidth, level.GridOffset);
+            // TODO: Refine this
+
+            // TODO: Add IGridObject to player, use player.GridCoord
+            Vector2 playerGridCoord = 
+                Utils.GetGridCoordinates(player.transform.position,
+                level.GridCellWidth, level.GridOffset);
 
             bool horizontalOK = Mathf.Abs(playerGridCoord.x - gridCoordinates.x) == 1;
             bool verticalOK = Mathf.Abs(playerGridCoord.y - gridCoordinates.y) <= 1;
 
-            return (horizontalOK && verticalOK);
+            if (horizontalOK && verticalOK)
+            {
+                //Debug.Log("The selector is next to the player");
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
-        private void PlaceNewBoxPlaceNextToPlayer()
+        /// <summary>
+        /// Places the selector next to the player character.
+        /// Used when the selector is made visible
+        /// and the mouse cursor is not used.
+        /// </summary>
+        private void PlaceSelectorNextToPlayer()
         {
+            // TODO: Complete this
+
+            // The player character's size
+            Vector3 playerSize = player.GetComponent<BoxCollider2D>().bounds.size;
+
             // Does the player character look left or right
             bool playerLooksLeft = player.GetComponent<SpriteRenderer>().flipX;
 
-            // Calculates a new position next to the player character
-            Vector3 newPosition = player.transform.position +
-                (playerLooksLeft ? Vector3.left : Vector3.right) * level.GridCellWidth;
+            // The new position next to the player character
+            Vector3 newPosition = player.transform.position;
+
+            // Calculates the x-value for the selector's new position
+            float x = (playerLooksLeft ? -1 : 1) * level.GridCellWidth;
+            if (playerLooksLeft)
+            {
+                if (player.transform.position.x - playerSize.y / 2 > 0)
+                {
+                    // TODO
+                }
+            }
+            else if (player.transform.position.x - playerSize.y / 2 > 0)
+            {
+                // TODO
+            }
+
+            // Calculates the y-value for the selector's new position
+            float minimumY = player.transform.position.y - playerSize.y / 2 + level.GridCellWidth / 2;
+
+            // If the selector's position would be too low, it is raised by one grid cell height
+            if (newPosition.y < minimumY)
+            {
+                newPosition.y += level.GridCellWidth;
+            }
 
             // Gets the grid coordinates of the position
             gridCoordinates = Utils.GetGridCoordinates(newPosition, level.GridCellWidth, level.GridOffset);
@@ -469,23 +412,19 @@ namespace not_broforce
 
         private void ToggleActivation()
         {
-            if (visibility.enabled ||
-                player.GetComponent<PlayerController>().GetGrounded())
-            {
-                // Displays or hides the selector
-                visibility.enabled = !visibility.enabled;
+            // Displays or hides the selector
+            visibility.enabled = !visibility.enabled;
 
-                // If the selector was made visible, its position is set next to
-                // the player character and placement validity is checked
-                if (visibility.enabled)
-                {
-                    ShowSelector();
-                }
-                // Otherwise any selected box is unselected
-                else
-                {
-                    HideSelector();
-                }
+            // If the selector was made visible, its position is set next to
+            // the player character and placement validity is checked
+            if (visibility.enabled)
+            {
+                ShowSelector();
+            }
+            // Otherwise any selected box is unselected
+            else
+            {
+                HideSelector();
             }
         }
 
@@ -494,6 +433,8 @@ namespace not_broforce
         /// </summary>
         private void MouseMovevent()
         {
+            moved = false;
+
             Vector2 newGridCoordinates = Utils.GetGridCoordinates(
                 cursor.Position,
                 level.GridCellWidth,
@@ -503,6 +444,8 @@ namespace not_broforce
             // the selector is moved to the new position
             if (newGridCoordinates != gridCoordinates)
             {
+                moved = true;
+
                 // Updates the grid coordinates
                 gridCoordinates = newGridCoordinates;
 
@@ -516,7 +459,7 @@ namespace not_broforce
         /// </summary>
         private void DirectionalMovevent()
         {
-            bool moved = false;
+            moved = false;
 
             if (Input.GetKeyDown(KeyCode.UpArrow))
             {
@@ -568,13 +511,14 @@ namespace not_broforce
             visibility.enabled = true;
 
             // The selector is moved with directional buttons
+            // -> the selector appears next to the player character
             if (!cursor.Visible)
             {
-                PlaceNewBoxPlaceNextToPlayer();
-
+                PlaceSelectorNextToPlayer();
                 closeEnoughToPlayer = true;
             }
             // The selector is moved with the mouse
+            // -> the selector appears under the mouse cursor
             else
             {
                 MouseMovevent();
@@ -608,16 +552,6 @@ namespace not_broforce
             {
                 boxController.RemovePlacedBox(selectedBox);
                 UnselectBox();
-
-                // TODO: Make sure resetting new box places works. Or come up with a new system entirely.
-
-                //// Resets new box places so the removed box leaves a place for another
-                //// (NOTE: not every removed box should leave an nbp)
-                //bool nextToBox = ResetNewBoxPlacesNextToPlacedBoxes();
-                //if (!nextToBox)
-                //{
-                //    ResetNewBoxPlacesInLevel();
-                //}
             }
         }
 
@@ -639,6 +573,8 @@ namespace not_broforce
 
         private void SelectNewBoxPlace(NewBoxPlace newBoxPlace)
         {
+            // TODO: Is selectedNewBoxPlace necessary? Remove if not.
+
             if (newBoxPlace != selectedNewBoxPlace)
             {
                 selectedBox = null;
@@ -732,8 +668,8 @@ namespace not_broforce
         /// </summary>
         private void CheckGridCoordinates()
         {
-            // TODO: Fix a box never being added to the placed box list
-            //Debug.Log("Placed boxes: " + placedBoxes.Count);
+            // TODO: Use the 'moved' bool to limit unnecessary checks
+            // when no boxes are being placed or removed.
 
             // Goes through the placed box list and checks
             // if any of them is in the same grid coordinates
@@ -755,26 +691,22 @@ namespace not_broforce
             }
 
             // Checks if there's a new box place in the same grid coordinates
-            // (only if there are placeable boxes following the player)
+            // (only if there are boxes following the player)
             if (boxController.MovingBoxAmount() > 0)
             {
-                if (SelectorNextToPlacedBox())
+                if (SelectorIsNextToPlacedBox())
                 {
-                    //Debug.Log("The selector is next to a placed box");
-
-                    newBoxPlaceNextToPlacedBox.GridCoordinates =
+                    liquidNewBoxPlace.GridCoordinates =
                         gridCoordinates;
-                    SelectNewBoxPlace(newBoxPlaceNextToPlacedBox);
+                    SelectNewBoxPlace(liquidNewBoxPlace);
                     return;
                 }
 
-                if (SelectorNextToPlayer())
+                if (SelectorIsNextToPlayer())
                 {
-                    //Debug.Log("The selector is next to the player");
-
-                    newBoxPlaceNextToPlayer.GridCoordinates =
+                    liquidNewBoxPlace.GridCoordinates =
                         gridCoordinates;
-                    SelectNewBoxPlace(newBoxPlaceNextToPlayer);
+                    SelectNewBoxPlace(liquidNewBoxPlace);
                     return;
                 }
 

@@ -20,6 +20,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4603349246496542}
   - component: {fileID: 114131378046076710}
+  - component: {fileID: 114182784242202794}
   m_Layer: 14
   m_Name: NewBoxPlace
   m_TagString: Untagged
@@ -34,7 +35,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1969141445062474}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0.5, y: 0.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 0}
   m_Children: []
   m_Father: {fileID: 0}
@@ -51,6 +52,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c1c403cf7732933428700dd4c99f0d79, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gridCoordinates: {x: 2, y: 1}
+  gridCoordinates: {x: 6, y: 1}
   levelController: {fileID: 0}
   owner: 0
+--- !u!114 &114182784242202794
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1969141445062474}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f325e5fa21fbfc4d84256884b1c643a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  levelController: {fileID: 0}
+  color: {r: 0, g: 0, b: 1, a: 1}
+  moveInEditor: 0
