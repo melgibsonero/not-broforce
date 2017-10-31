@@ -26,10 +26,8 @@ namespace not_broforce
                 // Updates grid coordinates when moved in the editor
                 if (moveInEditor && !Application.isPlaying)
                 {
-                    gridObject.GridCoordinates = Utils.GetGridCoordinates(
-                        transform.position,
-                        levelController.GridCellWidth,
-                        levelController.GridOffset);
+                    gridObject.GridCoordinates = LevelController.GetGridCoordinates(
+                        transform.position);
                 }
 
                 // Sets the color of the square
@@ -37,10 +35,8 @@ namespace not_broforce
 
                 // The bottom left corner of the grid cell
                 Vector3 bottomLeft =
-                    Utils.GetBottomLeftPosFromGridCoord(
-                        gridObject.GridCoordinates,
-                        levelController.GridCellWidth,
-                        levelController.GridOffset);
+                    LevelController.GetBottomLeftPosFromGridCoord(
+                        gridObject.GridCoordinates);
 
                 // The other three corners
                 Vector3 topLeft = bottomLeft + Vector3.up * levelController.GridCellWidth;

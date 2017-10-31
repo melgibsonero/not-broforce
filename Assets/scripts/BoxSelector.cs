@@ -85,6 +85,8 @@ namespace not_broforce
         /// </summary>
         private bool playerGrounded;
 
+        private PathFinding1 pathFinder;
+
         public Vector2 GridCoordinates
         {
             get { return gridCoordinates; }
@@ -127,7 +129,7 @@ namespace not_broforce
             sr = GetComponent<SpriteRenderer>();
 
             //mask = LayerMask.GetMask("Environment", "PlacedBoxes");
-
+            pathFinder = GameObject.FindGameObjectWithTag("PathFinder").GetComponent<PathFinding1>();
             validPlacement = false;
             validRemove = false;
             moved = false;
@@ -252,10 +254,8 @@ namespace not_broforce
         {
             foreach (Box box in placedBoxes)
             {
-                // TODO: Add IGridObject to box, use box.GridCoord
                 Vector2 boxGridCoord =
-                    Utils.GetGridCoordinates(box.transform.position,
-                    level.GridCellWidth, level.GridOffset);
+                    box.GridCoordinates;
 
                 bool horNextTo = Mathf.Abs(gridCoordinates.x - boxGridCoord.x) == 1;
                 bool vertNextTo = Mathf.Abs(gridCoordinates.y - boxGridCoord.y) == 1;
@@ -280,8 +280,7 @@ namespace not_broforce
 
             // TODO: Add IGridObject to player, use player.GridCoord
             Vector2 playerGridCoord = 
-                Utils.GetGridCoordinates(player.transform.position,
-                level.GridCellWidth, level.GridOffset);
+                LevelController.GetGridCoordinates(player.transform.position);
 
             bool horizontalOK = Mathf.Abs(playerGridCoord.x - gridCoordinates.x) == 1;
             bool verticalOK = Mathf.Abs(playerGridCoord.y - gridCoordinates.y) <= 1;
@@ -325,7 +324,7 @@ namespace not_broforce
             }
 
             // Gets the grid coordinates of the position
-            gridCoordinates = Utils.GetGridCoordinates(newPosition, level.GridCellWidth, level.GridOffset);
+            gridCoordinates = LevelController.GetGridCoordinates(newPosition);
 
             // Calculates the y-value for the selector's new position
             float minimumY = player.transform.position.y - playerSize.y / 2 + level.GridCellWidth / 2;
@@ -440,10 +439,8 @@ namespace not_broforce
         {
             moved = false;
 
-            Vector2 newGridCoordinates = Utils.GetGridCoordinates(
-                cursor.Position,
-                level.GridCellWidth,
-                level.GridOffset);
+            Vector2 newGridCoordinates = LevelController.GetGridCoordinates(
+                cursor.Position);
 
             // If the new cell is different to the old one,
             // the selector is moved to the new position
@@ -499,10 +496,8 @@ namespace not_broforce
         /// </summary>
         public void MoveToGridCoordinates()
         {
-            transform.position = Utils.GetPosFromGridCoord(
-                gridCoordinates,
-                level.GridCellWidth,
-                level.GridOffset);
+            transform.position = LevelController.GetPosFromGridCoord(
+                gridCoordinates);
 
             UnselectAll();
 
@@ -683,8 +678,7 @@ namespace not_broforce
                 // Testing purposes only
                 // TODO: add IGridObject to Box and use GridCoordinates
                 Vector2 boxGridCoordinates =
-                    Utils.GetGridCoordinates(placedBox.transform.position,
-                    level.GridCellWidth, level.GridOffset);
+                    LevelController.GetGridCoordinates(placedBox.transform.position);
 
                 // If the box is in the same
                 // coordinates, it is selected

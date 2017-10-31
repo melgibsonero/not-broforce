@@ -45,10 +45,8 @@ namespace not_broforce
 
         public void MoveToGridCoordinates()
         {
-            transform.position = Utils.GetPosFromGridCoord(
-                gridCoordinates,
-                levelController.GridCellWidth,
-                levelController.GridOffset);
+            transform.position = LevelController.GetPosFromGridCoord(
+                gridCoordinates);
         }
     }
 

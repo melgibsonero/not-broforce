@@ -1,9 +1,10 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace not_broforce {
-    public class Box : MonoBehaviour {
+    public class Box : MonoBehaviour, IGridObject {
 
         [SerializeField]
         private Transform _target;
@@ -57,7 +58,20 @@ namespace not_broforce {
         private GameObject emptyPrefab;
         float repathTimer = 1f;
 
+        private Vector2 gridCoordinates;
 
+        public Vector2 GridCoordinates
+        {
+            get
+            {
+                return gridCoordinates;
+            }
+
+            set
+            {
+                gridCoordinates = value;
+            }
+        }
 
         void Start() {
             PlayerController player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
@@ -102,7 +116,10 @@ namespace not_broforce {
             } else  {
                 if(!_takingPosition && followWaypoints != null && Vector3.Distance(transform.position,
                 _target.position) > _followDistance) {
-                    _followTarget = followWaypoints[0];
+                    if(followWaypoints.Count > 0)
+                    {
+                        _followTarget = followWaypoints[0];
+                    }
                 }
                 if(Vector3.Distance(transform.position,
                 _target.position) > _followDistance && followWaypoints == null)
@@ -110,7 +127,10 @@ namespace not_broforce {
                     followWaypoints = pathFinder.FindPath(transform.position, _target.position);
                     if(followWaypoints != null)
                     {
-                        _followTarget = followWaypoints[0];
+                        if(followWaypoints.Count > 0)
+                        {
+                            _followTarget = followWaypoints[0];
+                        }
                     }
                     
                 } else if (Vector3.Distance(transform.position,
@@ -211,7 +231,7 @@ namespace not_broforce {
         }
 
         private void ChangeProperties () {
-            gameObject.GetComponent<BoxCollider2D>().size = new Vector2(0.9f, gameObject.GetComponent<BoxCollider2D>().size.y);
+            gameObject.GetComponent<BoxCollider2D>().size = new Vector2(1f, gameObject.GetComponent<BoxCollider2D>().size.y);
             transform.position = _target.position;
             gameObject.layer = LayerMask.NameToLayer("PlacedBoxes");
             //gameObject.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Static;
@@ -225,7 +245,7 @@ namespace not_broforce {
         }
 
         public void TakePosition (Vector3 followTarget) {
-            Debug.Log("Changing target");
+            gridCoordinates = LevelController.GetGridCoordinates(followTarget);
             _target = emptyPrefab.transform;
             _target.position = followTarget;
             followWaypoints = null;
@@ -242,5 +262,9 @@ namespace not_broforce {
             gameObject.GetComponent<BoxCollider2D>().size = new Vector2(0.9f, gameObject.GetComponent<BoxCollider2D>().size.y);
         }
 
+        public void MoveToGridCoordinates()
+        {
+            return;
+        }
     }
 }
