@@ -53,6 +53,10 @@ namespace not_broforce {
 
         private PathFinding1 pathFinder;
 
+        [SerializeField]
+        private GameObject emptyPrefab;
+        float repathTimer = 1f;
+
 
 
         void Start() {
@@ -77,23 +81,33 @@ namespace not_broforce {
 
         // Update is called once per frame
         void Update() {
-            if(Input.GetKeyDown(KeyCode.J)) {
-                Jump();
+            if(repathTimer > 0)
+            {
+                repathTimer -= Time.deltaTime;
+            } 
+
+            if(controller.collisions.below && repathTimer <= 0)
+            {
+                repathTimer = 1f;
+                followWaypoints = pathFinder.FindPath(transform.position, _target.position);
+            }
+            {
+
             }
             if(_takingPosition && Vector3.Distance(transform.position,
-                _followTarget) < _followDistance && !_donePositionTaking) {
+                _target.position) < _followDistance && !_donePositionTaking) {
                 ChangeProperties();
             } else  if (_donePositionTaking){
                 //Do something if structure is broken
             } else  {
-                if(!_takingPosition && followWaypoints != null) {
+                if(!_takingPosition && followWaypoints != null && Vector3.Distance(transform.position,
+                _target.position) > _followDistance) {
                     _followTarget = followWaypoints[0];
                 }
                 if(Vector3.Distance(transform.position,
                 _target.position) > _followDistance && followWaypoints == null)
                 {
                     followWaypoints = pathFinder.FindPath(transform.position, _target.position);
-                    Debug.Log("finding way");
                     if(followWaypoints != null)
                     {
                         _followTarget = followWaypoints[0];
@@ -102,7 +116,10 @@ namespace not_broforce {
                 } else if (Vector3.Distance(transform.position,
                 _followTarget) < _followDistance && followWaypoints != null)
                 {
-                    followWaypoints.RemoveAt(0);
+                    if(followWaypoints.Count > 0)
+                    {
+                        followWaypoints.RemoveAt(0);
+                    }
                     if(followWaypoints.Count <= 0)
                     {
                         followWaypoints = null;
@@ -113,7 +130,6 @@ namespace not_broforce {
                 }
                 if(followWaypoints != null)
                 {
-                    Debug.Log("moving");
                     Move();
                 } else
                 {
@@ -152,11 +168,17 @@ namespace not_broforce {
                     {
                         velocity.y = 0;
                     }
-                    if(controller.collisions.left || controller.collisions.right)
+                    if(direction > 0)
+                    if(controller.collisions.right)
                     {
                         Jump();
                         canMove = false;
-                    }
+                    } else if(direction > 0)
+                        if(controller.collisions.left)
+                        {
+                            Jump();
+                            canMove = false;
+                        }
 
                     if(canMove)
                     {
@@ -189,12 +211,13 @@ namespace not_broforce {
         }
 
         private void ChangeProperties () {
-            gameObject.GetComponent<BoxCollider2D>().size = new Vector2(1f, gameObject.GetComponent<BoxCollider2D>().size.y);
-            transform.position = _followTarget;
+            gameObject.GetComponent<BoxCollider2D>().size = new Vector2(0.9f, gameObject.GetComponent<BoxCollider2D>().size.y);
+            transform.position = _target.position;
             gameObject.layer = LayerMask.NameToLayer("PlacedBoxes");
             //gameObject.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Static;
             _donePositionTaking = true;
             boxController.addPlacedBox(this);
+            pathFinder.UpdateNode((int)transform.position.x, (int)transform.position.y, false);
         }
 
         public void RemoveFollowTarget () {
@@ -202,18 +225,21 @@ namespace not_broforce {
         }
 
         public void TakePosition (Vector3 followTarget) {
-            _followTarget = followTarget;
+            Debug.Log("Changing target");
+            _target = emptyPrefab.transform;
+            _target.position = followTarget;
+            followWaypoints = null;
             _takingPosition = true;
-            //_followDistance = 0.3f;
-            //_followDistanceX = 0.03f;
-            gameObject.GetComponent<BoxCollider2D>().size = new Vector2(0.8f, gameObject.GetComponent<BoxCollider2D>().size.y);
+            gameObject.GetComponent<BoxCollider2D>().size = new Vector2(0.9f, gameObject.GetComponent<BoxCollider2D>().size.y);
         }
 
         public void BackToLine () {
+            pathFinder.UpdateNode((int)transform.position.x, (int)transform.position.y, true);
             _takingPosition = false;
             _donePositionTaking = false;
+            followWaypoints = null;
             gameObject.layer = LayerMask.NameToLayer("MovingBoxes");
-            gameObject.GetComponent<BoxCollider2D>().size = new Vector2(1f, gameObject.GetComponent<BoxCollider2D>().size.y);
+            gameObject.GetComponent<BoxCollider2D>().size = new Vector2(0.9f, gameObject.GetComponent<BoxCollider2D>().size.y);
         }
 
     }

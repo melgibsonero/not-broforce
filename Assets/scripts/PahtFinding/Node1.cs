@@ -43,7 +43,7 @@ namespace not_broforce
 
         public bool IsGrounded (Grid1 grid)
         {
-            if(!grid.getNode(gridX, gridY - 1).walkable)
+            if(!grid.GetNode(gridX, gridY - 1).walkable)
             {
                 return true;
             }

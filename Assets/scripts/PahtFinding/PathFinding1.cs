@@ -17,10 +17,6 @@ namespace not_broforce
 
         void Update()
         {
-            if(Input.GetKeyDown(KeyCode.P))
-            {
-                FindPath(seeker.position, target.position);
-            }
         }
 
         public List<Vector2> FindPath( Vector3 startPos, Vector3 targetPos )
@@ -126,5 +122,11 @@ namespace not_broforce
                  return 14 * distY + 10 * (distX - distY);
             return 14 * distX + 10 * (distY - distX);
         }
+
+        public void UpdateNode (int x, int y, bool canWalk)
+        {
+            grid.GetNode(x, y).walkable = canWalk;
+        }
     }
+
 }

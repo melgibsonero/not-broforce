@@ -101,10 +101,11 @@ namespace not_broforce
             }
         }
 
-        public Node1 getNode (int x, int y)
+        public Node1 GetNode (int x, int y)
         {
             return grid[x, y];
         }
+        
 
     }
 }
