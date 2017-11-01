@@ -11,6 +11,8 @@ namespace not_broforce {
         [SerializeField]
         private List<Box> placedBoxes = new List<Box>();
 
+        private bool removeBoxesAfter = false;
+
         // Use this for initialization
         void Start() {
 
@@ -27,10 +29,14 @@ namespace not_broforce {
 
         // Update is called once per frame
         void Update() {
-            if (Input.GetKeyDown(KeyCode.L)) {
-                removeBox();
+            if(Input.GetKeyDown(KeyCode.P))
+            {
+                for(int i = 0; i < placedBoxes.Count; i++)
+                {
+                    Debug.Log(placedBoxes[i].transform.position);
+                }
             }
-        }
+            }
 
         public void addBox(Box box) {
             boxes.Add(box);
@@ -81,13 +87,35 @@ namespace not_broforce {
         }
 
         public void RemovePlacedBox (Box box) {
-            for(int i = 0; i < placedBoxes.Count; i++) {
-                if(placedBoxes[i] == box) {
-                    placedBoxes.RemoveAt(i);
-                    addBox(box);
-                    box.BackToLine();
+
+            List<int> boxIndexes = new List<int>();
+
+            for(int i = 0; i < placedBoxes.Count; i++)
+            {
+                Debug.Log(i);
+                if(placedBoxes[i] == box)
+                {
+
+                    boxIndexes.Add(i);
+                    removeBoxesAfter = true;
+                }
+                else if(removeBoxesAfter && placedBoxes.Count > i)
+                {
+
+                    boxIndexes.Add(i);
                 }
             }
+            boxIndexes.Reverse();
+            while(boxIndexes.Count > 0)
+            {
+                Box boxes = placedBoxes[boxIndexes[0]];
+                placedBoxes.RemoveAt(boxIndexes[0]);
+                boxIndexes.RemoveAt(0);
+                addBox(boxes);
+                boxes.BackToLine();
+
+            }
+            removeBoxesAfter = false;
         }
     }
 }

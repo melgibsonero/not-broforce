@@ -189,17 +189,26 @@ namespace not_broforce {
                         velocity.y = 0;
                     }
                     if(direction > 0)
-                    if(controller.collisions.right)
                     {
-                        Jump();
-                        canMove = false;
-                    } else if(direction > 0)
+                        if(controller.collisions.right)
+                        {
+                            Jump();
+                            canMove = false;
+                        }
+                    }
+                    else if(direction > 0)
+                    {
                         if(controller.collisions.left)
                         {
                             Jump();
                             canMove = false;
                         }
-
+                    }
+                    else if(controller.collisions.left || controller.collisions.right)
+                    {
+                        Jump();
+                        canMove = false;
+                    }
                     if(canMove)
                     {
                         velocity.x = (direction * _speed);

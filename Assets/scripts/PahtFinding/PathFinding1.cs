@@ -127,6 +127,8 @@ namespace not_broforce
         {
             grid.GetNode(x, y).walkable = canWalk;
         }
+
+        //TODO make pathfinding for removing structures, check for ground from below if there is not use box before this one from placed box lists
     }
 
 }
