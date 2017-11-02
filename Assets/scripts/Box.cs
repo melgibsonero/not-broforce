@@ -104,16 +104,12 @@ namespace not_broforce {
                 _repathTimer -= Time.deltaTime;
             } 
 
-            if(controller.collisions.below && _repathTimer <= 0 && _target != player)
+            if(controller.collisions.below && _repathTimer <= 0)
             {
                 _repathTimer = RepathTime;
                 followWaypoints = pathFinder.FindPath(transform.position, _target.position);
             }
-            else
-            {
-                _repathTimer = 0.3f;
-                followWaypoints = pathFinder.FindPath(transform.position, _target.position);
-            }
+          
             {
 
             }
