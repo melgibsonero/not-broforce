@@ -30,16 +30,16 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!1 &1807437128417398
+--- !u!1 &1968118570652128
 GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 5
   m_Component:
-  - component: {fileID: 4832354378511106}
-  - component: {fileID: 114160184978167730}
-  - component: {fileID: 114728933680363178}
+  - component: {fileID: 4249761089388492}
+  - component: {fileID: 114824027036465250}
+  - component: {fileID: 114367998134661120}
   m_Layer: 14
   m_Name: NewBoxPlace
   m_TagString: Untagged
@@ -47,6 +47,19 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!4 &4249761089388492
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1968118570652128}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 0}
+  m_Children: []
+  m_Father: {fileID: 4507577961856378}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4507577961856378
 Transform:
   m_ObjectHideFlags: 1
@@ -54,24 +67,11 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1181151671892286}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.42, y: 1.24, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 0}
-  m_Children:
-  - {fileID: 4832354378511106}
-  m_Father: {fileID: 0}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!4 &4832354378511106
-Transform:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1807437128417398}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 0}
-  m_Children: []
-  m_Father: {fileID: 4507577961856378}
+  m_Children:
+  - {fileID: 4249761089388492}
+  m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &50302377013773600
@@ -119,20 +119,20 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1.28, y: 1.28}
   m_EdgeRadius: 0
---- !u!114 &114160184978167730
+--- !u!114 &114367998134661120
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1807437128417398}
+  m_GameObject: {fileID: 1968118570652128}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c1c403cf7732933428700dd4c99f0d79, type: 3}
+  m_Script: {fileID: 11500000, guid: 1f325e5fa21fbfc4d84256884b1c643a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gridCoordinates: {x: 0, y: 0}
   levelController: {fileID: 0}
-  owner: 2
+  color: {r: 0, g: 0.778, b: 1, a: 1}
+  moveInEditor: 0
 --- !u!114 &114389540089063752
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -153,20 +153,20 @@ MonoBehaviour:
   removeColor: {r: 0.4646821, g: 0.11678201, b: 0.58823526, a: 1}
   generalInvalidColor: {r: 1, g: 0, b: 0, a: 1}
   maxDistanceFromPlayer: 4
---- !u!114 &114728933680363178
+--- !u!114 &114824027036465250
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1807437128417398}
+  m_GameObject: {fileID: 1968118570652128}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1f325e5fa21fbfc4d84256884b1c643a, type: 3}
+  m_Script: {fileID: 11500000, guid: c1c403cf7732933428700dd4c99f0d79, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gridCoordinates: {x: 0, y: 0}
   levelController: {fileID: 0}
-  color: {r: 0, g: 0.778, b: 1, a: 1}
-  moveInEditor: 0
+  owner: 2
 --- !u!212 &212459223278678076
 SpriteRenderer:
   m_ObjectHideFlags: 1
