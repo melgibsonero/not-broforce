@@ -40,6 +40,7 @@ namespace not_broforce {
         private bool _donePositionTaking;
 
         private BoxController boxController;
+        private PlayerController player;
 
         private Vector3 _followTarget;
 
@@ -56,7 +57,8 @@ namespace not_broforce {
 
         [SerializeField]
         private GameObject emptyPrefab;
-        float repathTimer = 1f;
+        public float RepathTime = 1f;
+        private float _repathTimer;
 
         private Vector2 gridCoordinates;
 
@@ -74,7 +76,7 @@ namespace not_broforce {
         }
 
         void Start() {
-            PlayerController player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
+            player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
             controller = GetComponent<Controller2D>();
             followWaypoints = null;
             //mask = LayerMask.GetMask("Environment", "PlacedBoxes");
@@ -86,7 +88,9 @@ namespace not_broforce {
             _takingPosition = false;
             canMove = true;
             _donePositionTaking = false;
-          
+
+            _repathTimer = RepathTime;
+
             gravity = player.gravity;
             maxJumpVelocity = player.maxJumpVelocity * 1.3f;
             minJumpVelocity = player.minJumpVelocity;
@@ -95,14 +99,19 @@ namespace not_broforce {
 
         // Update is called once per frame
         void Update() {
-            if(repathTimer > 0)
+            if(_repathTimer > 0)
             {
-                repathTimer -= Time.deltaTime;
+                _repathTimer -= Time.deltaTime;
             } 
 
-            if(controller.collisions.below && repathTimer <= 0)
+            if(controller.collisions.below && _repathTimer <= 0 && _target != player)
             {
-                repathTimer = 1f;
+                _repathTimer = RepathTime;
+                followWaypoints = pathFinder.FindPath(transform.position, _target.position);
+            }
+            else
+            {
+                _repathTimer = 0.3f;
                 followWaypoints = pathFinder.FindPath(transform.position, _target.position);
             }
             {
@@ -113,7 +122,8 @@ namespace not_broforce {
                 ChangeProperties();
             } else  if (_donePositionTaking){
                 //Do something if structure is broken
-            } else  {
+            }
+            else{
                 if(!_takingPosition && followWaypoints != null && Vector3.Distance(transform.position,
                 _target.position) > _followDistance) {
                     if(followWaypoints.Count > 0)
@@ -155,9 +165,17 @@ namespace not_broforce {
                 {
                     velocity.x = 0;
                 }
+                //if (_followTarget.y < transform.position.y) {
+                //if (velocity.y > minJumpVelocity)
+                //{
+                //velocity.y = minJumpVelocity;
+                //}
+                //}
+                
                 velocity.y += gravity * Time.deltaTime;
                 controller.Move(velocity * Time.deltaTime);
             }
+            
         }
 
         public void AddFollowTarget (Transform target) {

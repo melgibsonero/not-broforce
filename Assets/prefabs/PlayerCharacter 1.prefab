@@ -57,7 +57,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1486695895527702}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -105}
+  m_LocalPosition: {x: 0, y: 0.6, z: -105}
   m_LocalScale: {x: 0.1, y: 0.1, z: 0.5}
   m_Children: []
   m_Father: {fileID: 4718510448312072}
@@ -70,7 +70,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1764311984731204}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.99, y: -0.94, z: 0}
+  m_LocalPosition: {x: 1.61, y: 8.97, z: 0}
   m_LocalScale: {x: 4, y: 4, z: 2}
   m_Children:
   - {fileID: 4511011671452868}
@@ -186,7 +186,7 @@ MonoBehaviour:
   accelerationTimeAirborne: 0.05
   accelerationTimeGrounded: 0.02
   moveSpeed: 5
-  wallJump: {x: 6, y: 6}
+  wallJump: {x: 6, y: 7}
   wallStickTime: 0.15
   gravity: 0
   maxJumpVelocity: 0

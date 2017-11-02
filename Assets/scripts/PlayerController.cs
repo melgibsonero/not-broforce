@@ -65,8 +65,6 @@ public class PlayerController : MonoBehaviour
         if((controller.collisions.left||controller.collisions.right) && !controller.collisions.below && velocity.y < 0)
         {
             wallSliding = true;
-            print("begin wallSlide" + Time.time);
-
             if (velocity.y < -wallSlideSpeedMax){
                 velocity.y = -wallSlideSpeedMax;
             }
@@ -97,13 +95,12 @@ public class PlayerController : MonoBehaviour
         }
 
         if (Input.GetKeyDown(KeyCode.Space))
-        {
-            print("press speace"+Time.time);
+        {            
             if (wallSliding)
             {
+
                 velocity.x = -wallDirX * wallJump.x;
-                velocity.y = wallJump.y;
-                print("jump towards" + Time.time);
+                velocity.y = wallJump.y;              
                 /*
                 if (wallDirX == input.x) //towards the wall
                 {
