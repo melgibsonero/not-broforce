@@ -109,7 +109,7 @@ namespace not_broforce
                 if (wallSliding)
                 {
                 faceDirOld = wallDirX;                  
-                    if (_directionalInput.x == 0) //
+                    if (_directionalInput.x == 0) //neutral
                     {
                         _timer.Start();
                         velocity.x = -wallDirX * wallJumpOff.x;

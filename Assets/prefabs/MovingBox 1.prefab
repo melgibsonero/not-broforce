@@ -82,11 +82,12 @@ MonoBehaviour:
   _target: {fileID: 0}
   _speed: 5.5
   _followDistance: 1.5
-  _followDistanceX: 0.4
+  _followDistanceX: 0.1
   distanceX: 0.6
   distanceY: 0.6
   _thrust: 5
-  emptyPrefab: {fileID: 0}
+  emptyPrefab: {fileID: 1465862470155850, guid: 0fa9c43b7b766b74ea343753463c0634,
+    type: 2}
   RepathTime: 1
 --- !u!114 &114242012824254552
 MonoBehaviour:
