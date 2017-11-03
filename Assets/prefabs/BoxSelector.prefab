@@ -66,8 +66,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1181151671892286}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -49.719074, y: -23.818136, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 0}
   m_Children:
   - {fileID: 4249761089388492}
@@ -148,11 +148,11 @@ MonoBehaviour:
   boxController: {fileID: 0}
   player: {fileID: 0}
   cursor: {fileID: 0}
-  validPlacementColor: {r: 0.29803923, g: 0.47058824, b: 0.83137256, a: 1}
+  validPlacementColor: {r: 0.15884516, g: 0.8308824, b: 0.32204863, a: 1}
   invalidPlacementColor: {r: 0.7205882, g: 0.7205882, b: 0.7205882, a: 1}
-  removeColor: {r: 0.4646821, g: 0.11678201, b: 0.58823526, a: 1}
-  generalInvalidColor: {r: 1, g: 0, b: 0, a: 1}
-  maxDistanceFromPlayer: 4
+  removeColor: {r: 1, g: 0.67545635, b: 0.2647059, a: 1}
+  generalInvalidColor: {r: 0.83823526, g: 0.255, b: 0.17874137, a: 1}
+  maxDistanceFromPlayer: 5
 --- !u!114 &114824027036465250
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -165,7 +165,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gridCoordinates: {x: 0, y: 0}
-  levelController: {fileID: 0}
   owner: 2
 --- !u!212 &212459223278678076
 SpriteRenderer:
@@ -198,7 +197,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1231551439
   m_SortingLayer: 3
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: 85199835bbe4e254f86ed1d086f9132a, type: 3}
   m_Color: {r: 0.29803923, g: 0.47058824, b: 0.83137256, a: 1}
   m_FlipX: 0

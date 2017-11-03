@@ -250,6 +250,56 @@ namespace not_broforce
             return false;
         }
 
+        //private Vector2[] GetGridCellsOccupiedByPlayer()
+        //{
+        //    // TODO: Add IGridObject to player, use player.GridCoord???
+
+        //    Vector2[] playerCornerGridCoords = new Vector2[4];
+
+        //    Vector3 playerSize =
+        //        player.GetComponent<BoxCollider2D>().bounds.size;
+
+        //    // A small distance to fix the player character
+        //    // touching the grid cell beneath it
+        //    float offset = 0.1f;
+
+        //    // Top left
+        //    playerCornerGridCoords[0] = LevelController.GetGridCoordinates
+        //        (player.transform.position + new Vector3(-1 * playerSize.x / 2, playerSize.y / 2));
+
+        //    // Top right
+        //    playerCornerGridCoords[1] = LevelController.GetGridCoordinates
+        //        (player.transform.position + new Vector3(playerSize.x / 2, playerSize.y / 2));
+
+        //    // Bottom left
+        //    playerCornerGridCoords[2] = LevelController.GetGridCoordinates
+        //        (player.transform.position + new Vector3(-1 * playerSize.x / 2, -1 * playerSize.y / 2 + offset));
+
+        //    // Bottom right
+        //    playerCornerGridCoords[3] = LevelController.GetGridCoordinates
+        //        (player.transform.position + new Vector3(playerSize.x / 2, -1 * playerSize.y / 2 + offset));
+
+        //    return playerCornerGridCoords;
+        //}
+
+        private float[] GetPlayerSideGridXCoords()
+        {
+            float[] playerSideGridXCoords = new float[2];
+
+            Vector3 playerSize =
+                player.GetComponent<BoxCollider2D>().bounds.size;
+
+            // Left
+            playerSideGridXCoords[0] = LevelController.GetGridCoordinates
+                (player.transform.position + new Vector3(-1 * playerSize.x / 2, 0)).x;
+
+            // Right
+            playerSideGridXCoords[1] = LevelController.GetGridCoordinates
+                (player.transform.position + new Vector3(playerSize.x / 2, 0)).x;
+
+            return playerSideGridXCoords;
+        }
+
         private bool SelectorIsNextToPlacedBox()
         {
             foreach (Box box in placedBoxes)
@@ -273,14 +323,22 @@ namespace not_broforce
 
         private bool SelectorIsNextToPlayer()
         {
-            // TODO: Refine this
+            // TODO: MaxDistance should be used and it needs SerializeField
+
+            // TODO: Selector must be on the ground to allow placing
 
             // TODO: Add IGridObject to player, use player.GridCoord
             Vector2 playerGridCoord = 
                 LevelController.GetGridCoordinates(player.transform.position);
 
-            bool horizontalOK = Mathf.Abs(playerGridCoord.x - gridCoordinates.x) == 1;
-            bool verticalOK = Mathf.Abs(playerGridCoord.y - gridCoordinates.y) <= 1;
+            float[] playerSideGridXCoords = GetPlayerSideGridXCoords();
+
+            //int maxDistance = 1;
+
+            bool horizontalOK =
+                (int) (playerSideGridXCoords[0] - gridCoordinates.x) == 1 ||
+                (int) (gridCoordinates.x - playerSideGridXCoords[1]) == 1;
+            bool verticalOK = (gridCoordinates.y == playerGridCoord.y);
 
             if (horizontalOK && verticalOK)
             {
@@ -387,12 +445,24 @@ namespace not_broforce
                     // Input for placing and removing a box
                     if (Input.GetKeyDown(KeyCode.E) || Input.GetMouseButtonDown(0))
                     {
-                        PlaceBox();
+                        if (validPlacement)
+                        {
+                            PlaceBox();
+                        }
+                        else if (validRemove)
+                        {
+                            RemoveBox();
+                        }
                     }
-                    else if (Input.GetKeyDown(KeyCode.R) || Input.GetMouseButtonDown(1))
-                    {
-                        RemoveBox();
-                    }
+
+                    //if (Input.GetKeyDown(KeyCode.E) || Input.GetMouseButtonDown(0))
+                    //{
+                    //    PlaceBox();
+                    //}
+                    //else if (Input.GetKeyDown(KeyCode.R) || Input.GetMouseButtonDown(1))
+                    //{
+                    //    RemoveBox();
+                    //}
                 }
                 else
                 {
@@ -668,6 +738,10 @@ namespace not_broforce
             // TODO: Use the 'moved' bool to limit unnecessary checks
             // when no boxes are being placed or removed.
 
+            // TODO: Store the coordinates of a cell where a box was just placed;
+            // it should not be possible to place boxes to the same cell
+            // until the first one reaches it and is removed later
+
             // Goes through the placed box list and checks
             // if any of them is in the same grid coordinates
             foreach (Box placedBox in placedBoxes)
@@ -825,7 +899,7 @@ namespace not_broforce
         /// </summary>
         private void ChangeColor()
         {
-            if (!closeEnoughToPlayer || !playerGrounded || collidesWithObstacle)
+            if (!playerGrounded || collidesWithObstacle) // || !closeEnoughToPlayer
             {
                 sr.color = generalInvalidColor;
             }
