@@ -207,7 +207,6 @@ namespace not_broforce {
                         if(controller.collisions.right)
                         {
                             Jump();
-                            canMove = false;
                         }
                     }
                     else if(direction > 0)
@@ -215,13 +214,11 @@ namespace not_broforce {
                         if(controller.collisions.left)
                         {
                             Jump();
-                            canMove = false;
                         }
                     }
                     else if(controller.collisions.left || controller.collisions.right)
                     {
                         Jump();
-                        canMove = false;
                     }
                     if(canMove)
                     {
