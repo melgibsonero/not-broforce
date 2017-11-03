@@ -254,14 +254,11 @@ namespace not_broforce
         {
             foreach (Box box in placedBoxes)
             {
-                Vector2 boxGridCoord =
-                    box.GridCoordinates;
+                bool horNextTo = Mathf.Abs(gridCoordinates.x - box.GridCoordinates.x) == 1;
+                bool vertNextTo = Mathf.Abs(gridCoordinates.y - box.GridCoordinates.y) == 1;
 
-                bool horNextTo = Mathf.Abs(gridCoordinates.x - boxGridCoord.x) == 1;
-                bool vertNextTo = Mathf.Abs(gridCoordinates.y - boxGridCoord.y) == 1;
-
-                bool horTouch = horNextTo && gridCoordinates.y == boxGridCoord.y;
-                bool vertTouch = vertNextTo && gridCoordinates.x == boxGridCoord.x;
+                bool horTouch = horNextTo && gridCoordinates.y == box.GridCoordinates.y;
+                bool vertTouch = vertNextTo && gridCoordinates.x == box.GridCoordinates.x;
 
                 if (horTouch || vertTouch)
                 {
