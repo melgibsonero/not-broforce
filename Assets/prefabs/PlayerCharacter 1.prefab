@@ -43,6 +43,7 @@ GameObject:
   - component: {fileID: 114502470825926832}
   - component: {fileID: 114250916279208868}
   - component: {fileID: 61040385304860504}
+  - component: {fileID: 114715821294761918}
   m_Layer: 11
   m_Name: PlayerCharacter 1
   m_TagString: Player
@@ -57,7 +58,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1486695895527702}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -105}
+  m_LocalPosition: {x: 0, y: 0.6, z: -105}
   m_LocalScale: {x: 0.1, y: 0.1, z: 0.5}
   m_Children: []
   m_Father: {fileID: 4718510448312072}
@@ -70,7 +71,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1764311984731204}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.99, y: -0.94, z: 0}
+  m_LocalPosition: {x: 57.27, y: 23, z: 0}
   m_LocalScale: {x: 4, y: 4, z: 2}
   m_Children:
   - {fileID: 4511011671452868}
@@ -187,6 +188,8 @@ MonoBehaviour:
   accelerationTimeGrounded: 0.02
   moveSpeed: 5
   wallJump: {x: 6, y: 6}
+  wallJumpOff: {x: 14, y: 4}
+  wallLeap: {x: 9, y: 6}
   wallStickTime: 0.15
   gravity: 0
   maxJumpVelocity: 0
@@ -210,6 +213,17 @@ MonoBehaviour:
   horizontalRaySpacing: 0
   verticalRaySpacing: 0
   bc: {fileID: 0}
+--- !u!114 &114715821294761918
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1764311984731204}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e3b971f7b927774883a5a3569e03da4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!124 &124952231253587192
 Behaviour:
   m_ObjectHideFlags: 1
