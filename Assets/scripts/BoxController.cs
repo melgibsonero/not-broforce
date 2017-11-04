@@ -31,10 +31,7 @@ namespace not_broforce {
         void Update() {
             if(Input.GetKeyDown(KeyCode.P))
             {
-                for(int i = 0; i < placedBoxes.Count; i++)
-                {
-                    Debug.Log(placedBoxes[i].transform.position);
-                }
+                RemovePlacedBox(placedBoxes[0]);
             }
             }
 

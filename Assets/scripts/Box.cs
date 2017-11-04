@@ -107,7 +107,6 @@ namespace not_broforce {
             if(controller.collisions.below && _repathTimer <= 0)
             {
                 _repathTimer = RepathTime;
-                Debug.Log("Repathing");
                 followWaypoints = pathFinder.FindPath(transform.position, _target.position);
             }
           
@@ -277,6 +276,7 @@ namespace not_broforce {
         }
 
         public void BackToLine () {
+            Debug.Log("WORK WROK");
             pathFinder.UpdateNode((int)transform.position.x, (int)transform.position.y, true);
             _takingPosition = false;
             _donePositionTaking = false;
