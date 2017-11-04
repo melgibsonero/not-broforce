@@ -12,9 +12,6 @@ namespace not_broforce
         private Vector2 gridCoordinates;
 
         [SerializeField]
-        private LevelController levelController;
-
-        [SerializeField]
         private Parent owner;
 
         public enum Parent { Environment, Selector };
@@ -24,7 +21,6 @@ namespace not_broforce
                                Parent owner)
         {
             this.gridCoordinates = gridCoordinates;
-            this.levelController = levelController;
             this.owner = owner;
         }
 

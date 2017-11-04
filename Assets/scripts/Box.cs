@@ -101,7 +101,7 @@ namespace not_broforce {
         void Update() {
             if(_repathTimer > 0)
             {
-                _repathTimer -= Time.deltaTime;
+                _repathTimer -= Time.deltaTime;            
             } 
 
             if(controller.collisions.below && _repathTimer <= 0)
