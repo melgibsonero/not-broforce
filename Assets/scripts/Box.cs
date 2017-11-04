@@ -57,7 +57,7 @@ namespace not_broforce {
 
         [SerializeField]
         private GameObject emptyPrefab;
-        public float RepathTime = 1f;
+        public float RepathTime = 3f;
         private float _repathTimer;
 
         private Vector2 gridCoordinates;
@@ -107,6 +107,7 @@ namespace not_broforce {
             if(controller.collisions.below && _repathTimer <= 0)
             {
                 _repathTimer = RepathTime;
+                Debug.Log("Repathing");
                 followWaypoints = pathFinder.FindPath(transform.position, _target.position);
             }
           
@@ -169,6 +170,10 @@ namespace not_broforce {
                 //}
                 
                 velocity.y += gravity * Time.deltaTime;
+                if(velocity.y < -5)
+                {
+                    velocity.y = -5;
+                }
                 controller.Move(velocity * Time.deltaTime);
             }
             
@@ -207,7 +212,6 @@ namespace not_broforce {
                         if(controller.collisions.right)
                         {
                             Jump();
-                            canMove = false;
                         }
                     }
                     else if(direction > 0)
@@ -215,18 +219,14 @@ namespace not_broforce {
                         if(controller.collisions.left)
                         {
                             Jump();
-                            canMove = false;
                         }
                     }
                     else if(controller.collisions.left || controller.collisions.right)
                     {
+                        
                         Jump();
-                        canMove = false;
                     }
-                    if(canMove)
-                    {
                         velocity.x = (direction * _speed);
-                    }
                 }
                 else
                 {

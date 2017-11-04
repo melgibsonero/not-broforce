@@ -92,7 +92,6 @@ namespace not_broforce {
 
             for(int i = 0; i < placedBoxes.Count; i++)
             {
-                Debug.Log(i);
                 if(placedBoxes[i] == box)
                 {
 

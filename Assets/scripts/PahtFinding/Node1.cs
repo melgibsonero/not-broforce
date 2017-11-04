@@ -16,6 +16,10 @@ namespace not_broforce
         public Node1 parent;
         public bool isJumping = false;
 
+        public bool used = false;
+        public bool duplicated = false;
+        public Node1 oldParent;
+
         public Node1( bool _walkable, Vector3 _worldPos, int _gridX, int _gridY)
         {
             walkable = _walkable;
@@ -50,5 +54,6 @@ namespace not_broforce
 
             return false;
         }
+        
     }
 }

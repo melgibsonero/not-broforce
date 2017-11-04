@@ -92,6 +92,10 @@ namespace not_broforce
                     if(path != null)
                         if(path.Contains(n))
                             Gizmos.color = Color.black;
+                    if(n.gridY == 9 && n.gridX == 26)
+                    {
+                        Gizmos.color = Color.blue;
+                    }
                     Color colour = Gizmos.color;
                     colour.a = 0.4f;
                     Gizmos.color = colour;
@@ -104,6 +108,20 @@ namespace not_broforce
         public Node1 GetNode (int x, int y)
         {
             return grid[x, y];
+        }
+
+        public void clearList ()
+        {
+            for(int x = 0; x < gridSizeX; x++)
+            {
+                for(int y = 0; y < gridSizeY; y++)
+                {
+                    grid[x, y].duplicated = false;
+                    grid[x, y].used = false;
+                    grid[x, y].oldParent = null;
+
+                }
+            }
         }
         
 

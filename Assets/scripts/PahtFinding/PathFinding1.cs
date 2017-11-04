@@ -51,25 +51,80 @@ namespace not_broforce
                     {
                         moveLocations.Add(new Vector2(path[i].gridX + 0.5f , path[i].gridY + 0.5f));
                     }
+                    grid.clearList();
                     return moveLocations;
                 }
+               
 
-                foreach (Node1 neighbour in grid.GetNeighbours(currentNode))
+                foreach (Node1 neighbours in grid.GetNeighbours(currentNode))
                 {
+                    Node1 node = new Node1 (true,new Vector3(1,1,1),1,1);
+                    if(neighbours.used)
+                    {
+                        if(neighbours.parent != currentNode && !neighbours.duplicated)
+                        {
+                            neighbours.duplicated = true;
+                            node.walkable = neighbours.walkable;
+                            node.worldPosition = neighbours.worldPosition;
+                            node.gridX = neighbours.gridX;
+                            node.gridY = neighbours.gridY;
+                            node.duplicated = true;
+                            node.oldParent = neighbours.parent;
+                        }
+                    }
+                    Node1 neighbour = new Node1(true, new Vector3(1, 1, 1), 1, 1);
+                    if(neighbours.duplicated)
+                    {
+                        neighbour = node;
+                    } else
+                    {
+                        neighbour = neighbours;
+                    }
+
                     if(!neighbour.walkable || closedSet.Contains(neighbour))
                     {
                         continue;
                     }
+                    if(currentNode.isJumping && !neighbour.IsGrounded(grid))
+                    {
+                        currentNode.isJumping = true;
+                    }
 
                     if(currentNode.hasParent())
                     {
-                        if(!currentNode.IsGrounded(grid) && !neighbour.IsGrounded(grid) && currentNode.gridX != currentNode.parent.gridX && currentNode.gridX != neighbour.gridX)
+                       
+                        if(neighbour.isJumping && currentNode.parent.gridY + 1 < neighbour.gridY)
                         {
+                            neighbour.isJumping = false;
                             continue;
-                        } if(!currentNode.isJumping && !currentNode.IsGrounded(grid) && currentNode.gridY < neighbour.gridY)
+                        }
+
+                        if(currentNode.parent.hasParent())
+                        {
+                            if(currentNode.parent.parent.gridY + 2 < neighbour.gridY)
+                            {
+                                neighbour.isJumping = false;
+                                continue;
+                            }
+                        }
+                        if (currentNode.parent.IsGrounded(grid) && !currentNode.IsGrounded(grid) && neighbour.IsGrounded(grid) && (currentNode.parent.gridX + 1 < neighbour.gridX
+                            || currentNode.parent.gridX - 1 > neighbour.gridX))
                         {
                             continue;
                         }
+
+                        if(!currentNode.IsGrounded(grid) && !neighbour.IsGrounded(grid) && currentNode.gridX != currentNode.parent.gridX && currentNode.gridX != neighbour.gridX)
+                        {
+                            continue;
+                        } else if(!currentNode.isJumping && !currentNode.IsGrounded(grid) && currentNode.gridY < neighbour.gridY)
+                        {
+                            continue;
+                        }
+                        if(currentNode.isJumping && currentNode.gridY > neighbour.gridY)
+                        {
+                            continue;
+                        }
+
                     }
                     if(currentNode.IsGrounded(grid) && !neighbour.IsGrounded(grid) && neighbour.gridY > currentNode.gridY)
                     {
@@ -78,23 +133,23 @@ namespace not_broforce
                     {
                         neighbour.isJumping = false;
                     }
+                    
                     int newMovementCostToNeighbour = currentNode.gCost + GetDistance(currentNode, neighbour);
                     if(newMovementCostToNeighbour < neighbour.gCost || !openSet.Contains(neighbour))
                     {
                         neighbour.gCost = newMovementCostToNeighbour;
                         neighbour.hCost = GetDistance(neighbour, targetNode);
                         neighbour.parent = currentNode;
+                        neighbour.used = true;
                         
                         if(!openSet.Contains(neighbour))
                         {
                             openSet.Add(neighbour);
                         }
-                        
-                        
-                       
-                    }
+                    } 
                 }
             }
+            grid.clearList();
             return null;
         }
 
