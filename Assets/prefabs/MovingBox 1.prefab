@@ -81,13 +81,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _target: {fileID: 0}
   _speed: 5.5
-  _followDistance: 1.5
+  _followDistance: 0.72
   _followDistanceX: 0.1
   distanceX: 0.6
   distanceY: 0.6
   _thrust: 5
-  emptyPrefab: {fileID: 1465862470155850, guid: 0fa9c43b7b766b74ea343753463c0634,
-    type: 2}
+  emptyPrefab: {fileID: 0}
   RepathTime: 1
 --- !u!114 &114242012824254552
 MonoBehaviour:
@@ -140,7 +139,7 @@ SpriteRenderer:
   m_SortingLayerID: -1774490461
   m_SortingLayer: 1
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 53e99e0922e3a3d4ca95b876eba1c7f0, type: 3}
+  m_Sprite: {fileID: 21300000, guid: f19cf51dee9840d449ca7ca158f66403, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
