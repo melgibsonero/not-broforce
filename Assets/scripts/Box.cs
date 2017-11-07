@@ -7,7 +7,11 @@ namespace not_broforce {
     public class Box : MonoBehaviour, IGridObject {
 
         [SerializeField]
-        private Transform _target;
+        private Transform _UnitToFollow;
+
+
+        [SerializeField]
+        private Vector3 _target;
 
         [SerializeField]
         private float _speed;
@@ -17,23 +21,6 @@ namespace not_broforce {
 
         [SerializeField]
         private float _followDistanceX;
-
-        //private Rigidbody2D _RB;
-
-        [SerializeField]
-        private float distanceX;
-
-        [SerializeField]
-        private float distanceY;
-
-        [SerializeField]
-        private float _thrust;
-
-        private int mask;
-
-        private Vector2 _moveDirection;
-
-        private bool canMove;
 
         private bool _takingPosition;
 
@@ -54,12 +41,11 @@ namespace not_broforce {
         private List<Vector2> followWaypoints;
 
         private PathFinding1 pathFinder;
-
-        [SerializeField]
-        private GameObject emptyPrefab;
-        public float RepathTime = 3f;
+        public float RepathTime = 1f;
         private float _repathTimer;
 
+        public Sprite box;
+        public Sprite boxLit;
         private Vector2 gridCoordinates;
 
         public Vector2 GridCoordinates
@@ -79,14 +65,9 @@ namespace not_broforce {
             player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
             controller = GetComponent<Controller2D>();
             followWaypoints = null;
-            //mask = LayerMask.GetMask("Environment", "PlacedBoxes");
             boxController = GameObject.FindGameObjectWithTag("BoxController").GetComponent<BoxController>();
             boxController.addBox(this);
-            //_RB = gameObject.GetComponent<Rigidbody2D>();
-
-            //mask = ~mask;
             _takingPosition = false;
-            canMove = true;
             _donePositionTaking = false;
 
             _repathTimer = RepathTime;
@@ -99,38 +80,47 @@ namespace not_broforce {
 
         // Update is called once per frame
         void Update() {
+            if(_UnitToFollow != null)
+            {
+                _target = new Vector3(_UnitToFollow.position.x + 0.18f, _UnitToFollow.position.y,0);
+            }
             if(_repathTimer > 0)
             {
                 _repathTimer -= Time.deltaTime;            
             } 
 
-            if(controller.collisions.below && _repathTimer <= 0)
+            if(controller.collisions.below && _repathTimer <= 0 && !_donePositionTaking && Vector3.Distance(transform.position,
+                _target) > _followDistance)
             {
                 _repathTimer = RepathTime;
-                followWaypoints = pathFinder.FindPath(transform.position, _target.position);
+                followWaypoints = pathFinder.FindPath(transform.position, _target);
+                if(followWaypoints != null)
+                {
+                    if (followWaypoints.Count > 0)
+                    {
+                        _followTarget = followWaypoints[0];
+                    }
+                }
             }
-          
-            {
 
-            }
             if(_takingPosition && Vector3.Distance(transform.position,
-                _target.position) < _followDistance && !_donePositionTaking) {
+                _target) < _followDistance && !_donePositionTaking) {
                 ChangeProperties();
             } else  if (_donePositionTaking){
                 //Do something if structure is broken
             }
             else{
                 if(!_takingPosition && followWaypoints != null && Vector3.Distance(transform.position,
-                _target.position) > _followDistance) {
+                _target) > _followDistance) {
                     if(followWaypoints.Count > 0)
                     {
                         _followTarget = followWaypoints[0];
                     }
                 }
                 if(Vector3.Distance(transform.position,
-                _target.position) > _followDistance && followWaypoints == null)
+                _target) > _followDistance && followWaypoints == null)
                 {
-                    followWaypoints = pathFinder.FindPath(transform.position, _target.position);
+                    followWaypoints = pathFinder.FindPath(transform.position, _target);
                     if(followWaypoints != null)
                     {
                         if(followWaypoints.Count > 0)
@@ -161,12 +151,6 @@ namespace not_broforce {
                 {
                     velocity.x = 0;
                 }
-                //if (_followTarget.y < transform.position.y) {
-                //if (velocity.y > minJumpVelocity)
-                //{
-                //velocity.y = minJumpVelocity;
-                //}
-                //}
                 
                 velocity.y += gravity * Time.deltaTime;
                 if(velocity.y < -5)
@@ -179,7 +163,7 @@ namespace not_broforce {
         }
 
         public void AddFollowTarget (Transform target) {
-            this._target = target;
+            this._UnitToFollow = target;
         }
 
         private void Move()
@@ -190,18 +174,6 @@ namespace not_broforce {
                 {
                     Physics2D.queriesStartInColliders = false;
                     float direction = Mathf.Sign(_followTarget.x - transform.position.x);
-                    //if(direction > 0)
-                    //{
-                    //    _moveDirection = Vector2.right;
-
-                    //}
-                    //else
-                    //{
-                    //    _moveDirection = Vector2.left;
-                    //}
-                    //RaycastHit2D hit = Physics2D.Raycast(transform.position, _moveDirection, distanceX, mask);
-
-                    canMove = true;
                     if((controller.collisions.above || controller.collisions.below))
                     {
                         velocity.y = 0;
@@ -222,10 +194,10 @@ namespace not_broforce {
                     }
                     else if(controller.collisions.left || controller.collisions.right)
                     {
-                        
+
                         Jump();
                     }
-                        velocity.x = (direction * _speed);
+                    velocity.x = (direction * _speed);
                 }
                 else
                 {
@@ -246,7 +218,6 @@ namespace not_broforce {
 
         private void Jump () {
             Physics2D.queriesStartInColliders = false;
-            //RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, distanceY,mask);
             if (controller.collisions.below ) {
                 velocity.y = maxJumpVelocity;           
             }
@@ -254,35 +225,45 @@ namespace not_broforce {
 
         private void ChangeProperties () {
             gameObject.GetComponent<BoxCollider2D>().size = new Vector2(1f, gameObject.GetComponent<BoxCollider2D>().size.y);
-            transform.position = _target.position;
+            transform.position = _target;
             gameObject.layer = LayerMask.NameToLayer("PlacedBoxes");
-            //gameObject.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Static;
             _donePositionTaking = true;
             boxController.addPlacedBox(this);
             pathFinder.UpdateNode((int)transform.position.x, (int)transform.position.y, false);
+            GetComponent<SpriteRenderer>().sprite = boxLit;
         }
 
         public void RemoveFollowTarget () {
             _followTarget = transform.position;
         }
 
-        public void TakePosition (Vector3 followTarget) {
+        public bool TakePosition (Vector3 followTarget) {
+            GetComponentInChildren<EmoteChanger>().changeEmote("Sad");
+            _target = followTarget;
+            followWaypoints = pathFinder.FindPath(transform.position, _target);
+            if(followWaypoints == null)
+            {
+                return false;
+            }
+            _UnitToFollow = null;
             gridCoordinates = LevelController.GetGridCoordinates(followTarget);
-            _target = emptyPrefab.transform;
-            _target.position = followTarget;
             followWaypoints = null;
             _takingPosition = true;
-            gameObject.GetComponent<BoxCollider2D>().size = new Vector2(0.9f, gameObject.GetComponent<BoxCollider2D>().size.y);
+            gameObject.GetComponent<BoxCollider2D>().size = new Vector2(0.7f, gameObject.GetComponent<BoxCollider2D>().size.y);
+            return true;
         }
 
         public void BackToLine () {
+            GetComponentInChildren<EmoteChanger>().changeEmote("Smile");
             Debug.Log("WORK WROK");
             pathFinder.UpdateNode((int)transform.position.x, (int)transform.position.y, true);
             _takingPosition = false;
             _donePositionTaking = false;
             followWaypoints = null;
             gameObject.layer = LayerMask.NameToLayer("MovingBoxes");
-            gameObject.GetComponent<BoxCollider2D>().size = new Vector2(0.9f, gameObject.GetComponent<BoxCollider2D>().size.y);
+            gameObject.GetComponent<BoxCollider2D>().size = new Vector2(0.7f, gameObject.GetComponent<BoxCollider2D>().size.y);
+
+            GetComponent<SpriteRenderer>().sprite = box;
         }
 
         public void MoveToGridCoordinates()
