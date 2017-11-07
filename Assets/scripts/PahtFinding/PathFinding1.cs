@@ -150,6 +150,7 @@ namespace not_broforce
                 }
             }
             grid.clearList();
+            Debug.Log("not Found");
             return null;
         }
 

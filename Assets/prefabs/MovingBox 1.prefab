@@ -37,7 +37,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1021981051979802}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 17.7, y: 28.3, z: 0}
+  m_LocalPosition: {x: 27.78, y: 3.6, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -79,15 +79,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04f1f0a9f274190458baa8153c85a2ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _target: {fileID: 0}
+  _UnitToFollow: {fileID: 0}
+  _target: {x: 0, y: 0, z: 0}
   _speed: 5.5
+<<<<<<< HEAD
+  _followDistance: 0.8
+  _followDistanceX: 0.1
+=======
   _followDistance: 0.72
   _followDistanceX: 0.1
   distanceX: 0.6
   distanceY: 0.6
   _thrust: 5
   emptyPrefab: {fileID: 0}
+>>>>>>> e4c95813a2a9d7e4cfd4a6900bd693f34405a5d3
   RepathTime: 1
+  box: {fileID: 21300000, guid: efaa3bca597d82f4fae55dcff7f8f5bf, type: 3}
+  boxLit: {fileID: 21300000, guid: 53e99e0922e3a3d4ca95b876eba1c7f0, type: 3}
 --- !u!114 &114242012824254552
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -147,5 +155,3 @@ SpriteRenderer:
   m_Size: {x: 2.56, y: 2.56}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
