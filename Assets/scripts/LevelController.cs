@@ -47,30 +47,6 @@ namespace not_broforce
             return new Vector3(scaleX, scaleY);
         }
 
-        /// <summary>
-        /// Draws help lines at the origin of the grid.
-        /// </summary>
-        private void OnDrawGizmos()
-        {
-            // The bottom left corner of the origin cell
-            Vector3 startPoint =
-                GetBottomLeftPosFromGridCoord(Vector2.zero);
-
-            // Vertical line
-            Gizmos.color = Color.green;
-            Gizmos.DrawLine(startPoint,
-                startPoint + Vector3.up * gridCellWidth);
-
-            // Horizontal line
-            Gizmos.color = Color.red;
-            Gizmos.DrawLine(startPoint,
-                startPoint + Vector3.right * gridCellWidth);
-
-            // Point
-            Gizmos.color = Color.cyan;
-            //new Color(73/255f, 150/255f, 255/255f); // light blue
-            Gizmos.DrawSphere(startPoint, 0.05f);
-        }
         public static Vector3 GetPosFromGridCoord( Vector2 gridCoordinates)
         {
             return new Vector3(gridCoordinates.x * gridCellWidth
@@ -118,6 +94,39 @@ namespace not_broforce
 
             // Returns the grid coordinates
             return new Vector2(gridX, gridY);
+        }
+
+        public static Node1 GetNodeFromGridCoord(Grid1 grid, Vector2 gridCoordinates)
+        {
+            Vector3 position = GetPosFromGridCoord(gridCoordinates);
+            Node1 node = grid.NodeFromWorldPoint(position);
+
+            return node;
+        }
+
+        /// <summary>
+        /// Draws help lines at the origin of the grid.
+        /// </summary>
+        private void OnDrawGizmos()
+        {
+            // The bottom left corner of the origin cell
+            Vector3 startPoint =
+                GetBottomLeftPosFromGridCoord(Vector2.zero);
+
+            // Vertical line
+            Gizmos.color = Color.green;
+            Gizmos.DrawLine(startPoint,
+                startPoint + Vector3.up * gridCellWidth);
+
+            // Horizontal line
+            Gizmos.color = Color.red;
+            Gizmos.DrawLine(startPoint,
+                startPoint + Vector3.right * gridCellWidth);
+
+            // Point
+            Gizmos.color = Color.cyan;
+            //new Color(73/255f, 150/255f, 255/255f); // light blue
+            Gizmos.DrawSphere(startPoint, 0.05f);
         }
     }
 }

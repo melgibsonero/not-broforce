@@ -85,7 +85,8 @@ namespace not_broforce
         /// </summary>
         private bool playerGrounded;
 
-        private PathFinding1 pathFinder;
+        //[SerializeField]
+        private LayerMask groundMask;
 
         public Vector2 GridCoordinates
         {
@@ -128,8 +129,8 @@ namespace not_broforce
 
             sr = GetComponent<SpriteRenderer>();
 
-            //mask = LayerMask.GetMask("Environment", "PlacedBoxes");
-            pathFinder = GameObject.FindGameObjectWithTag("PathFinder").GetComponent<PathFinding1>();
+            groundMask = LayerMask.GetMask("Environment", "PlacedBoxes");
+            //pathFinder = GameObject.FindGameObjectWithTag("PathFinder").GetComponent<PathFinding1>();
             validPlacement = false;
             validRemove = false;
             moved = false;
@@ -323,16 +324,15 @@ namespace not_broforce
 
         private bool SelectorIsNextToPlayer()
         {
-            // TODO: MaxDistance should be used and it needs SerializeField
-
-            // TODO: Selector must be on the ground to allow placing
-
             // TODO: Add IGridObject to player, use player.GridCoord
             Vector2 playerGridCoord = 
                 LevelController.GetGridCoordinates(player.transform.position);
 
             float[] playerSideGridXCoords = GetPlayerSideGridXCoords();
 
+            // TODO: MaxDistance should be used and it needs SerializeField
+            // (note that distance on either side should only be in one direction,
+            // i.e. left to left and right to right)
             //int maxDistance = 1;
 
             bool horizontalOK =
@@ -343,12 +343,24 @@ namespace not_broforce
             if (horizontalOK && verticalOK)
             {
                 //Debug.Log("The selector is next to the player");
-                return true;
+
+                // Uses raycast to determine if the selector is on top of solid ground
+                Vector3 bottomCenter = transform.position + new Vector3(0, -1 * level.GridCellWidth / 2);
+                RaycastHit2D grounded = Physics2D.Raycast(bottomCenter, Vector2.down, 0.1f, groundMask);
+
+                // TODO: Ask from Grid1 if the node is grounded
+                //Grid1 grid;
+                //Node1 node = LevelController.GetNodeFromGridCoord(grid, gridCoordinates);
+                //bool onGround = node.IsGrounded(grid);
+
+                if (grounded)
+                {
+                    //Debug.Log("BoxSelector: rayHit");
+                    return true;
+                }
             }
-            else
-            {
-                return false;
-            }
+
+            return false;
         }
 
         /// <summary>
@@ -901,7 +913,12 @@ namespace not_broforce
         {
             if (!playerGrounded || collidesWithObstacle) // || !closeEnoughToPlayer
             {
-                sr.color = generalInvalidColor;
+                // Note: invalidPlacementColor is used (instead of
+                // generalInvalidColor) because testers said that
+                // two colors marking invalidity is confusing
+
+                sr.color = invalidPlacementColor;
+                //sr.color = generalInvalidColor;
             }
             else if (validRemove)
             {
