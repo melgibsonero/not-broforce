@@ -22,6 +22,7 @@ namespace not_broforce
         int wallDirX;
         int faceDirOld;
         bool wallSliding;
+        bool earlyWalljump;
 
         private float wallSlideSpeedMax;
         public float wallStickTime = .4f;
@@ -106,7 +107,7 @@ namespace not_broforce
         
         public void OnJumpInputDown()
         {
-                if (wallSliding)
+                if (wallSliding || earlyWalljump)
                 {
                 faceDirOld = wallDirX;                  
                     if (_directionalInput.x == 0) //neutral
@@ -167,8 +168,9 @@ namespace not_broforce
         }
         private void HandleWallSliding()
         {
-            wallDirX = (controller.collisions.left) ? -1 : 1;
+            wallDirX = (controller.collisions.wjLeft) ? -1 : 1;
             wallSliding = false;
+            earlyWalljump = false;
             if ((controller.collisions.left || controller.collisions.right) && !controller.collisions.below && velocity.y < 0 && CompareWallDir(wallDirX))
             {
                 wallSliding = true;
@@ -195,6 +197,10 @@ namespace not_broforce
                 {
                     timeToWallUnstick = wallStickTime;
                 }
+            }
+            if((controller.collisions.wjLeft ||controller.collisions.wjRight) && !controller.collisions.below && velocity.y < 0 && CompareWallDir(wallDirX))
+            {
+                earlyWalljump = true;
             }
         }
 

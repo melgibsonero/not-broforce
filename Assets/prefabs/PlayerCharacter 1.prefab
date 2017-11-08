@@ -213,6 +213,7 @@ MonoBehaviour:
   horizontalRaySpacing: 0
   verticalRaySpacing: 0
   bc: {fileID: 0}
+  walljumpLenght: 2
 --- !u!114 &114715821294761918
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -6,7 +6,7 @@ using UnityEngine;
 public class Controller2D : RaycastController
 {
     float maxSlopeAngle = 60;
-
+    public float walljumpLenght = 2f;
     public CollisionInfo collisions;
 
     public override void Start()
@@ -51,6 +51,8 @@ public class Controller2D : RaycastController
         public bool above, below;
         public bool left, right;
 
+        public bool wjLeft, wjRight;
+
         public bool climbingSlope;
         public bool descendingSlope;
         public bool slidingDownSlope;
@@ -64,6 +66,7 @@ public class Controller2D : RaycastController
         {
             above = below = false;
             left = right = false;
+            wjLeft = wjRight = false;
             climbingSlope = false;
             descendingSlope = false;
             slidingDownSlope = false;
@@ -78,6 +81,7 @@ public class Controller2D : RaycastController
     {
         float directionX = collisions.faceDir;
         float rayLength = Mathf.Abs(_moveAmount.x) + skinWidth;
+        float rayLengthWJ = rayLength + walljumpLenght;
 
         if (Mathf.Abs(_moveAmount.x) < skinWidth)
         {
@@ -89,9 +93,22 @@ public class Controller2D : RaycastController
             Vector2 rayOrigin = (directionX == -1) ? raycastOrigins.bottomLeft : raycastOrigins.bottomRight;
             rayOrigin += Vector2.up * (horizontalRaySpacing * i);
             RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.right * directionX, rayLength, collisionMask);
+            RaycastHit2D hit2 = Physics2D.Raycast(rayOrigin, Vector2.right * directionX, rayLengthWJ, collisionMask);
 
-            Debug.DrawRay(rayOrigin, Vector2.right * directionX, Color.red);
+            Debug.DrawRay(rayOrigin, Vector2.right * directionX*rayLengthWJ, Color.blue);
+            Debug.DrawRay(rayOrigin, Vector2.right * directionX*rayLength, Color.red);
 
+            
+            if (hit2)
+            {
+                if (hit.distance == 0)
+                {
+                    continue;
+                }
+
+                collisions.wjLeft = directionX == -1;
+                collisions.wjRight = directionX == 1;
+            }
             if (hit)
             {
                 if(hit.distance == 0)
