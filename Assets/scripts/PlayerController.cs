@@ -14,11 +14,14 @@ namespace not_broforce
         public float accelerationTimeAirborne = .2f;
         public float accelerationTimeGrounded = .1f;
         public float moveSpeed = 6;
+        public float jumpTimer = 0.2f;
 
         public Vector2 wallJump;
         public Vector2 wallJumpOff;
         public Vector2 wallLeap;
 
+        float _jumpTimer;
+        bool jumpTimerActive;
         int wallDirX;
         int faceDirOld;
         bool wallSliding;
@@ -27,8 +30,6 @@ namespace not_broforce
         private float wallSlideSpeedMax;
         public float wallStickTime = .4f;
         private float timeToWallUnstick;
-
-        private Timer _timer;
 
         [HideInInspector]
         public float gravity;
@@ -57,13 +58,23 @@ namespace not_broforce
             controller = GetComponent<Controller2D>();
             spriterer = GetComponent<SpriteRenderer>();
 
-            _timer = new Timer(0.35f);            
+            _jumpTimer = jumpTimer;
         }
 
         private void Update()
         {
-            _timer.Check(false);
-         
+            if (jumpTimerActive)
+            {
+                _jumpTimer -= Time.deltaTime;
+                print(_jumpTimer);
+                if (_jumpTimer < 0)
+                {
+                    jumpTimerActive = false;
+                    print("jump timer deactivated");
+                    _jumpTimer = jumpTimer;
+                }
+            }
+
             CalculateVelocity();
             HandleWallSliding();
 
@@ -72,7 +83,6 @@ namespace not_broforce
             if (controller.collisions.above || controller.collisions.below)
             {
                 velocity.y = 0;
-                _timer.Stop();
                 faceDirOld = 0;
             }
             Animate();
@@ -80,15 +90,17 @@ namespace not_broforce
 
         public void SetDirectionalInput(Vector2 input)
         {
-            if (_timer.Active)
+            if (jumpTimerActive)
             {
-                _directionalInput = input*Time.deltaTime;
+                //_directionalInput = input/5;
+                print("no input: timer active");
             }
             else
             {
                 _directionalInput = input;
-            }         
+            }
         }
+
         private bool CompareWallDir(int WallDir)
         {
             if(faceDirOld == 0)
@@ -112,25 +124,22 @@ namespace not_broforce
                 faceDirOld = wallDirX;                  
                     if (_directionalInput.x == 0) //neutral
                     {
-                        _timer.Start();
                         velocity.x = -wallDirX * wallJumpOff.x;
                         velocity.y = wallJumpOff.y;
-                    print("no input");
                     }
                     if (wallDirX == _directionalInput.x) //towards the wall
                     {
-                        _timer.Start();
-                        velocity.x = -wallDirX * wallJump.x;
-                        velocity.y = wallJump.y;
-                        _directionalInput = Vector2.zero;
-                    print("towards");
+                        jumpTimerActive = true;
+                        print("jump timer activated");
+                    velocity.x = -wallDirX * wallJump.x;
+                    velocity.y = wallJump.y;
+                    _directionalInput = Vector2.zero;
                     }
                     if (-wallDirX == _directionalInput.x) //away from the wall
                     {
                     faceDirOld = wallDirX;
                     velocity.x = -wallDirX * wallLeap.x;
                     velocity.y = wallLeap.y;
-                    print("leap");
                     }
             }
                 if (controller.collisions.below)
@@ -171,7 +180,7 @@ namespace not_broforce
             wallDirX = (controller.collisions.wjLeft) ? -1 : 1;
             wallSliding = false;
             earlyWalljump = false;
-            if ((controller.collisions.left || controller.collisions.right) && !controller.collisions.below && velocity.y < 0 && CompareWallDir(wallDirX))
+            if ((controller.collisions.left || controller.collisions.right) && !controller.collisions.below/* && velocity.y < 0*/ && CompareWallDir(wallDirX))
             {
                 wallSliding = true;
                 if (velocity.y < -wallSlideSpeedMax)

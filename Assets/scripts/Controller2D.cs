@@ -101,11 +101,11 @@ public class Controller2D : RaycastController
             
             if (hit2)
             {
-                if (hit.distance == 0)
+                if (hit2.distance == 0)
                 {
                     continue;
                 }
-
+                
                 collisions.wjLeft = directionX == -1;
                 collisions.wjRight = directionX == 1;
             }
