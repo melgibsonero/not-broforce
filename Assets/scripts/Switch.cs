@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace not_broforce
 {
-    public abstract class Switch : MonoBehaviour, IGridObject
+    public abstract class Switch : Activatable, IGridObject
     {
         [SerializeField]
         private GameObject player;
@@ -13,76 +13,12 @@ namespace not_broforce
         [SerializeField]
         private Vector2 gridCoordinates;
 
-        [SerializeField]
-        private int activationCode;
-
-        //[SerializeField]
-        //private LayerMask possibleActivators;
-
-        [SerializeField]
-        private Sprite onSprite;
-
-        [SerializeField]
-        private Sprite offSprite;
-
-        private SpriteRenderer sr;
-
-        private bool activated = false;
-
         public Vector2 GridCoordinates
         {
             get { return gridCoordinates; }
             set
             {
                 gridCoordinates = value;
-            }
-        }
-
-        public virtual void Awake()
-        {
-            sr = GetComponent<SpriteRenderer>();
-
-            if (sr == null)
-            {
-                Debug.LogError("SpriteRenderer component could not " +
-                               "be found in the object.");
-            }
-        }
-
-        public int GetCode()
-        {
-            return activationCode;
-        }
-
-        public bool IsActivated()
-        {
-            return activated;
-        }
-
-        public bool IsActivated(int code)
-        {
-            return (code == activationCode && activated);
-        }
-
-        public void Activate()
-        {
-            if (!activated)
-            {
-                activated = true;
-                sr.sprite = onSprite;
-
-                //Debug.Log("Switch on");
-            }
-        }
-
-        public void Deactivate()
-        {
-            if (activated)
-            {
-                activated = false;
-                sr.sprite = offSprite;
-
-                //Debug.Log("Switch off");
             }
         }
 
@@ -148,29 +84,6 @@ namespace not_broforce
             }
 
             return activatedByBox;
-        }
-
-        private void OnDrawGizmos()
-        {
-            // Radius of a sphere
-            float radius = 0.2f;
-
-            // A point above the switch
-            //Vector3 pointAbove = transform.position + Vector3.up;
-
-            // Sets the gizmo's color green if the switch is activated
-            if (activated)
-            {
-                Gizmos.color = Color.green;
-            }
-            // Sets the gizmo's color red if the switch is not activated
-            else
-            {
-                Gizmos.color = Color.red;
-            }
-
-            // Draws a sphere
-            Gizmos.DrawSphere(transform.position, radius);
         }
     }
 }
