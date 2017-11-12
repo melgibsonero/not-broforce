@@ -7,9 +7,6 @@ namespace not_broforce
     public class GridGizmo : MonoBehaviour
     {
         [SerializeField]
-        private LevelController levelController;
-
-        [SerializeField]
         private Color color = Color.blue;
 
         [SerializeField]
@@ -21,7 +18,7 @@ namespace not_broforce
         private void OnDrawGizmos()
         {
             IGridObject gridObject = gameObject.GetComponent<IGridObject>();
-            if (gridObject != null && levelController != null)
+            if (gridObject != null)
             {
                 // Updates grid coordinates when moved in the editor
                 if (moveInEditor && !Application.isPlaying)
@@ -39,9 +36,9 @@ namespace not_broforce
                         gridObject.GridCoordinates);
 
                 // The other three corners
-                Vector3 topLeft = bottomLeft + Vector3.up * levelController.GridCellWidth;
-                Vector3 topRight = topLeft + Vector3.right * levelController.GridCellWidth;
-                Vector3 bottomRight = topRight + Vector3.down * levelController.GridCellWidth;
+                Vector3 topLeft = bottomLeft + Vector3.up * LevelController.gridCellWidth;
+                Vector3 topRight = topLeft + Vector3.right * LevelController.gridCellWidth;
+                Vector3 bottomRight = topRight + Vector3.down * LevelController.gridCellWidth;
 
                 // Top side
                 Gizmos.DrawLine(topLeft, topRight);

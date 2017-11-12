@@ -118,7 +118,10 @@ namespace not_broforce
 
             // Initializes visibility
             visibility = GetComponent<Renderer>();
+            sr = GetComponent<SpriteRenderer>();
             visibility.enabled = false;
+
+            //ShowSelector();
 
             // Sets the selector's size
             SetSize();
@@ -126,8 +129,6 @@ namespace not_broforce
             // Sets the selector's starting position (testing purposes only)
             gridCoordinates = Vector2.zero;
             transform.position = level.GridOffset;
-
-            sr = GetComponent<SpriteRenderer>();
 
             groundMask = LayerMask.GetMask("Environment", "PlacedBoxes");
             //pathFinder = GameObject.FindGameObjectWithTag("PathFinder").GetComponent<PathFinding1>();
@@ -442,13 +443,10 @@ namespace not_broforce
 
         private void HandleInput()
         {
-            if (Input.GetKeyDown(KeyCode.Q))
-            {
-                ToggleActivation();
-            }
+            HandleSelectorActivation();
 
             // Only accepts input for the selector if it is visible
-            else if (visibility.enabled)
+            if (visibility.enabled)
             {
                 if (cursor.Visible)
                 {
@@ -483,14 +481,42 @@ namespace not_broforce
                     // Input for placing and removing a box
                     if (Input.GetKeyDown(KeyCode.E))
                     {
-                        PlaceBox();
-                    }
-                    else if (Input.GetKeyDown(KeyCode.R))
-                    {
-                        RemoveBox();
+                        if (validPlacement)
+                        {
+                            PlaceBox();
+                        }
+                        else if (validRemove)
+                        {
+                            RemoveBox();
+                        }
                     }
                 }
             }
+        }
+
+        private void HandleSelectorActivation()
+        {
+            // If the left shift key is held, the selector is visible
+            if (Input.GetKey(KeyCode.LeftShift))
+            {
+                // If the selector is just now being made visible,
+                // its position is set next to the player character
+                // and placement validity is checked
+                if (!visibility.enabled)
+                {
+                    ShowSelector();
+                }
+            }
+            // If the left shift key is released, the selector is hidden
+            else if (visibility.enabled)
+            {
+                HideSelector();
+            }
+
+            //if (Input.GetKeyDown(KeyCode.Q))
+            //{
+            //    ToggleActivation();
+            //}
         }
 
         private void ToggleActivation()
@@ -646,7 +672,7 @@ namespace not_broforce
                 ChangeColor();
 
                 // Prints debug info
-                Debug.Log("Box selected");
+                //Debug.Log("Box selected");
             }
         }
 
@@ -664,7 +690,7 @@ namespace not_broforce
                 ChangeColor();
 
                 // Prints debug info
-                Debug.Log("New box place selected");
+                //Debug.Log("New box place selected");
             }
         }
 
@@ -679,7 +705,7 @@ namespace not_broforce
                 ChangeColor();
 
                 // Prints debug info
-                Debug.Log("Box unselected");
+                //Debug.Log("Box unselected");
             }
         }
 
@@ -694,7 +720,7 @@ namespace not_broforce
                 ChangeColor();
 
                 // Prints debug info
-                Debug.Log("NewBoxPlace unselected");
+                //Debug.Log("NewBoxPlace unselected");
             }
         }
 

@@ -82,17 +82,8 @@ MonoBehaviour:
   _UnitToFollow: {fileID: 0}
   _target: {x: 0, y: 0, z: 0}
   _speed: 5.5
-<<<<<<< HEAD
   _followDistance: 0.8
   _followDistanceX: 0.1
-=======
-  _followDistance: 0.72
-  _followDistanceX: 0.1
-  distanceX: 0.6
-  distanceY: 0.6
-  _thrust: 5
-  emptyPrefab: {fileID: 0}
->>>>>>> e4c95813a2a9d7e4cfd4a6900bd693f34405a5d3
   RepathTime: 1
   box: {fileID: 21300000, guid: efaa3bca597d82f4fae55dcff7f8f5bf, type: 3}
   boxLit: {fileID: 21300000, guid: 53e99e0922e3a3d4ca95b876eba1c7f0, type: 3}

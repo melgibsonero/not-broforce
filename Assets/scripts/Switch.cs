@@ -5,10 +5,10 @@ using UnityEngine;
 
 namespace not_broforce
 {
-    public class Switch : MonoBehaviour, IGridObject
+    public abstract class Switch : MonoBehaviour, IGridObject
     {
         [SerializeField]
-        private LevelController levelController;
+        private GameObject player;
 
         [SerializeField]
         private Vector2 gridCoordinates;
@@ -71,7 +71,7 @@ namespace not_broforce
                 activated = true;
                 sr.sprite = onSprite;
 
-                Debug.Log("Switch on");
+                //Debug.Log("Switch on");
             }
         }
 
@@ -82,7 +82,7 @@ namespace not_broforce
                 activated = false;
                 sr.sprite = offSprite;
 
-                Debug.Log("Switch off");
+                //Debug.Log("Switch off");
             }
         }
 
@@ -109,6 +109,68 @@ namespace not_broforce
         {
             transform.position = LevelController.GetPosFromGridCoord(
                 gridCoordinates);
+        }
+
+        /// <summary>
+        /// Checks if the player character is on the switch.
+        /// </summary>
+        protected bool CheckPlayerPresence()
+        {
+            // TODO: Add IGridObject to the player character
+            // The player character's grid coordinates
+            Vector2 playerGridCoord =
+                LevelController.GetGridCoordinates(player.transform.position);
+
+            // If the player character is on the switch, it is activated
+            bool activatedByPlayer = 
+                ActivateIfSameCoordinates(playerGridCoord);
+
+            return activatedByPlayer;
+        }
+
+        /// <summary>
+        /// Checks if any box from a list is on the switch.
+        /// </summary>
+        protected bool CheckBoxPresence(List<Box> boxes)
+        {
+            bool activatedByBox = false;
+
+            foreach (Box box in boxes)
+            {
+                activatedByBox = SameCoordinates(box.GridCoordinates);
+
+                // If the box is on the pressure plate, it is activated
+                if (activatedByBox)
+                {
+                    Activate();
+                    break;
+                }
+            }
+
+            return activatedByBox;
+        }
+
+        private void OnDrawGizmos()
+        {
+            // Radius of a sphere
+            float radius = 0.2f;
+
+            // A point above the switch
+            //Vector3 pointAbove = transform.position + Vector3.up;
+
+            // Sets the gizmo's color green if the switch is activated
+            if (activated)
+            {
+                Gizmos.color = Color.green;
+            }
+            // Sets the gizmo's color red if the switch is not activated
+            else
+            {
+                Gizmos.color = Color.red;
+            }
+
+            // Draws a sphere
+            Gizmos.DrawSphere(transform.position, radius);
         }
     }
 }
