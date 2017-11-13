@@ -54,7 +54,11 @@ namespace not_broforce
             if (!activated)
             {
                 activated = true;
-                sr.sprite = onSprite;
+
+                if (sr != null)
+                {
+                    sr.sprite = onSprite;
+                }
 
                 //Debug.Log("Activated");
             }
@@ -65,7 +69,11 @@ namespace not_broforce
             if (activated)
             {
                 activated = false;
-                sr.sprite = offSprite;
+
+                if (sr != null)
+                {
+                    sr.sprite = offSprite;
+                }
 
                 //Debug.Log("Deactivated");
             }

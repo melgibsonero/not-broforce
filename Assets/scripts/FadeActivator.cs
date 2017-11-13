@@ -5,31 +5,16 @@ using UnityEngine;
 
 namespace not_broforce
 {
-    public class PassableObstacle : Activatable
+    public class FadeActivator : Activatable
     {
-        BoxCollider2D boxCollider;
+        [SerializeField]
+        FadeToColor fade;
 
         List<Switch> compatibleSwitches;
 
         public override void Awake()
         {
-            base.Awake();
-
-            InitCollider();
-
             FindCompatibleSwitches();
-        }
-
-        private void InitCollider()
-        {
-            boxCollider = GetComponent<BoxCollider2D>();
-
-            // If a collider could not be found, an error message is printed
-            if (boxCollider == null)
-            {
-                Debug.LogError("BoxCollider2D component could " +
-                               "not be found in the object.");
-            }
         }
 
         private void FindCompatibleSwitches()
@@ -52,14 +37,14 @@ namespace not_broforce
             if (compatibleSwitches.Count == 0)
             {
                 Debug.LogError("No compatible switches could be found " +
-                               "in the scene. This PassableObstacle " +
+                               "in the scene. This FadeActivator " +
                                "cannot be activated.");
             }
         }
 
         private void Update()
         {
-            // The old and the new activation state of the obstacle
+            // The old and the new activation state of the fadeActivator
             bool oldState = IsActivated();
             bool newState = false;
 
@@ -75,32 +60,23 @@ namespace not_broforce
 
             if (oldState && !newState)
             {
-                MakeImpassable();
+                Deactivate();
             }
             else if (!oldState && newState)
             {
-                MakePassable();
+                StartFadeOut();
             }
         }
 
-        private void MakePassable()
+        private void StartFadeOut()
         {
             Activate();
-
-            if (boxCollider != null)
-            {
-                boxCollider.enabled = false;
-            }
+            fade.StartFadeOut();
         }
 
-        private void MakeImpassable()
+        private void StartFadeIn()
         {
-            Deactivate();
-
-            if (boxCollider != null)
-            {
-                boxCollider.enabled = true;
-            }
+            Activate();
         }
     }
 }
