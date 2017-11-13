@@ -100,7 +100,7 @@ namespace not_broforce
         private void Start()
         {
             // Checks if any necessary objects are not attached
-            CheckForMissingObjects();
+            CheckForErrors();
 
             // Initializes the box list
             placedBoxes = boxController.GetPlacedBoxes();
@@ -108,10 +108,6 @@ namespace not_broforce
             // Initializes the new box place next to a
             // placed box and next to the player character
             liquidNewBoxPlace = GetComponentInChildren<NewBoxPlace>();
-            //newBoxPlaceNextToPlacedBox = 
-            //    new NewBoxPlace(Vector2.zero, level, NewBoxPlace.Parent.Box);
-            //newBoxPlaceNextToPlayer = 
-            //    new NewBoxPlace(Vector2.zero, level, NewBoxPlace.Parent.Player);
 
             // Initializes the level new box place list
             InitNewBoxPlacesInLevel();
@@ -173,7 +169,7 @@ namespace not_broforce
                     > maxDistanceFromPlayer);
         }
 
-        private void CheckForMissingObjects()
+        private void CheckForErrors()
         {
             if (level == null)
             {
@@ -678,6 +674,13 @@ namespace not_broforce
             }
         }
 
+        public void RefreshSelectedBox()
+        {
+            Box temp = selectedBox;
+            selectedBox = null;
+            SelectBox(temp);
+        }
+
         private void SelectNewBoxPlace(NewBoxPlace newBoxPlace)
         {
             // TODO: Is selectedNewBoxPlace necessary? Remove if not.
@@ -788,14 +791,9 @@ namespace not_broforce
             // if any of them is in the same grid coordinates
             foreach (Box placedBox in placedBoxes)
             {
-                // Testing purposes only
-                // TODO: add IGridObject to Box and use GridCoordinates
-                Vector2 boxGridCoordinates =
-                    LevelController.GetGridCoordinates(placedBox.transform.position);
-
                 // If the box is in the same
                 // coordinates, it is selected
-                if (gridCoordinates == boxGridCoordinates)
+                if (gridCoordinates == placedBox.GridCoordinates)
                 {
                     SelectBox(placedBox);
                     return;

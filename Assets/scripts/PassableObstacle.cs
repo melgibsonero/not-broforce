@@ -7,9 +7,9 @@ namespace not_broforce
 {
     public class PassableObstacle : Activatable
     {
-        BoxCollider2D boxCollider;
+        private BoxCollider2D boxCollider;
 
-        List<Switch> compatibleSwitches;
+        private List<Switch> compatibleSwitches;
 
         public override void Awake()
         {

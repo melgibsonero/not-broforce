@@ -8,16 +8,16 @@ namespace not_broforce
     public class FadeActivator : Activatable
     {
         [SerializeField]
-        FadeToColor fade;
+        private FadeToColor fade;
 
-        List<Switch> compatibleSwitches;
+        private List<Switch> compatibleSwitches;
 
         public override void Awake()
         {
             FindCompatibleSwitches();
         }
 
-        private void FindCompatibleSwitches()
+        public void FindCompatibleSwitches()
         {
             compatibleSwitches = new List<Switch>();
 
@@ -34,12 +34,12 @@ namespace not_broforce
             }
 
             // If there are no compatible switches, an error message is printed
-            if (compatibleSwitches.Count == 0)
-            {
-                Debug.LogError("No compatible switches could be found " +
-                               "in the scene. This FadeActivator " +
-                               "cannot be activated.");
-            }
+            //if (compatibleSwitches.Count == 0)
+            //{
+            //    Debug.LogError("No compatible switches could be found " +
+            //                   "in the scene. This FadeActivator " +
+            //                   "cannot be activated.");
+            //}
         }
 
         private void Update()
@@ -64,19 +64,15 @@ namespace not_broforce
             }
             else if (!oldState && newState)
             {
-                StartFadeOut();
+                StartFade();
             }
         }
 
-        private void StartFadeOut()
+        private void StartFade()
         {
             Activate();
-            fade.StartFadeOut();
-        }
 
-        private void StartFadeIn()
-        {
-            Activate();
+            fade.StartNextFade();
         }
     }
 }

@@ -6,9 +6,7 @@ namespace not_broforce
 {
     public class LevelController : MonoBehaviour
     {
-
         public static float gridCellWidth = 1;
-
         
         public static Vector2 gridOffset = new Vector2(0.5f, 0.5f);
 

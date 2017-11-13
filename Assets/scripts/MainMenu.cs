@@ -10,6 +10,11 @@ namespace not_broforce
         [SerializeField]
         private Scene scene;
 
+        [SerializeField]
+        private FadeToColor fade;
+
+        private bool gameStarted;
+
         private enum Scene
         {
             TestZoneX,
@@ -47,12 +52,21 @@ namespace not_broforce
 
         public void StartGame()
         {
-            SceneManager.LoadScene(SceneName(scene));
+            fade.StartFadeOut();
         }
 
         public void QuitGame()
         {
             Application.Quit();
+        }
+
+        private void Update()
+        {
+            if (fade.FadedOut)
+            {
+                SceneManager.LoadScene(SceneName(scene));
+                fade.StartFadeIn();
+            }
         }
     }
 }

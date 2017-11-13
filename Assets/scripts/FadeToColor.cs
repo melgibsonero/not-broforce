@@ -11,25 +11,53 @@ namespace not_broforce
         private Color color;
 
         [SerializeField]
-        private float fadeTime;
+        private float fadeOutTime = 1;
+
+        [SerializeField]
+        private float fadeInTime = 1;
 
         [SerializeField]
         private Camera followedCamera;
 
         private SpriteRenderer sr;
 
-        private Timer fadeTimer;
-
-        private bool active;
         private bool fadeOut;
-
         private float fadeProgress;
+        private float elapsedTime;
+        private bool active;
+
+        public bool FadedOut
+        {
+            get
+            {
+                return (fadeOut && fadeProgress == 1);
+            }
+        }
+
+        public bool FadedIn
+        {
+            get
+            {
+                return (!fadeOut && fadeProgress == 1);
+            }
+        }
+
+        public void SetFollowedCamera(Camera camera)
+        {
+            followedCamera = camera;
+        }
 
         private void Start()
         {
             sr = GetComponent<SpriteRenderer>();
-            fadeTimer = new Timer(fadeTime);
 
+            CheckForErrors();
+
+            DontDestroyOnLoad(gameObject);
+        }
+
+        private void CheckForErrors()
+        {
             if (followedCamera == null)
             {
                 Debug.LogError("Camera component could " +
@@ -41,8 +69,35 @@ namespace not_broforce
                 Debug.LogError("SpriteRenderer component could " +
                                "not be found in the object.");
             }
+        }
 
-            DontDestroyOnLoad(gameObject);
+        public void ResetActivator()
+        {
+            FadeActivator activator = GetComponent<FadeActivator>();
+
+            if (activator != null)
+            {
+                activator.FindCompatibleSwitches();
+            }
+            else
+            {
+                Debug.LogError("FadeActivator component could " +
+                               "not be found in the object.");
+            }
+        }
+
+        public void StartNextFade()
+        {
+            fadeOut = !fadeOut;
+
+            if (fadeOut)
+            {
+                StartFadeOut();
+            }
+            else
+            {
+                StartFadeIn();
+            }
         }
 
         public void StartFadeOut()
@@ -60,19 +115,26 @@ namespace not_broforce
         private void StartFade()
         {
             fadeProgress = 0;
-            fadeTimer.Start();
+            elapsedTime = 0;
             active = true;
         }
 
         private void FinishFade()
         {
             fadeProgress = 1;
-            fadeTimer.Stop();
             active = false;
+        }
+
+        private void FollowCamera()
+        {
+            Vector3 newPosition = followedCamera.transform.position;
+            newPosition.z = transform.position.z;
+            transform.position = newPosition;
         }
 
         private void Update()
         {
+            // Moves the fade object to the camera's position
             if (followedCamera != null)
             {
                 FollowCamera();
@@ -80,16 +142,47 @@ namespace not_broforce
 
             if (active)
             {
-                fadeTimer.Update();
+                // Increases the elapsed time
+                elapsedTime += Time.deltaTime;
 
-                fadeProgress = (fadeTime - fadeTimer.TimeLeft()) / fadeTime;
+                // Updates the fade's progress
+                UpdateFadeProgress();
 
+                // Updates the fade object's transparency
                 UpdateTransparency();
+            }
+        }
 
-                if (fadeProgress >= 1.0f)
+        private void UpdateFadeProgress()
+        {
+            if (fadeOut)
+            {
+                if (fadeOutTime <= 0)
                 {
-                    FinishFade();
+                    fadeProgress = 1;
                 }
+                else
+                {
+                    fadeProgress = elapsedTime / fadeOutTime;
+                }
+            }
+            else
+            {
+                if (fadeInTime <= 0)
+                {
+                    fadeProgress = 1;
+                }
+                else
+                {
+                    fadeProgress = elapsedTime / fadeInTime;
+                }
+            }
+
+            // If the fade's progress is complete,
+            // the fading process is finished 
+            if (fadeProgress >= 1.0f)
+            {
+                FinishFade();
             }
         }
 
@@ -110,13 +203,6 @@ namespace not_broforce
 
                 sr.color = newColor;
             }
-        }
-
-        private void FollowCamera()
-        {
-            Vector3 newPosition = followedCamera.transform.position;
-            newPosition.z = transform.position.z;
-            transform.position = newPosition;
         }
     }
 }
