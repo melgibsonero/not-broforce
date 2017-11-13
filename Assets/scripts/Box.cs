@@ -80,9 +80,10 @@ namespace not_broforce {
 
         // Update is called once per frame
         void Update() {
+            
             if(_UnitToFollow != null)
             {
-                _target = new Vector3(_UnitToFollow.position.x + 0.18f, _UnitToFollow.position.y,0);
+                _target = new Vector3(_UnitToFollow.position.x, _UnitToFollow.position.y,0);
             }
             if(_repathTimer > 0)
             {
@@ -92,6 +93,7 @@ namespace not_broforce {
             if(controller.collisions.below && _repathTimer <= 0 && !_donePositionTaking && Vector3.Distance(transform.position,
                 _target) > _followDistance)
             {
+                Debug.Log("Repath");
                 _repathTimer = RepathTime;
                 followWaypoints = pathFinder.FindPath(transform.position, _target);
                 if(followWaypoints != null)
@@ -238,13 +240,14 @@ namespace not_broforce {
         }
 
         public bool TakePosition (Vector3 followTarget) {
-            GetComponentInChildren<EmoteChanger>().changeEmote("Sad");
             _target = followTarget;
             followWaypoints = pathFinder.FindPath(transform.position, _target);
             if(followWaypoints == null)
             {
                 return false;
             }
+
+            GetComponentInChildren<EmoteChanger>().changeEmote("Sad");
             _UnitToFollow = null;
             gridCoordinates = LevelController.GetGridCoordinates(followTarget);
             followWaypoints = null;
@@ -271,6 +274,12 @@ namespace not_broforce {
             return;
         }
 
+        public bool FindPathInStructure (Vector3 targetPos, Box boxToRemove)
+        {
+            Debug.Log(pathFinder.FindBlockedPath(transform.position, targetPos, boxToRemove));
+            //return pathFinder.FindBlockedPath(transform.position, targetPos, boxToRemove);
+            return true;
+        }
         
     }
 }
