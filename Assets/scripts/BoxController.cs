@@ -84,7 +84,9 @@ namespace not_broforce {
         /// </summary>
         private void RefreshFollowTargets() {
             for(int i = 0; i < boxes.Count; i++) {
-                boxes[i].GetComponent<SpriteRenderer>().sortingOrder = boxes.Count - i;
+                // MAKE IT WORK!!
+                boxes[i].transform.GetChild(0).GetComponent<SpriteRenderer>().sortingOrder = (boxes.Count - i) * 2;
+                boxes[i].GetComponent<SpriteRenderer>().sortingOrder = (boxes.Count - i) * 2 - 1;
                 if(i == 0) {
                     boxes[i].AddFollowTarget(GameObject.FindGameObjectWithTag("Player").transform);
                 } else {
@@ -127,20 +129,16 @@ namespace not_broforce {
         /// 
         public void CheckRemovingBoxes (Box box)
         {
-            bool checkBoxes = false;
+
             for (int i = 0; i < placedBoxes.Count; i++)
             {
                 if(placedBoxes[i] == box)
                 {
-                    checkBoxes = true;
                     removingBoxes.Add(box);
                 }
-                else if(checkBoxes)
+                else if(!placedBoxes[i].FindPathInStructure(new Vector3(placedBoxes[0].transform.position.x, placedBoxes[0].transform.position.y - 1, 0), box))
                 {
-                    if(!placedBoxes[i].FindPathInStructure(new Vector3(placedBoxes[0].transform.position.x, placedBoxes[0].transform.position.y - 1, 0), box))
-                    {
-                        removingBoxes.Add(placedBoxes[i]);
-                    }
+                    removingBoxes.Add(placedBoxes[i]);
                 }
             }
         }
@@ -165,6 +163,15 @@ namespace not_broforce {
                 removingBoxes.RemoveAt(0);
 
             }
+        }
+
+        public bool IsInStructure (Box box)
+        {
+            if(placedBoxes.Count > 0)
+            {
+                return box.FindPathInStructure(new Vector3(placedBoxes[0].transform.position.x, placedBoxes[0].transform.position.y - 1, 0), box);
+            }
+            return box.FindPathInStructure(new Vector3(transform.position.x, transform.position.y - 1, 0), box);
         }
     }
 }

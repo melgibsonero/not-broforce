@@ -20,4 +20,5 @@ public class EmoteChanger : MonoBehaviour {
             GetComponent<SpriteRenderer>().sprite = smile;
         }
     }
+   
 }

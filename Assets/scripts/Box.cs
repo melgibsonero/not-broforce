@@ -69,7 +69,6 @@ namespace not_broforce {
             boxController.addBox(this);
             _takingPosition = false;
             _donePositionTaking = false;
-
             _repathTimer = RepathTime;
 
             gravity = player.gravity;
@@ -93,7 +92,6 @@ namespace not_broforce {
             if(controller.collisions.below && _repathTimer <= 0 && !_donePositionTaking && Vector3.Distance(transform.position,
                 _target) > _followDistance)
             {
-                Debug.Log("Repath");
                 _repathTimer = RepathTime;
                 followWaypoints = pathFinder.FindPath(transform.position, _target);
                 if(followWaypoints != null)
@@ -101,6 +99,7 @@ namespace not_broforce {
                     if (followWaypoints.Count > 0)
                     {
                         _followTarget = followWaypoints[0];
+                        CheckFollowDistance();
                     }
                 }
             }
@@ -117,6 +116,7 @@ namespace not_broforce {
                     if(followWaypoints.Count > 0)
                     {
                         _followTarget = followWaypoints[0];
+                        CheckFollowDistance();
                     }
                 }
                 if(Vector3.Distance(transform.position,
@@ -128,10 +128,12 @@ namespace not_broforce {
                         if(followWaypoints.Count > 0)
                         {
                             _followTarget = followWaypoints[0];
+                            CheckFollowDistance();
                         }
                     }
                     
-                } else if (Vector3.Distance(transform.position,
+                }
+                else if (Vector3.Distance(transform.position,
                 _followTarget) < _followDistance && followWaypoints != null)
                 {
                     if(followWaypoints.Count > 0)
@@ -144,6 +146,7 @@ namespace not_broforce {
                     } else
                     {
                         _followTarget = followWaypoints[0];
+                        CheckFollowDistance();
                     }
                 }
                 if(followWaypoints != null)
@@ -226,8 +229,14 @@ namespace not_broforce {
         }
 
         private void ChangeProperties () {
-            gameObject.GetComponent<BoxCollider2D>().size = new Vector2(1f, gameObject.GetComponent<BoxCollider2D>().size.y);
             transform.position = _target;
+            if(!boxController.IsInStructure(this))
+            {
+                BackToLine();
+                boxController.addBox(this);
+                return;
+            }
+            gameObject.GetComponent<BoxCollider2D>().size = new Vector2(1f, gameObject.GetComponent<BoxCollider2D>().size.y);
             gameObject.layer = LayerMask.NameToLayer("PlacedBoxes");
             _donePositionTaking = true;
             boxController.addPlacedBox(this);
@@ -253,12 +262,13 @@ namespace not_broforce {
             followWaypoints = null;
             _takingPosition = true;
             gameObject.GetComponent<BoxCollider2D>().size = new Vector2(0.7f, gameObject.GetComponent<BoxCollider2D>().size.y);
+            BoxSelector selector = FindObjectOfType<BoxSelector>();
+            selector.RefreshSelectedBox();
             return true;
         }
 
         public void BackToLine () {
             GetComponentInChildren<EmoteChanger>().changeEmote("Smile");
-            Debug.Log("WORK WROK");
             pathFinder.UpdateNode((int)transform.position.x, (int)transform.position.y, true);
             _takingPosition = false;
             _donePositionTaking = false;
@@ -276,9 +286,19 @@ namespace not_broforce {
 
         public bool FindPathInStructure (Vector3 targetPos, Box boxToRemove)
         {
-            Debug.Log(pathFinder.FindBlockedPath(transform.position, targetPos, boxToRemove));
-            //return pathFinder.FindBlockedPath(transform.position, targetPos, boxToRemove);
-            return true;
+            return pathFinder.FindBlockedPath(transform.position, targetPos, boxToRemove);
+        }
+
+        public void CheckFollowDistance ()
+        {
+            if(pathFinder.isGrounded(_followTarget))
+            {
+                _followDistance = 0.6f;
+            }
+            else
+            {
+                _followDistance = 1.14f;
+            }
         }
         
     }
