@@ -655,8 +655,7 @@ namespace not_broforce
         {
             if (BoxCanBeRemoved())
             {
-                // ota selBox pois kun Valtteri saa valmiiksi oman juttunsa
-                boxController.RemovePlacedBox(selectedBox);
+                boxController.RemovePlacedBox();
                 UnselectBox();
             }
         }
@@ -670,8 +669,7 @@ namespace not_broforce
                 validPlacement = false;
                 validRemove = true;
 
-                // epäkommentoi kun Valtteri saa valmiiksi oman juttunsa
-                //boxController.CheckRemovingBoxes(selectedBox);
+                boxController.CheckRemovingBoxes(selectedBox);
 
                 ChangeColor();
 
@@ -706,8 +704,7 @@ namespace not_broforce
                 //validPlacement = false;
                 validRemove = false;
 
-                // epäkommentoi kun Valtteri saa valmiiksi oman juttunsa
-                //boxController.ClearRemovingBoxes();
+                boxController.ClearRemovingBoxes();
 
                 ChangeColor();
 
