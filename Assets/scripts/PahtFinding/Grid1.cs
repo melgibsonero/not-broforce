@@ -119,6 +119,7 @@ namespace not_broforce
                     grid[x, y].duplicated = false;
                     grid[x, y].used = false;
                     grid[x, y].oldParent = null;
+                    grid[x, y].isJumping = false;
 
                 }
             }

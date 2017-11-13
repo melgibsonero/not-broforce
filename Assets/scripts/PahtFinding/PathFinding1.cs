@@ -257,7 +257,15 @@ namespace not_broforce
             grid.clearList();
             return false;
         }
+
+        public bool isGrounded(Vector3 position)
+        {
+            Node1 groundedNode = grid.GetNode((int)position.x, (int)position.y);
+            if(groundedNode.IsGrounded(grid))
+            {
+                return true;
+            }
+            return false;
+        }
     }
-
-
 }
