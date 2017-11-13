@@ -165,6 +165,10 @@ namespace not_broforce
                 currentNode = currentNode.parent;
             }
             path.Reverse();
+            //for(int i = 0; i < path.Count; i++)
+            //{
+            //    Debug.Log(path[i].gridX + " Y " + path[i].gridY);
+            //}
             grid.path = path;
             return path;
         }
@@ -184,7 +188,76 @@ namespace not_broforce
             grid.GetNode(x, y).walkable = canWalk;
         }
 
-        //TODO make pathfinding for removing structures, check for ground from below if there is not use box before this one from placed box lists
+        public bool FindBlockedPath( Vector3 startPos, Vector3 targetPos, Box boxToRemove)
+        {
+            Node1 startNode = grid.NodeFromWorldPoint(startPos);
+            Node1 targetNode = grid.NodeFromWorldPoint(targetPos);
+            Node1 nodeToRemove = grid.GetNode((int)boxToRemove.transform.position.x,(int) boxToRemove.transform.position.y);
+            List<Node1> openSet = new List<Node1>();
+            HashSet<Node1> closedSet = new HashSet<Node1>();
+            openSet.Add(startNode);
+            while(openSet.Count > 0)
+            {
+                Node1 currentNode = openSet[0];
+                for(int i = 1; i < openSet.Count; i++)
+                {
+                    if(openSet[i].fCost < currentNode.fCost || openSet[i].fCost == currentNode.fCost
+                        && openSet[i].hCost < currentNode.hCost)
+                    {
+                        currentNode = openSet[i];
+                    }
+                }
+                if(grid.GetNode(currentNode.gridX, currentNode.gridY - 1).groundLayer)
+                {
+                    return true;
+                }
+                openSet.Remove(currentNode);
+                closedSet.Add(currentNode);
+                
+                if(currentNode == targetNode)
+                {
+                    RetracePath(startNode, targetNode);
+                    grid.clearList();
+                    return true;
+                }
+
+
+                foreach(Node1 neighbour in grid.GetNeighbours(currentNode))
+                {
+                    if(neighbour.gridX == nodeToRemove.gridX && neighbour.gridY == nodeToRemove.gridY)
+                    {
+                        continue;
+                    }
+                    if(neighbour.groundLayer)
+                    {
+                        continue;
+                    }
+                    if(neighbour.walkable || closedSet.Contains(neighbour))
+                    {
+                        continue;
+                    }
+                    if(grid.GetNode(neighbour.gridX,neighbour.gridY - 1).groundLayer)
+                    {
+                        return true;
+                    }
+                    int newMovementCostToNeighbour = currentNode.gCost + GetDistance(currentNode, neighbour);
+                    if(newMovementCostToNeighbour < neighbour.gCost || !openSet.Contains(neighbour))
+                    {
+                        neighbour.gCost = newMovementCostToNeighbour;
+                        neighbour.hCost = GetDistance(neighbour, targetNode);
+                        neighbour.parent = currentNode;
+
+                        if(!openSet.Contains(neighbour))
+                        {
+                            openSet.Add(neighbour);
+                        }
+                    }
+                }
+            }
+            grid.clearList();
+            return false;
+        }
     }
+
 
 }

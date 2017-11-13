@@ -20,12 +20,18 @@ namespace not_broforce
         public bool duplicated = false;
         public Node1 oldParent;
 
+        public bool groundLayer = false;
+
         public Node1( bool _walkable, Vector3 _worldPos, int _gridX, int _gridY)
         {
             walkable = _walkable;
             worldPosition = _worldPos;
             gridX = _gridX;
             gridY = _gridY;
+            if(!walkable)
+            {
+                groundLayer = true;
+            }
         }
 
         public int fCost

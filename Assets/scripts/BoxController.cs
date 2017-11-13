@@ -11,6 +11,8 @@ namespace not_broforce {
         [SerializeField]
         private List<Box> placedBoxes = new List<Box>();
 
+        protected List<Box> removingBoxes = new List<Box>();
+
         /// <summary>
         /// Removes boxes from structure.
         /// </summary>
@@ -44,7 +46,12 @@ namespace not_broforce {
             {
                 Time.timeScale = 1f;
             }
+
+            if(Input.GetKeyDown(KeyCode.L))
+            {
+                CheckRemovingBoxes(placedBoxes[1]);
             }
+        }
 
         /// <summary>
         /// Adds box to follow the player.
@@ -117,35 +124,47 @@ namespace not_broforce {
         /// <summary>
         /// Removes given box, and every box placed after given box.
         /// </summary>
-        public void RemovePlacedBox (Box box) {
-
-            List<int> boxIndexes = new List<int>();
-
-            for(int i = 0; i < placedBoxes.Count; i++)
+        /// 
+        public void CheckRemovingBoxes (Box box)
+        {
+            bool checkBoxes = false;
+            for (int i = 0; i < placedBoxes.Count; i++)
             {
                 if(placedBoxes[i] == box)
                 {
-
-                    boxIndexes.Add(i);
-                    removeBoxesAfter = true;
+                    checkBoxes = true;
+                    removingBoxes.Add(box);
                 }
-                else if(removeBoxesAfter && placedBoxes.Count > i)
+                else if(checkBoxes)
                 {
-
-                    boxIndexes.Add(i);
+                    if(!placedBoxes[i].FindPathInStructure(new Vector3(placedBoxes[0].transform.position.x, placedBoxes[0].transform.position.y - 1, 0), box))
+                    {
+                        removingBoxes.Add(placedBoxes[i]);
+                    }
                 }
             }
-            boxIndexes.Reverse();
-            while(boxIndexes.Count > 0)
+        }
+
+        public void ClearRemovingBoxes ()
+        {
+            removingBoxes.Clear();
+        }
+
+        /// <summary>
+        /// Removes given box, and every box placed after given box.
+        /// </summary>
+        public void RemovePlacedBox () {
+
+            
+            while(removingBoxes.Count > 0)
             {
-                Box boxes = placedBoxes[boxIndexes[0]];
-                placedBoxes.RemoveAt(boxIndexes[0]);
-                boxIndexes.RemoveAt(0);
-                addBox(boxes);
-                boxes.BackToLine();
+                Box box = removingBoxes[0];
+                placedBoxes.Remove(box);
+                addBox(box);
+                box.BackToLine();
+                removingBoxes.RemoveAt(0);
 
             }
-            removeBoxesAfter = false;
         }
     }
 }
