@@ -15,7 +15,6 @@ namespace not_broforce
         private void Awake()
         {
             FindFade();
-            fade.ResetActivator();
             FadeIn();
         }
 
@@ -25,13 +24,14 @@ namespace not_broforce
 
             if (fade == null)
             {
-                Debug.LogError("A GameObject with aFadeToColor component " +
+                Debug.LogError("A GameObject with a FadeToColor component " +
                                "could not be found in the scene.");
 
                 return;
             }
 
             fade.SetFollowedCamera(gameCamera);
+            fade.ResetCompatibleSwitches();
         }
 
         public FadeToColor GetFade()

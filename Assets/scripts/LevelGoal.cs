@@ -16,8 +16,20 @@ namespace not_broforce
                 if (goalReached)
                 {
                     Debug.Log("LEVEL COMPLETED!");
+                    SaveGame();
                 }
             }
+        }
+
+        private void SaveGame()
+        {
+            int levelsCompleted = PlayerPrefs.GetInt("levelsCompleted", 0);
+            levelsCompleted++;
+            PlayerPrefs.SetInt("levelsCompleted", levelsCompleted);
+
+            Debug.Log("levelsCompleted: " + levelsCompleted);
+
+            PlayerPrefs.Save();
         }
     }
 }

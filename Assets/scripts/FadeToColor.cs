@@ -71,7 +71,7 @@ namespace not_broforce
             }
         }
 
-        public void ResetActivator()
+        public void ResetCompatibleSwitches()
         {
             FadeActivator activator = GetComponent<FadeActivator>();
 

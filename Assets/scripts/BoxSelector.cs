@@ -684,8 +684,6 @@ namespace not_broforce
 
         private void SelectNewBoxPlace(NewBoxPlace newBoxPlace)
         {
-            // TODO: Is selectedNewBoxPlace necessary? Remove if not.
-
             if (newBoxPlace != selectedNewBoxPlace)
             {
                 selectedBox = null;
@@ -705,7 +703,6 @@ namespace not_broforce
             if (validRemove)
             {
                 selectedBox = null;
-                //validPlacement = false;
                 validRemove = false;
 
                 boxController.ClearRemovingBoxes();
@@ -723,7 +720,6 @@ namespace not_broforce
             {
                 selectedNewBoxPlace = null;
                 validPlacement = false;
-                //validRemove = false;
 
                 ChangeColor();
 
@@ -870,70 +866,6 @@ namespace not_broforce
                 collidesWithObstacle = false;
             }
         }
-
-        /// <summary>
-        /// Goes through the box list and selects the first box that
-        /// intersects with the selector. The amount of overlap needed
-        /// can be controlled with the modifier.
-        /// </summary>
-        /// <param name="modifier">the required overlap modifier
-        /// (1 = any overlap)</param>
-        /// <returns>was a box selected</returns>
-        //private bool SelectBoxUnderSelector(float modifier)
-        //{
-        //    Box box = GetBoxUnderSelector(modifier);
-
-        //    if (box != null)
-        //    {
-        //        SelectBox(box);
-
-        //        return true;
-        //    }
-        //    else
-        //    {
-        //        return false;
-        //    }
-        //}
-
-        /// <summary>
-        /// Goes through the box list and checks if a box
-        /// intersects with the selector. The amount of overlap
-        /// needed can be controlled with the modifier.
-        /// </summary>
-        /// <param name="modifier">the required overlap modifier
-        /// (1 = any overlap)</param>
-        /// <returns>a box which the selector intersects with</returns>
-        //private Box GetBoxUnderSelector(float modifier)
-        //{
-        //    // Goes through each placed box
-        //    foreach (Box box in placedBoxes)
-        //    {
-        //        bool intersects = false;
-
-        //        if (cursor.Visible)
-        //        {
-        //            intersects = Utils.ColliderContainsPoint(
-        //                box.GetComponent<BoxCollider2D>(),
-        //                cursor.Position);
-        //        }
-        //        else
-        //        {
-        //            intersects = Utils.CollidersIntersect(
-        //                GetComponent<BoxCollider2D>(),
-        //                box.GetComponent<BoxCollider2D>(),
-        //                modifier);
-        //        }
-
-        //        // Checks if the selector intersects with an
-        //        // existing box and if so, makes that box selected
-        //        if (intersects)
-        //        {
-        //            return box;
-        //        }
-        //    }
-
-        //    return null;
-        //}
 
         /// <summary>
         /// Sets the selector's color based on its status.

@@ -92,10 +92,24 @@ namespace not_broforce
             {
                 Gizmos.color = Color.green;
             }
-            // Sets the gizmo's color red if the switch is not activated
+            // Sets the gizmo's color to correspond with the
+            // switch's activation code if it is not activated
             else
             {
-                Gizmos.color = Color.red;
+                if (activationCode <= 0)
+                {
+                    Gizmos.color = Color.black;
+                }
+                else
+                {
+                    // TODO: At least 5 easily told apart colors
+
+                    Gizmos.color = new Color(1,
+                                             1 - (0.1f * 2 * activationCode),
+                                             1 - 0.1f * 1 * activationCode);
+                }
+
+                //Gizmos.color = Color.red;
             }
 
             // Draws a sphere
