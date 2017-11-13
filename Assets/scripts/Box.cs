@@ -242,6 +242,8 @@ namespace not_broforce {
             boxController.addPlacedBox(this);
             pathFinder.UpdateNode((int)transform.position.x, (int)transform.position.y, false);
             GetComponent<SpriteRenderer>().sprite = boxLit;
+            BoxSelector selector = FindObjectOfType<BoxSelector>();
+            selector.RefreshSelectedBox();
         }
 
         public void RemoveFollowTarget () {
@@ -262,8 +264,6 @@ namespace not_broforce {
             followWaypoints = null;
             _takingPosition = true;
             gameObject.GetComponent<BoxCollider2D>().size = new Vector2(0.7f, gameObject.GetComponent<BoxCollider2D>().size.y);
-            BoxSelector selector = FindObjectOfType<BoxSelector>();
-            selector.RefreshSelectedBox();
             return true;
         }
 

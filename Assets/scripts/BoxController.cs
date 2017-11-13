@@ -84,7 +84,6 @@ namespace not_broforce {
         /// </summary>
         private void RefreshFollowTargets() {
             for(int i = 0; i < boxes.Count; i++) {
-                // MAKE IT WORK!!
                 boxes[i].transform.GetChild(0).GetComponent<SpriteRenderer>().sortingOrder = (boxes.Count - i) * 2;
                 boxes[i].GetComponent<SpriteRenderer>().sortingOrder = (boxes.Count - i) * 2 - 1;
                 if(i == 0) {

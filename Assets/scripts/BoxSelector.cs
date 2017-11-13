@@ -678,6 +678,7 @@ namespace not_broforce
         {
             Box temp = selectedBox;
             selectedBox = null;
+            boxController.ClearRemovingBoxes();
             SelectBox(temp);
         }
 
