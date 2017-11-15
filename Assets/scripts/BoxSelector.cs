@@ -444,7 +444,7 @@ namespace not_broforce
             // Only accepts input for the selector if it is visible
             if (visibility.enabled)
             {
-                if (cursor.Visible)
+                if (true) //cursor.Visible)
                 {
                     MouseMovevent();
 
@@ -608,22 +608,30 @@ namespace not_broforce
 
         private void ShowSelector()
         {
+            // For testing purposes only
+
             // Makes the selector visible
             visibility.enabled = true;
 
-            // The selector is moved with directional buttons
-            // -> the selector appears next to the player character
-            if (!cursor.Visible)
-            {
-                PlaceSelectorNextToPlayer();
-                closeEnoughToPlayer = true;
-            }
-            // The selector is moved with the mouse
-            // -> the selector appears under the mouse cursor
-            else
-            {
-                MouseMovevent();
-            }
+            MouseMovevent();
+            cursor.Visible = false;
+
+            //// Makes the selector visible
+            //visibility.enabled = true;
+
+            //// The selector is moved with directional buttons
+            //// -> the selector appears next to the player character
+            //if (!cursor.Visible)
+            //{
+            //    PlaceSelectorNextToPlayer();
+            //    closeEnoughToPlayer = true;
+            //}
+            //// The selector is moved with the mouse
+            //// -> the selector appears under the mouse cursor
+            //else
+            //{
+            //    MouseMovevent();
+            //}
         }
 
         private void HideSelector()
@@ -631,6 +639,9 @@ namespace not_broforce
             visibility.enabled = false;
             collidesWithObstacle = false;
             UnselectAll();
+
+            // For testing purposes only
+            cursor.Visible = true;
         }
 
         private void PlaceBox()
