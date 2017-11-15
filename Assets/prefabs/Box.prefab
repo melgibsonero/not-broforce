@@ -24,7 +24,7 @@ GameObject:
   - component: {fileID: 114921012555645608}
   - component: {fileID: 114755926647563912}
   m_Layer: 8
-  m_Name: BackupBox (5)
+  m_Name: Box
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -191,6 +191,8 @@ SpriteRenderer:
   m_Size: {x: 2.56, y: 2.56}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
+  m_MaskInteraction: 0
 --- !u!212 &212546700093783396
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -231,3 +233,5 @@ SpriteRenderer:
   m_Size: {x: 1.65, y: 1.65}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
+  m_MaskInteraction: 0

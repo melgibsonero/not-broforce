@@ -42,8 +42,9 @@ namespace not_broforce
 
         Vector2 _directionalInput;
 
-        Controller2D controller;
-        SpriteRenderer spriterer;
+        Controller2D _controller;
+        //SpriteRenderer _spriterer;
+        Animator _animation;
 
         private void Awake()
         {
@@ -55,8 +56,8 @@ namespace not_broforce
 
         private void Start()
         {
-            controller = GetComponent<Controller2D>();
-            spriterer = GetComponent<SpriteRenderer>();
+            _controller = GetComponent<Controller2D>();
+            _animation = GetComponent<Animator>();
 
             _jumpTimer = jumpTimer;
         }
@@ -66,11 +67,9 @@ namespace not_broforce
             if (jumpTimerActive)
             {
                 _jumpTimer -= Time.deltaTime;
-                print(_jumpTimer);
                 if (_jumpTimer < 0)
                 {
                     jumpTimerActive = false;
-                    print("jump timer deactivated");
                     _jumpTimer = jumpTimer;
                 }
             }
@@ -78,9 +77,9 @@ namespace not_broforce
             CalculateVelocity();
             HandleWallSliding();
 
-            controller.Move(velocity * Time.deltaTime);
+            _controller.Move(velocity * Time.deltaTime);
 
-            if (controller.collisions.above || controller.collisions.below)
+            if (_controller.collisions.above || _controller.collisions.below)
             {
                 velocity.y = 0;
                 faceDirOld = 0;
@@ -90,12 +89,7 @@ namespace not_broforce
 
         public void SetDirectionalInput(Vector2 input)
         {
-            if (jumpTimerActive)
-            {
-                //_directionalInput = input/5;
-                print("no input: timer active");
-            }
-            else
+            if (!jumpTimerActive)
             {
                 _directionalInput = input;
             }
@@ -130,7 +124,6 @@ namespace not_broforce
                     if (wallDirX == _directionalInput.x) //towards the wall
                     {
                         jumpTimerActive = true;
-                        print("jump timer activated");
                     velocity.x = -wallDirX * wallJump.x;
                     velocity.y = wallJump.y;
                     _directionalInput = Vector2.zero;
@@ -142,7 +135,7 @@ namespace not_broforce
                     velocity.y = wallLeap.y;
                     }
             }
-                if (controller.collisions.below)
+                if (_controller.collisions.below)
                 {
                     velocity.y = maxJumpVelocity;
                 }
@@ -157,30 +150,50 @@ namespace not_broforce
 
         public bool GetGrounded()
         {
-            return controller.collisions.below;
+            return _controller.collisions.below;
         }
 
-        void Animate()
+        void Animate() //Every reference to Animator should be here
         {
-            int directionX = controller.collisions.faceDir; //check facing direction
-
+            int directionX = _controller.collisions.faceDir; //check facing direction
 
             if (directionX == -1)
             {
-                spriterer.flipX = true;
+                transform.localScale = new Vector3(-1, 1, 1);
             }
             if (directionX == 1)
             {
-                spriterer.flipX = false;
+                transform.localScale = new Vector3(1, 1, 1);
             }
 
+            //If horizontal movement is not zero.
+            if (_directionalInput != Vector2.zero)
+            {
+                _animation.SetBool("moving", true);
+            }
+            if(_directionalInput == Vector2.zero)
+            {
+                _animation.SetBool("moving", false);
+            }
+            
+            /* Till we get an animation for it. I can't figure out that shit
+            //If Vertical movement is not zero.
+            if (velocity.y > 0)
+            {
+                _animation.SetBool("jumping", true);
+            }
+            if (_controller.collisions.below)
+            {
+                _animation.SetBool("jumping", false);
+            }
+            */
         }
         private void HandleWallSliding()
         {
-            wallDirX = (controller.collisions.wjLeft) ? -1 : 1;
+            wallDirX = (_controller.collisions.wjLeft) ? -1 : 1;
             wallSliding = false;
             earlyWalljump = false;
-            if ((controller.collisions.left || controller.collisions.right) && !controller.collisions.below/* && velocity.y < 0*/ && CompareWallDir(wallDirX))
+            if ((_controller.collisions.left || _controller.collisions.right) && !_controller.collisions.below/* && velocity.y < 0*/ && CompareWallDir(wallDirX))
             {
                 wallSliding = true;
                 if (velocity.y < -wallSlideSpeedMax)
@@ -207,7 +220,7 @@ namespace not_broforce
                     timeToWallUnstick = wallStickTime;
                 }
             }
-            if((controller.collisions.wjLeft ||controller.collisions.wjRight) && !controller.collisions.below && velocity.y < 0 && CompareWallDir(wallDirX))
+            if((_controller.collisions.wjLeft ||_controller.collisions.wjRight) && !_controller.collisions.below && velocity.y < 0 && CompareWallDir(wallDirX))
             {
                 earlyWalljump = true;
             }
@@ -216,7 +229,7 @@ namespace not_broforce
         private void CalculateVelocity()
         {
             float targetVelocityX = _directionalInput.x * moveSpeed;
-            velocity.x = Mathf.SmoothDamp(velocity.x, targetVelocityX, ref velocityXSmoothing, (controller.collisions.below) ? accelerationTimeGrounded : accelerationTimeAirborne);
+            velocity.x = Mathf.SmoothDamp(velocity.x, targetVelocityX, ref velocityXSmoothing, (_controller.collisions.below) ? accelerationTimeGrounded : accelerationTimeAirborne);
             velocity.y += gravity * Time.deltaTime;
         }
     }

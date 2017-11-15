@@ -158,10 +158,13 @@ namespace not_broforce {
                 }
                 
                 velocity.y += gravity * Time.deltaTime;
-                if(velocity.y < -5)
+
+                //Onks tää varmasti pakollinen? Näyttää hölmöltä ku laatikot liitää
+                if (velocity.y < -5)
                 {
                     velocity.y = -5;
                 }
+                
                 controller.Move(velocity * Time.deltaTime);
             }
             
