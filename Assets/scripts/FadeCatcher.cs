@@ -20,18 +20,52 @@ namespace not_broforce
 
         private void FindFade()
         {
-            fade = FindObjectOfType<FadeToColor>();
+            // Finds all fade objects in the scene
+            FadeToColor[] fades = FindObjectsOfType<FadeToColor>();
 
-            if (fade == null)
+            // A temporary fade to which a possible debug fade is set
+            FadeToColor tempFade = null;
+
+            // Goes through all fade objects
+            foreach (FadeToColor f in fades)
             {
-                Debug.LogError("A GameObject with a FadeToColor component " +
-                               "could not be found in the scene.");
-
-                return;
+                // If the fade is being used, it is
+                // immediately set to fade and the
+                // loop is ended
+                if (f.IsBeingUsed)
+                {
+                    fade = f;
+                    Debug.Log("Fade successfully caught from previous scene");
+                    break;
+                }
+                // Otherwise the unused fade is set to tempFade
+                else
+                {
+                    tempFade = f;
+                }
             }
 
-            fade.SetFollowedCamera(gameCamera);
-            fade.ResetCompatibleSwitches();
+            // No used fade found
+            if (fade == null)
+            {
+                // An unused fade found
+                if (tempFade != null)
+                {
+                    fade = tempFade;
+                    Debug.Log("Only a debug fade found");
+                }
+                // No fade found
+                else
+                {
+                    Debug.LogError("A GameObject with a FadeToColor component " +
+                                   "could not be found in the scene.");
+
+                    return;
+                }
+            }
+
+            // Initializes the fade
+            fade.InitAfterSceneChange(gameCamera);
         }
 
         public FadeToColor GetFade()

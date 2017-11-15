@@ -7,14 +7,24 @@ namespace not_broforce
 {
     public class FadeActivator : Activatable
     {
-        [SerializeField]
         private FadeToColor fade;
-
         private List<Switch> compatibleSwitches;
 
         public override void Awake()
         {
+            FindFade();
             FindCompatibleSwitches();
+        }
+
+        private void FindFade()
+        {
+            fade = FindObjectOfType<FadeToColor>();
+
+            if (fade == null)
+            {
+                Debug.LogError("FadeToColor component " +
+                               "could not be found.");
+            }
         }
 
         public void FindCompatibleSwitches()
@@ -72,7 +82,10 @@ namespace not_broforce
         {
             Activate();
 
-            fade.StartNextFade();
+            if (fade != null)
+            {
+                fade.StartNextFade();
+            }
         }
     }
 }
