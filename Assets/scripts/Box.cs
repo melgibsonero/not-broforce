@@ -112,16 +112,19 @@ namespace not_broforce {
             }
             else{
                 if(!_takingPosition && followWaypoints != null && Vector3.Distance(transform.position,
-                _target) > _followDistance) {
+                _target) > _followDistance)
+                {
                     if(followWaypoints.Count > 0)
                     {
                         _followTarget = followWaypoints[0];
                         CheckFollowDistance();
                     }
                 }
+                Debug.Log(followWaypoints);
                 if(Vector3.Distance(transform.position,
                 _target) > _followDistance && followWaypoints == null)
                 {
+                   
                     followWaypoints = pathFinder.FindPath(transform.position, _target);
                     if(followWaypoints != null)
                     {

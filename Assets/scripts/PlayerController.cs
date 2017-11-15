@@ -193,13 +193,14 @@ namespace not_broforce
             wallDirX = (_controller.collisions.wjLeft) ? -1 : 1;
             wallSliding = false;
             earlyWalljump = false;
-            if ((_controller.collisions.left || _controller.collisions.right) && !_controller.collisions.below/* && velocity.y < 0*/ && CompareWallDir(wallDirX))
+            if ((_controller.collisions.left || _controller.collisions.right) && !_controller.collisions.below/* && velocity.y < 0 */&& CompareWallDir(wallDirX))
             {
                 wallSliding = true;
-                if (velocity.y < -wallSlideSpeedMax)
+                /*if (velocity.y < -wallSlideSpeedMax)
                 {
                     velocity.y = -wallSlideSpeedMax;
                 }
+                */
 
                 if (timeToWallUnstick > 0)
                 {
@@ -230,7 +231,11 @@ namespace not_broforce
         {
             float targetVelocityX = _directionalInput.x * moveSpeed;
             velocity.x = Mathf.SmoothDamp(velocity.x, targetVelocityX, ref velocityXSmoothing, (_controller.collisions.below) ? accelerationTimeGrounded : accelerationTimeAirborne);
-            velocity.y += gravity * Time.deltaTime;
+			if (wallSliding && velocity.y < 0) {
+				velocity.y += gravity / 3 * Time.deltaTime;
+			} else {
+				velocity.y += gravity * Time.deltaTime;
+			}
         }
     }
     

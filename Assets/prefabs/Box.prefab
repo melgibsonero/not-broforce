@@ -150,7 +150,7 @@ MonoBehaviour:
   horizontalRaySpacing: 0
   verticalRaySpacing: 0
   bc: {fileID: 0}
-  walljumpLenght: 2
+  walljumpLenght: 0
 --- !u!212 &212215384010310920
 SpriteRenderer:
   m_ObjectHideFlags: 1

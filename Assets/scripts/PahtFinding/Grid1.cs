@@ -33,7 +33,7 @@ namespace not_broforce
                 {
                     
                     Vector3 worldPoint = worldBottomLeft + Vector3.right * (x * nodeDiameter + noderRadius) + Vector3.up * (y * nodeDiameter + noderRadius);
-                    bool walkable = !(Physics2D.OverlapCircle(worldPoint, noderRadius,unwalkableMask));
+                    bool walkable = !(Physics2D.OverlapCircle(worldPoint, noderRadius*0.9f,unwalkableMask));
                     grid[x, y] = new Node1(walkable, worldPoint, x, y);
 
                 }
