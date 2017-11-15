@@ -150,7 +150,7 @@ namespace not_broforce
                 }
             }
             grid.clearList();
-            Debug.Log("not Found");
+            Debug.Log("Path not found!");
             return null;
         }
 

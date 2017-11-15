@@ -126,7 +126,7 @@ MonoBehaviour:
   _UnitToFollow: {fileID: 0}
   _target: {x: 0, y: 0, z: 0}
   _speed: 5.5
-  _followDistance: 0.8
+  _followDistance: 1.14
   _followDistanceX: 0.1
   RepathTime: 1
   box: {fileID: 21300000, guid: efaa3bca597d82f4fae55dcff7f8f5bf, type: 3}
@@ -150,6 +150,7 @@ MonoBehaviour:
   horizontalRaySpacing: 0
   verticalRaySpacing: 0
   bc: {fileID: 0}
+  walljumpLenght: 2
 --- !u!212 &212126876317250006
 SpriteRenderer:
   m_ObjectHideFlags: 1
