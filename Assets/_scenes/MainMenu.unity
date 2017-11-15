@@ -448,6 +448,16 @@ Prefab:
       propertyPath: followedCamera
       value: 
       objectReference: {fileID: 1539961323}
+    - target: {fileID: 114439001856602416, guid: 66b72bee0560bf347b07f2d5fbd97809,
+        type: 2}
+      propertyPath: fadeOutTime
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 114439001856602416, guid: 66b72bee0560bf347b07f2d5fbd97809,
+        type: 2}
+      propertyPath: fadeInTime
+      value: 0.5
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 66b72bee0560bf347b07f2d5fbd97809, type: 2}
   m_IsPrefabParent: 0

@@ -665,6 +665,11 @@ Prefab:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 114863979909829612, guid: c85aa576d42822d409bf2e66aa74a1ac,
+        type: 2}
+      propertyPath: walljumpLenght
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: c85aa576d42822d409bf2e66aa74a1ac, type: 2}
   m_IsPrefabParent: 0
@@ -3792,11 +3797,11 @@ Prefab:
     m_Modifications:
     - target: {fileID: 4718510448312072, guid: 616e0db28095c0b438ffe7989953588e, type: 2}
       propertyPath: m_LocalPosition.x
-      value: 5.58
+      value: 10.08
       objectReference: {fileID: 0}
     - target: {fileID: 4718510448312072, guid: 616e0db28095c0b438ffe7989953588e, type: 2}
       propertyPath: m_LocalPosition.y
-      value: 12.71
+      value: 8.12
       objectReference: {fileID: 0}
     - target: {fileID: 4718510448312072, guid: 616e0db28095c0b438ffe7989953588e, type: 2}
       propertyPath: m_LocalPosition.z
@@ -3825,61 +3830,6 @@ Prefab:
     - target: {fileID: 1764311984731204, guid: 616e0db28095c0b438ffe7989953588e, type: 2}
       propertyPath: m_Name
       value: PlayerCharacter
-      objectReference: {fileID: 0}
-    - target: {fileID: 114250916279208868, guid: 616e0db28095c0b438ffe7989953588e,
-        type: 2}
-      propertyPath: wallJump.x
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 114250916279208868, guid: 616e0db28095c0b438ffe7989953588e,
-        type: 2}
-      propertyPath: wallJump.y
-      value: 7
-      objectReference: {fileID: 0}
-    - target: {fileID: 114250916279208868, guid: 616e0db28095c0b438ffe7989953588e,
-        type: 2}
-      propertyPath: wallStickTime
-      value: 0.15
-      objectReference: {fileID: 0}
-    - target: {fileID: 114250916279208868, guid: 616e0db28095c0b438ffe7989953588e,
-        type: 2}
-      propertyPath: accelerationTimeAirborne
-      value: 0.05
-      objectReference: {fileID: 0}
-    - target: {fileID: 114250916279208868, guid: 616e0db28095c0b438ffe7989953588e,
-        type: 2}
-      propertyPath: wallJumpOff.x
-      value: 14
-      objectReference: {fileID: 0}
-    - target: {fileID: 114250916279208868, guid: 616e0db28095c0b438ffe7989953588e,
-        type: 2}
-      propertyPath: wallJumpOff.y
-      value: 6
-      objectReference: {fileID: 0}
-    - target: {fileID: 114250916279208868, guid: 616e0db28095c0b438ffe7989953588e,
-        type: 2}
-      propertyPath: accelerationTimeGrounded
-      value: 0.02
-      objectReference: {fileID: 0}
-    - target: {fileID: 114502470825926832, guid: 616e0db28095c0b438ffe7989953588e,
-        type: 2}
-      propertyPath: walljumpLenght
-      value: 0.25
-      objectReference: {fileID: 0}
-    - target: {fileID: 114250916279208868, guid: 616e0db28095c0b438ffe7989953588e,
-        type: 2}
-      propertyPath: wallLeap.y
-      value: 8
-      objectReference: {fileID: 0}
-    - target: {fileID: 114250916279208868, guid: 616e0db28095c0b438ffe7989953588e,
-        type: 2}
-      propertyPath: wallLeap.x
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 114250916279208868, guid: 616e0db28095c0b438ffe7989953588e,
-        type: 2}
-      propertyPath: moveSpeed
-      value: 4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 616e0db28095c0b438ffe7989953588e, type: 2}

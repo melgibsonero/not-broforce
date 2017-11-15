@@ -16,9 +16,11 @@ namespace not_broforce
         // Update is called once per frame
         void Update()
         {
+            //Left and right movement
             Vector2 directionalInput = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
             player.SetDirectionalInput(directionalInput);
 
+            //Jumping
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 player.OnJumpInputDown();
@@ -27,6 +29,7 @@ namespace not_broforce
             {
                 player.OnJumpInputUp();
             }
+            //Other things
         }
     }
 }

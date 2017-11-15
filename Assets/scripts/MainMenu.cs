@@ -65,7 +65,7 @@ namespace not_broforce
             if (fade.FadedOut)
             {
                 SceneManager.LoadScene(SceneName(scene));
-                fade.StartFadeIn();
+                //fade.StartFadeIn();
             }
         }
     }

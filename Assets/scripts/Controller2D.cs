@@ -6,7 +6,7 @@ using UnityEngine;
 public class Controller2D : RaycastController
 {
     float maxSlopeAngle = 60;
-    public float walljumpLenght = 2f;
+    public float walljumpLenght = 0f;
     public CollisionInfo collisions;
 
     public override void Start()
