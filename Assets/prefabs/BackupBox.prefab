@@ -150,7 +150,7 @@ MonoBehaviour:
   horizontalRaySpacing: 0
   verticalRaySpacing: 0
   bc: {fileID: 0}
-  walljumpLenght: 2
+  walljumpLenght: 0
 --- !u!212 &212126876317250006
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -191,6 +191,8 @@ SpriteRenderer:
   m_Size: {x: 1.65, y: 1.65}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
+  m_MaskInteraction: 0
 --- !u!212 &212437803299889850
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -231,3 +233,5 @@ SpriteRenderer:
   m_Size: {x: 2.56, y: 2.56}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
+  m_MaskInteraction: 0

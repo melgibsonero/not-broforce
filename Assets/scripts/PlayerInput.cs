@@ -21,11 +21,11 @@ namespace not_broforce
             player.SetDirectionalInput(directionalInput);
 
             //Jumping
-            if (Input.GetKeyDown(KeyCode.Space))
+			if (Input.GetKeyDown(KeyCode.Space)||Input.GetKeyDown(KeyCode.W))
             {
                 player.OnJumpInputDown();
             }
-            if (Input.GetKeyUp(KeyCode.Space))
+			if (Input.GetKeyUp(KeyCode.Space)||Input.GetKeyUp(KeyCode.W))
             {
                 player.OnJumpInputUp();
             }
