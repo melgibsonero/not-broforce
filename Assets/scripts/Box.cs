@@ -301,13 +301,14 @@ namespace not_broforce {
 
         public void CheckFollowDistance ()
         {
-            if(pathFinder.isGrounded(_followTarget))
+            if(pathFinder.isGrounded(_followTarget) || pathFinder.isGrounded(new Vector3(_followTarget.x,_followTarget.y - 1, _followTarget.z)))
             {
-                _followDistance = 0.6f;
+                _followDistance = 0.45f;
+                Debug.Log(_followTarget);
             }
             else
             {
-                _followDistance = 1.14f;
+                _followDistance = 1.1f;
             }
         }
         
