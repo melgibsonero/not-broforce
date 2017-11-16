@@ -120,15 +120,17 @@ namespace not_broforce {
         /// Places box for player pointed position
         /// </summary>
         /// <param name="followTarget"></param>
-        public void PlaceBox (Vector3 followTarget) {
+        public bool PlaceBox (Vector3 followTarget) {
+            bool pathFound = false;
             if (boxes.Count > 0) {
                 Box obj = boxes[0];
-                bool pathFound = obj.TakePosition(followTarget);
+                pathFound = obj.TakePosition(followTarget);
                 if(pathFound)
                 {
                     removeBox();
                 }
             }
+            return pathFound;
 
         }
 
