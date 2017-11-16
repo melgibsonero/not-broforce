@@ -247,8 +247,8 @@ namespace not_broforce
             }
 
             // Prints debug info
-            Debug.Log("New box places found in the level: "
-                      + newBoxPlacesInLevel.Count);
+            //Debug.Log("New box places found in the level: "
+            //          + newBoxPlacesInLevel.Count);
         }
 
         /// <summary>
@@ -646,24 +646,16 @@ namespace not_broforce
 
         private void AddReservedBoxPlace()
         {
-            // TODO: Ask from the BoxController if a box
-            // cannot find a path to the target position
-
-            // Testing purposes only
-            if (reservedBoxPlaceCoords.Count == 3)
-            {
-                reservedBoxPlaceCoords.Clear();
-                Debug.Log("Reserved spaces reset");
-            }
+            //// Testing purposes only
+            //if (reservedBoxPlaceCoords.Count == 3)
+            //{
+            //    reservedBoxPlaceCoords.Clear();
+            //    Debug.Log("Reserved spaces reset");
+            //}
 
             reservedBoxPlaceCoords.Add(gridCoordinates);
 
-            //if (reservedBoxPlaceCoords.Count >= 3)
-            //{
-            //    reservedBoxPlaceCoords.RemoveAt(0);
-            //}
-
-            Debug.Log("Reserved space added. Spaces: " + reservedBoxPlaceCoords.Count);
+            //Debug.Log("Reserved space added. Spaces: " + reservedBoxPlaceCoords.Count);
         }
 
         private void UpdateReservedBoxPlaces()
@@ -676,7 +668,9 @@ namespace not_broforce
                 if (placedBox != null)
                 {
                     reservedBoxPlaceCoords.RemoveAt(i);
-                    Debug.Log("Reserved space removed. Spaces left: " + reservedBoxPlaceCoords.Count);
+
+                    //Debug.Log("Reserved space removed. Spaces left: " +
+                    //    reservedBoxPlaceCoords.Count);
                 }
             }
         }
@@ -685,14 +679,17 @@ namespace not_broforce
         {
             if (BoxCanBePlaced())
             {
-                AddReservedBoxPlace();
+                bool placed = boxController.PlaceBox(transform.position);
 
-                boxController.PlaceBox(transform.position);
+                if (placed)
+                {
+                    AddReservedBoxPlace();
+                }
 
                 if (boxController.MovingBoxAmount() == 0)
                 {
                     // Prints debug info
-                    Debug.Log("Out of boxes to place");
+                    //Debug.Log("Out of boxes to place");
                 }
             }
         }
@@ -789,6 +786,12 @@ namespace not_broforce
             UnselectNewBoxPlace();
         }
 
+        private void RemoveAllBoxes()
+        {
+            UnselectAll();
+            reservedBoxPlaceCoords.Clear();
+        }
+
         /// <summary>
         /// Checks if a box can be placed to the selector's position.
         /// </summary>
@@ -831,10 +834,6 @@ namespace not_broforce
         {
             // TODO: Use the 'moved' bool to limit unnecessary checks
             // when no boxes are being placed or removed.
-
-            // TODO: Store the coordinates of a cell where a box was just placed;
-            // it should not be possible to place boxes to the same cell
-            // until the first one reaches it and is removed later
 
             // Selects a placed box in the same grid coordinates as the selector
             Box placedBox = GetPlacedBoxInSelectorCoord();

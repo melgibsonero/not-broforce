@@ -67,7 +67,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1181151671892286}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -49.719074, y: -23.818136, z: 0}
+  m_LocalPosition: {x: -56.589073, y: -28.838137, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 0}
   m_Children:
   - {fileID: 4249761089388492}
@@ -130,7 +130,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1f325e5fa21fbfc4d84256884b1c643a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  levelController: {fileID: 0}
   color: {r: 0, g: 0.778, b: 1, a: 1}
   moveInEditor: 0
 --- !u!114 &114389540089063752
@@ -153,6 +152,9 @@ MonoBehaviour:
   removeColor: {r: 1, g: 0.67545635, b: 0.2647059, a: 1}
   generalInvalidColor: {r: 0.83823526, g: 0.255, b: 0.17874137, a: 1}
   maxDistanceFromPlayer: 5
+  maxGroundPlaceDistX: 2
+  maxGroundPlaceDistUp: 2
+  maxGroundPlaceDistDown: 2
 --- !u!114 &114824027036465250
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -199,7 +201,7 @@ SpriteRenderer:
   m_SortingLayer: 3
   m_SortingOrder: 99
   m_Sprite: {fileID: 21300000, guid: 85199835bbe4e254f86ed1d086f9132a, type: 3}
-  m_Color: {r: 0.29803923, g: 0.47058824, b: 0.83137256, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
