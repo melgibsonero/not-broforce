@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace not_broforce {
     public class BoxController : MonoBehaviour {
@@ -13,14 +14,15 @@ namespace not_broforce {
 
         protected List<Box> removingBoxes = new List<Box>();
 
-        /// <summary>
-        /// Removes boxes from structure.
-        /// </summary>
-        private bool removeBoxesAfter = false;
+        [SerializeField]
+        private Text roboCount;
 
         // Use this for initialization
         void Start() {
-
+            if(roboCount == null)
+            {
+                roboCount = GameObject.Find("RoboCount").GetComponent<Text>();
+            }
         }
 
         /// <summary>
@@ -50,6 +52,14 @@ namespace not_broforce {
             if(Input.GetKeyDown(KeyCode.L))
             {
                 CheckRemovingBoxes(placedBoxes[1]);
+            }
+            
+            if(boxes.Count > 0 && roboCount != null)
+            {
+                roboCount.text = "Robot count " + boxes.Count;
+            } else if (roboCount != null)
+            {
+                roboCount.text = "";
             }
         }
 
@@ -110,15 +120,17 @@ namespace not_broforce {
         /// Places box for player pointed position
         /// </summary>
         /// <param name="followTarget"></param>
-        public void PlaceBox (Vector3 followTarget) {
+        public bool PlaceBox (Vector3 followTarget) {
+            bool pathFound = false;
             if (boxes.Count > 0) {
                 Box obj = boxes[0];
-                bool pathFound = obj.TakePosition(followTarget);
+                pathFound = obj.TakePosition(followTarget);
                 if(pathFound)
                 {
                     removeBox();
                 }
             }
+            return pathFound;
 
         }
 

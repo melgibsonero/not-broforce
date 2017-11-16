@@ -44,6 +44,7 @@ namespace not_broforce {
         public float RepathTime = 1f;
         private float _repathTimer;
 
+        protected bool pathNotFound;
         public Sprite box;
         public Sprite boxLit;
         private Vector2 gridCoordinates;
@@ -87,7 +88,7 @@ namespace not_broforce {
             if(_repathTimer > 0)
             {
                 _repathTimer -= Time.deltaTime;            
-            } 
+            }
 
             if(controller.collisions.below && _repathTimer <= 0 && !_donePositionTaking && Vector3.Distance(transform.position,
                 _target) > _followDistance)
@@ -96,6 +97,7 @@ namespace not_broforce {
                 followWaypoints = pathFinder.FindPath(transform.position, _target);
                 if(followWaypoints != null)
                 {
+                    pathNotFound = false;
                     if (followWaypoints.Count > 0)
                     {
                         _followTarget = followWaypoints[0];
@@ -120,9 +122,8 @@ namespace not_broforce {
                         CheckFollowDistance();
                     }
                 }
-                Debug.Log(followWaypoints);
                 if(Vector3.Distance(transform.position,
-                _target) > _followDistance && followWaypoints == null)
+                _target) > _followDistance && followWaypoints == null && !pathNotFound)
                 {
                    
                     followWaypoints = pathFinder.FindPath(transform.position, _target);
@@ -133,6 +134,9 @@ namespace not_broforce {
                             _followTarget = followWaypoints[0];
                             CheckFollowDistance();
                         }
+                    } else
+                    {
+                        pathNotFound = true;
                     }
                     
                 }
@@ -297,13 +301,13 @@ namespace not_broforce {
 
         public void CheckFollowDistance ()
         {
-            if(pathFinder.isGrounded(_followTarget))
+            if(pathFinder.isGrounded(_followTarget) || pathFinder.isGrounded(new Vector3(_followTarget.x,_followTarget.y - 1, _followTarget.z)))
             {
-                _followDistance = 0.6f;
+                _followDistance = 0.45f;
             }
             else
             {
-                _followDistance = 1.14f;
+                _followDistance = 1.1f;
             }
         }
         

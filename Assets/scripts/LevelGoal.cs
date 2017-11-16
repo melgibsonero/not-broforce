@@ -7,6 +7,9 @@ namespace not_broforce
 {
     public class LevelGoal : Switch
     {
+        [SerializeField]
+        private LevelChanger endScreen;
+
         private void Update()
         {
             if (!IsActivated())
@@ -15,6 +18,7 @@ namespace not_broforce
 
                 if (goalReached)
                 {
+                    endScreen.ActivateButtons();
                     Debug.Log("LEVEL COMPLETED!");
                     SaveGame();
                 }
