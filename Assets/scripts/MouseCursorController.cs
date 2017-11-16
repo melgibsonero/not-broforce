@@ -14,13 +14,43 @@ namespace not_broforce
         /// </summary>
         private Renderer visibility;
 
+        private bool playingWithMouse;
+
         /// <summary>
         /// Initializes the game object.
         /// </summary>
         private void Start()
         {
+            PlayingUsingMouse = true;
+
+            InitVisibility();
+            Visible = true;
+        }
+
+        private void InitVisibility()
+        {
             visibility = GetComponent<Renderer>();
-            visibility.enabled = true;
+        }
+
+        /// <summary>
+        /// Gets or sets whether the game is played with the mouse.
+        /// </summary>
+        public bool PlayingUsingMouse
+        {
+            get
+            {
+                return playingWithMouse;
+            }
+            private set
+            {
+                playingWithMouse = value;
+
+                if (visibility == null)
+                {
+                    InitVisibility();
+                }
+                Visible = value;
+            }
         }
 
         /// <summary>
@@ -58,7 +88,7 @@ namespace not_broforce
 
             if (Input.GetKeyDown(KeyCode.LeftAlt))
             {
-                Visible = !Visible;
+                PlayingUsingMouse = !PlayingUsingMouse;
             }
         }
 

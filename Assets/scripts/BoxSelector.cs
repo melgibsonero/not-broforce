@@ -32,7 +32,16 @@ namespace not_broforce
         private Color generalInvalidColor;
 
         [SerializeField]
-        private float maxDistanceFromPlayer = 3;
+        private float maxDistanceFromPlayer = 3f;
+
+        [SerializeField, Range(0, 5)]
+        private int maxGroundPlaceDistX = 3;
+
+        [SerializeField, Range(0, 5)]
+        private int maxGroundPlaceDistUp = 2;
+
+        [SerializeField, Range(0, 5)]
+        private int maxGroundPlaceDistDown = 2;
 
         /// <summary>
         /// The renderer of the object. Needed to
@@ -51,6 +60,7 @@ namespace not_broforce
         private Box selectedBox;
         private NewBoxPlace selectedNewBoxPlace;
         private List<Box> placedBoxes;
+        private List<Vector2> reservedBoxPlaceCoords;
         private List<NewBoxPlace> newBoxPlacesInLevel;
         private NewBoxPlace liquidNewBoxPlace;
 
@@ -65,13 +75,7 @@ namespace not_broforce
         private bool validRemove;
 
         /// <summary>
-        /// Was the selector moved in this frame
-        /// </summary>
-        private bool moved;
-
-        /// <summary>
-        /// Does the selector collide with the player character
-        /// or any part of the environment
+        /// Does the selector collide with the environment
         /// </summary>
         private bool collidesWithObstacle;
 
@@ -85,7 +89,12 @@ namespace not_broforce
         /// </summary>
         private bool playerGrounded;
 
+        private PlayerController playerCtrl;
+
         //[SerializeField]
+        /// <summary>
+        /// A mask which covers Environment and PlacedBoxes
+        /// </summary>
         private LayerMask groundMask;
 
         public Vector2 GridCoordinates
@@ -99,11 +108,13 @@ namespace not_broforce
         /// </summary>
         private void Start()
         {
-            // Checks if any necessary objects are not attached
-            CheckForErrors();
-
             // Initializes the box list
             placedBoxes = boxController.GetPlacedBoxes();
+
+            // Initializes the list of reserved box place coordinates
+            // (used for not allowing more than one box to be placed
+            // in the same node)
+            reservedBoxPlaceCoords = new List<Vector2>();
 
             // Initializes the new box place next to a
             // placed box and next to the player character
@@ -127,12 +138,18 @@ namespace not_broforce
             transform.position = level.GridOffset;
 
             groundMask = LayerMask.GetMask("Environment", "PlacedBoxes");
-            //pathFinder = GameObject.FindGameObjectWithTag("PathFinder").GetComponent<PathFinding1>();
             validPlacement = false;
             validRemove = false;
-            moved = false;
             closeEnoughToPlayer = true;
             playerGrounded = true;
+
+            if (player != null)
+            {
+                playerCtrl = player.GetComponent<PlayerController>();
+            }
+
+            // Checks if any necessary objects are not attached
+            CheckForErrors();
         }
 
         /// <summary>
@@ -158,14 +175,21 @@ namespace not_broforce
             return (IsUsable() && validRemove);
         }
 
-        private bool IsTooFarAwayFromPlayer()
+        private bool TooFarAwayFromPlayer()
         {
-            return (IsTooFarAwayFromPlayer(transform.position));
+            return (TooFarAwayFromPlayer(transform.position));
         }
 
-        private bool IsTooFarAwayFromPlayer(Vector3 position)
+        private bool TooFarAwayFromPlayer(Vector3 position)
         {
             return (Utils.Distance(position, player.transform.position)
+                    > maxDistanceFromPlayer);
+        }
+
+        private bool TooFarAwayFromPlayer_Coord(Vector2 coord)
+        {
+            return (Utils.Distance(LevelController.GetPosFromGridCoord(coord),
+                                   player.transform.position)
                     > maxDistanceFromPlayer);
         }
 
@@ -173,25 +197,31 @@ namespace not_broforce
         {
             if (level == null)
             {
-                throw new System.NullReferenceException
+                Debug.LogError
                     ("LevelController not set to the selector.");
             }
 
             if (boxController == null)
             {
-                throw new System.NullReferenceException
+                Debug.LogError
                     ("BoxController not set to the selector.");
             }
 
             if (player == null)
             {
-                throw new System.NullReferenceException
+                Debug.LogError
                     ("Player not set to the selector.");
+            }
+
+            if (playerCtrl == null)
+            {
+                Debug.LogError
+                    ("PlayerController component not found in player.");
             }
 
             if (cursor == null)
             {
-                throw new System.NullReferenceException
+                Debug.LogError
                     ("Mouse cursor not set to the selector.");
             }
         }
@@ -248,54 +278,58 @@ namespace not_broforce
             return false;
         }
 
-        //private Vector2[] GetGridCellsOccupiedByPlayer()
-        //{
-        //    // TODO: Add IGridObject to player, use player.GridCoord???
+        private Box GetPlacedBoxInCoordinates(Vector2 coordinates)
+        {
+            Box placedBox = null;
 
-        //    Vector2[] playerCornerGridCoords = new Vector2[4];
+            foreach (Box box in placedBoxes)
+            {
+                // If the box is in the same coordinates, it is chosen
+                if (coordinates == box.GridCoordinates)
+                {
+                    placedBox = box;
+                    break;
+                }
+            }
+
+            // Returns the placed box
+            return placedBox;
+        }
+
+        private Box GetPlacedBoxInSelectorCoord()
+        {
+            return GetPlacedBoxInCoordinates(gridCoordinates);
+        }
+
+        //private float[] GetPlayerSideGridXCoords()
+        //{
+        //    float[] playerSideGridXCoords = new float[2];
 
         //    Vector3 playerSize =
         //        player.GetComponent<BoxCollider2D>().bounds.size;
 
-        //    // A small distance to fix the player character
-        //    // touching the grid cell beneath it
-        //    float offset = 0.1f;
+        //    // Left
+        //    playerSideGridXCoords[0] = LevelController.GetGridCoordinates
+        //        (player.transform.position + new Vector3(-1 * playerSize.x / 2, 0)).x;
 
-        //    // Top left
-        //    playerCornerGridCoords[0] = LevelController.GetGridCoordinates
-        //        (player.transform.position + new Vector3(-1 * playerSize.x / 2, playerSize.y / 2));
+        //    // Right
+        //    playerSideGridXCoords[1] = LevelController.GetGridCoordinates
+        //        (player.transform.position + new Vector3(playerSize.x / 2, 0)).x;
 
-        //    // Top right
-        //    playerCornerGridCoords[1] = LevelController.GetGridCoordinates
-        //        (player.transform.position + new Vector3(playerSize.x / 2, playerSize.y / 2));
-
-        //    // Bottom left
-        //    playerCornerGridCoords[2] = LevelController.GetGridCoordinates
-        //        (player.transform.position + new Vector3(-1 * playerSize.x / 2, -1 * playerSize.y / 2 + offset));
-
-        //    // Bottom right
-        //    playerCornerGridCoords[3] = LevelController.GetGridCoordinates
-        //        (player.transform.position + new Vector3(playerSize.x / 2, -1 * playerSize.y / 2 + offset));
-
-        //    return playerCornerGridCoords;
+        //    return playerSideGridXCoords;
         //}
 
-        private float[] GetPlayerSideGridXCoords()
+        private bool SelectorIsInReservedBoxPlace()
         {
-            float[] playerSideGridXCoords = new float[2];
+            foreach (Vector2 reservedPlace in reservedBoxPlaceCoords)
+            {
+                if (gridCoordinates == reservedPlace)
+                {
+                    return true;
+                }
+            }
 
-            Vector3 playerSize =
-                player.GetComponent<BoxCollider2D>().bounds.size;
-
-            // Left
-            playerSideGridXCoords[0] = LevelController.GetGridCoordinates
-                (player.transform.position + new Vector3(-1 * playerSize.x / 2, 0)).x;
-
-            // Right
-            playerSideGridXCoords[1] = LevelController.GetGridCoordinates
-                (player.transform.position + new Vector3(playerSize.x / 2, 0)).x;
-
-            return playerSideGridXCoords;
+            return false;
         }
 
         private bool SelectorIsNextToPlacedBox()
@@ -325,34 +359,17 @@ namespace not_broforce
             Vector2 playerGridCoord = 
                 LevelController.GetGridCoordinates(player.transform.position);
 
-            float[] playerSideGridXCoords = GetPlayerSideGridXCoords();
-
-            // TODO: MaxDistance should be used and it needs SerializeField
-            // (note that distance on either side should only be in one direction,
-            // i.e. left to left and right to right)
-            //int maxDistance = 1;
-
-            bool horizontalOK =
-                (int) (playerSideGridXCoords[0] - gridCoordinates.x) == 1 ||
-                (int) (gridCoordinates.x - playerSideGridXCoords[1]) == 1;
-            bool verticalOK = (gridCoordinates.y == playerGridCoord.y);
+            bool horizontalOK = SelectorIsWithinHorBounds(playerGridCoord);
+            bool verticalOK = SelectorIsWithinVertBounds(playerGridCoord);
 
             if (horizontalOK && verticalOK)
             {
-                //Debug.Log("The selector is next to the player");
-
                 // Uses raycast to determine if the selector is on top of solid ground
-                Vector3 bottomCenter = transform.position + new Vector3(0, -1 * level.GridCellWidth / 2);
-                RaycastHit2D grounded = Physics2D.Raycast(bottomCenter, Vector2.down, 0.1f, groundMask);
-
-                // TODO: Ask from Grid1 if the node is grounded
-                //Grid1 grid;
-                //Node1 node = LevelController.GetNodeFromGridCoord(grid, gridCoordinates);
-                //bool onGround = node.IsGrounded(grid);
+                Vector3 center = transform.position;// + new Vector3(0, -1 * level.GridCellWidth / 2);
+                RaycastHit2D grounded = Physics2D.Raycast(center, Vector2.down, 1f, groundMask);
 
                 if (grounded)
                 {
-                    //Debug.Log("BoxSelector: rayHit");
                     return true;
                 }
             }
@@ -360,59 +377,26 @@ namespace not_broforce
             return false;
         }
 
-        /// <summary>
-        /// Places the selector next to the player character.
-        /// Used when the selector is made visible
-        /// and the mouse cursor is not used.
-        /// </summary>
-        private void PlaceSelectorNextToPlayer()
+        private bool SelectorIsWithinHorBounds(Vector2 otherGridCoord)
         {
-            // The player character's size
-            Vector3 playerSize = player.GetComponent<BoxCollider2D>().bounds.size;
+            return ((int) Mathf.Abs(otherGridCoord.x - gridCoordinates.x) <= maxGroundPlaceDistX);
+        }
 
-            // The new position next to the player character
-            Vector3 newPosition = player.transform.position;
-
-            // Does the player character look left or right
-            bool playerLooksLeft = player.GetComponent<SpriteRenderer>().flipX;
-
-            // Based on the player character's looking direction, its
-            // left or right edge is used to get the grid coordinates
-            if (playerLooksLeft)
+        private bool SelectorIsWithinVertBounds(Vector2 otherGridCoord)
+        {
+            // The selector is above or at the
+            // same level as the other coordinates
+            if (gridCoordinates.y >= otherGridCoord.y)
             {
-                newPosition = player.transform.position - new Vector3(playerSize.x / 2, 0);
+                return ((int) (gridCoordinates.y - otherGridCoord.y)
+                        <= maxGroundPlaceDistUp);
             }
+            // The selector is below the other coordinates
             else
             {
-                newPosition = player.transform.position + new Vector3(playerSize.x / 2, 0);
+                return ((int) (otherGridCoord.y - gridCoordinates.y)
+                        <= maxGroundPlaceDistDown);
             }
-
-            // Gets the grid coordinates of the position
-            gridCoordinates = LevelController.GetGridCoordinates(newPosition);
-
-            // Calculates the y-value for the selector's new position
-            float minimumY = player.transform.position.y - playerSize.y / 2 + level.GridCellWidth / 2;
-
-            // If the selector's position would be too low,
-            // its y-coordinate is increased by 1
-            if (newPosition.y < minimumY)
-            {
-                gridCoordinates.y++;
-            }
-
-            // The x-coordinate is shifted by one to
-            // the player character's looking direction
-            if (playerLooksLeft)
-            {
-                gridCoordinates.x--;
-            }
-            else
-            {
-                gridCoordinates.x++;
-            }
-
-            // Moves the selector to the grid coordinates
-            MoveToGridCoordinates();
         }
 
         /// <summary>
@@ -424,16 +408,23 @@ namespace not_broforce
 
             if (visibility.enabled)
             {
-                if (player.GetComponent<PlayerController>().GetGrounded())
+                CheckIfPlayerGrounded();
+                CheckPlacementValidity();
+            }
+        }
+
+        private void CheckIfPlayerGrounded()
+        {
+            if (playerCtrl.GetGrounded())
+            {
+                if (!playerGrounded)
                 {
                     playerGrounded = true;
                 }
-                else
-                {
-                    playerGrounded = false;
-                }
-
-                CheckPlacementValidity();
+            }
+            else if (playerGrounded)
+            {
+                playerGrounded = false;
             }
         }
 
@@ -444,31 +435,22 @@ namespace not_broforce
             // Only accepts input for the selector if it is visible
             if (visibility.enabled)
             {
-                if (true) //cursor.Visible)
+                if (cursor.PlayingUsingMouse)
                 {
                     MouseMovevent();
 
                     // Input for placing and removing a box
                     if (Input.GetKeyDown(KeyCode.E) || Input.GetMouseButtonDown(0))
                     {
-                        if (validPlacement)
-                        {
-                            PlaceBox();
-                        }
-                        else if (validRemove)
+                        if (validRemove)
                         {
                             RemoveBox();
                         }
+                        else if (validPlacement)
+                        {
+                            PlaceBox();
+                        }
                     }
-
-                    //if (Input.GetKeyDown(KeyCode.E) || Input.GetMouseButtonDown(0))
-                    //{
-                    //    PlaceBox();
-                    //}
-                    //else if (Input.GetKeyDown(KeyCode.R) || Input.GetMouseButtonDown(1))
-                    //{
-                    //    RemoveBox();
-                    //}
                 }
                 else
                 {
@@ -477,13 +459,13 @@ namespace not_broforce
                     // Input for placing and removing a box
                     if (Input.GetKeyDown(KeyCode.E))
                     {
-                        if (validPlacement)
-                        {
-                            PlaceBox();
-                        }
-                        else if (validRemove)
+                        if (validRemove)
                         {
                             RemoveBox();
+                        }
+                        else if (validPlacement)
+                        {
+                            PlaceBox();
                         }
                     }
                 }
@@ -508,11 +490,6 @@ namespace not_broforce
             {
                 HideSelector();
             }
-
-            //if (Input.GetKeyDown(KeyCode.Q))
-            //{
-            //    ToggleActivation();
-            //}
         }
 
         private void ToggleActivation()
@@ -534,26 +511,44 @@ namespace not_broforce
         }
 
         /// <summary>
+        /// Places the selector next to the player character.
+        /// Used when the selector is made visible
+        /// and the mouse cursor is not used.
+        /// </summary>
+        private void PlaceSelectorNextToPlayer()
+        {
+            // Sets the grid coordinates the same as
+            // the player character's coordinates
+            gridCoordinates =
+                LevelController.GetGridCoordinates(player.transform.position);
+
+            // Moves the selector to the grid coordinates
+            MoveToGridCoordinates();
+
+            // The selector is now close enough to player
+            closeEnoughToPlayer = true;
+        }
+
+        /// <summary>
         /// Moves the selector to where the cursor is while snapping to a grid.
         /// </summary>
         private void MouseMovevent()
         {
-            moved = false;
-
-            Vector2 newGridCoordinates = LevelController.GetGridCoordinates(
-                cursor.Position);
-
-            // If the new cell is different to the old one,
-            // the selector is moved to the new position
-            if (newGridCoordinates != gridCoordinates)
+            if (!TooFarAwayFromPlayer(cursor.Position))
             {
-                moved = true;
+                Vector2 newGridCoordinates =
+                    LevelController.GetGridCoordinates(cursor.Position);
 
-                // Updates the grid coordinates
-                gridCoordinates = newGridCoordinates;
+                // If the new cell is different to the old one,
+                // the selector is moved to the new position
+                if (newGridCoordinates != gridCoordinates)
+                {
+                    // Updates the grid coordinates
+                    gridCoordinates = newGridCoordinates;
 
-                // Moves the selector to the coordinates
-                MoveToGridCoordinates();
+                    // Moves the selector to the coordinates
+                    MoveToGridCoordinates();
+                }
             }
         }
 
@@ -562,33 +557,47 @@ namespace not_broforce
         /// </summary>
         private void DirectionalMovevent()
         {
-            moved = false;
+            bool moved = false;
+
+            Vector2 movement = Vector2.zero;
 
             if (Input.GetKeyDown(KeyCode.UpArrow))
             {
-                gridCoordinates.y++;
+                movement.y++;
                 moved = true;
             }
             else if (Input.GetKeyDown(KeyCode.DownArrow))
             {
-                gridCoordinates.y--;
+                movement.y--;
                 moved = true;
             }
             else if (Input.GetKeyDown(KeyCode.LeftArrow))
             {
-                gridCoordinates.x--;
+                movement.x--;
                 moved = true;
             }
             else if (Input.GetKeyDown(KeyCode.RightArrow))
             {
-                gridCoordinates.x++;
+                movement.x++;
                 moved = true;
             }
 
-            // Moves the selector to the coordinates
+            // Moves the selector to the coordinates if they
+            // are not too far away from the player character
             if (moved)
             {
-                MoveToGridCoordinates();
+                if (TooFarAwayFromPlayer_Coord(gridCoordinates + movement))
+                {
+                    if (TooFarAwayFromPlayer_Coord(gridCoordinates))
+                    {
+                        PlaceSelectorNextToPlayer();
+                    }
+                }
+                else
+                {
+                    gridCoordinates += movement;
+                    MoveToGridCoordinates();
+                }
             }
         }
 
@@ -597,41 +606,30 @@ namespace not_broforce
         /// </summary>
         public void MoveToGridCoordinates()
         {
-            transform.position = LevelController.GetPosFromGridCoord(
-                gridCoordinates);
+            transform.position =
+                LevelController.GetPosFromGridCoord(gridCoordinates);
+
+            //UpdateReservedBoxPlaces();
 
             UnselectAll();
-
-            // Prints debug info
-            //Debug.Log("BoxSelector - New grid coordinates: " + gridCoordinates);
         }
 
         private void ShowSelector()
         {
-            // For testing purposes only
-
             // Makes the selector visible
             visibility.enabled = true;
 
-            MouseMovevent();
-            cursor.Visible = false;
+            // Places the selector next to the player character
+            PlaceSelectorNextToPlayer();
 
-            //// Makes the selector visible
-            //visibility.enabled = true;
-
-            //// The selector is moved with directional buttons
-            //// -> the selector appears next to the player character
-            //if (!cursor.Visible)
-            //{
-            //    PlaceSelectorNextToPlayer();
-            //    closeEnoughToPlayer = true;
-            //}
-            //// The selector is moved with the mouse
-            //// -> the selector appears under the mouse cursor
-            //else
-            //{
-            //    MouseMovevent();
-            //}
+            // If the game is played using the
+            // mouse, the selector is moved under
+            // the mouse cursor which is hidden
+            if (cursor.PlayingUsingMouse)
+            {
+                MouseMovevent();
+                cursor.Visible = false;
+            }
         }
 
         private void HideSelector()
@@ -640,14 +638,55 @@ namespace not_broforce
             collidesWithObstacle = false;
             UnselectAll();
 
-            // For testing purposes only
-            cursor.Visible = true;
+            if (cursor.PlayingUsingMouse)
+            {
+                cursor.Visible = true;
+            }
+        }
+
+        private void AddReservedBoxPlace()
+        {
+            // TODO: Ask from the BoxController if a box
+            // cannot find a path to the target position
+
+            // Testing purposes only
+            if (reservedBoxPlaceCoords.Count == 3)
+            {
+                reservedBoxPlaceCoords.Clear();
+                Debug.Log("Reserved spaces reset");
+            }
+
+            reservedBoxPlaceCoords.Add(gridCoordinates);
+
+            //if (reservedBoxPlaceCoords.Count >= 3)
+            //{
+            //    reservedBoxPlaceCoords.RemoveAt(0);
+            //}
+
+            Debug.Log("Reserved space added. Spaces: " + reservedBoxPlaceCoords.Count);
+        }
+
+        private void UpdateReservedBoxPlaces()
+        {
+            for (int i = reservedBoxPlaceCoords.Count - 1; i >= 0; i--)
+            {
+                Vector2 reservedPlace = reservedBoxPlaceCoords[i];
+                Box placedBox = GetPlacedBoxInCoordinates(reservedPlace);
+
+                if (placedBox != null)
+                {
+                    reservedBoxPlaceCoords.RemoveAt(i);
+                    Debug.Log("Reserved space removed. Spaces left: " + reservedBoxPlaceCoords.Count);
+                }
+            }
         }
 
         private void PlaceBox()
         {
             if (BoxCanBePlaced())
             {
+                AddReservedBoxPlace();
+
                 boxController.PlaceBox(transform.position);
 
                 if (boxController.MovingBoxAmount() == 0)
@@ -662,6 +701,8 @@ namespace not_broforce
         {
             if (BoxCanBeRemoved())
             {
+                UpdateReservedBoxPlaces();
+
                 boxController.RemovePlacedBox();
                 UnselectBox();
             }
@@ -756,7 +797,7 @@ namespace not_broforce
         {
             // If the selector is too far away from the player,
             // placing and removing boxes are made invalid
-            if (IsTooFarAwayFromPlayer())
+            if (TooFarAwayFromPlayer())
             {
                 // (This condition is here to prevent unnecessary invalidation)
                 if (closeEnoughToPlayer)
@@ -795,23 +836,24 @@ namespace not_broforce
             // it should not be possible to place boxes to the same cell
             // until the first one reaches it and is removed later
 
-            // Goes through the placed box list and checks
-            // if any of them is in the same grid coordinates
-            foreach (Box placedBox in placedBoxes)
+            // Selects a placed box in the same grid coordinates as the selector
+            Box placedBox = GetPlacedBoxInSelectorCoord();
+            if (placedBox != null)
             {
-                // If the box is in the same
-                // coordinates, it is selected
-                if (gridCoordinates == placedBox.GridCoordinates)
-                {
-                    SelectBox(placedBox);
-                    return;
-                }
+                SelectBox(placedBox);
+                return;
             }
 
             // Checks if there's a new box place in the same grid coordinates
             // (only if there are boxes following the player)
-            if (boxController.MovingBoxAmount() > 0)
+            if (!validRemove && boxController.MovingBoxAmount() > 0)
             {
+                if (SelectorIsInReservedBoxPlace())
+                {
+                    UnselectAll();
+                    return;
+                }
+
                 if (SelectorIsNextToPlacedBox())
                 {
                     liquidNewBoxPlace.GridCoordinates =
@@ -860,6 +902,7 @@ namespace not_broforce
                     if (Utils.CollidersIntersect(GetComponent<BoxCollider2D>(), trigger, 0.9f))
                     {
                         collidesWithObstacle = true;
+                        //Debug.Log("Selector is blocked");
                     }
                     // Otherwise the collision is ignored
                     else
@@ -883,6 +926,9 @@ namespace not_broforce
         /// </summary>
         private void ChangeColor()
         {
+            //Debug.Log("playerGrounded: " + playerGrounded);
+            //Debug.Log("collidesWithObstacle: " + collidesWithObstacle);
+
             if (!playerGrounded || collidesWithObstacle) // || !closeEnoughToPlayer
             {
                 // Note: invalidPlacementColor is used (instead of
@@ -905,5 +951,12 @@ namespace not_broforce
                 sr.color = invalidPlacementColor;
             }
         }
+
+        //private void OnDrawGizmos()
+        //{
+        //    if (player)
+        //    Gizmos.color = Color.green;
+        //    Gizmos.DrawLine(bottomCenter, Vector2.down * 0.5f);
+        //}
     }
 }
