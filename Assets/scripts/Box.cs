@@ -304,7 +304,6 @@ namespace not_broforce {
             if(pathFinder.isGrounded(_followTarget) || pathFinder.isGrounded(new Vector3(_followTarget.x,_followTarget.y - 1, _followTarget.z)))
             {
                 _followDistance = 0.45f;
-                Debug.Log(_followTarget);
             }
             else
             {
