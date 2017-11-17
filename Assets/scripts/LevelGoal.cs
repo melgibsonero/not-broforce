@@ -27,13 +27,8 @@ namespace not_broforce
 
         private void SaveGame()
         {
-            int levelsCompleted = PlayerPrefs.GetInt("levelsCompleted", 0);
-            levelsCompleted++;
-            PlayerPrefs.SetInt("levelsCompleted", levelsCompleted);
-
-            Debug.Log("levelsCompleted: " + levelsCompleted);
-
-            PlayerPrefs.Save();
+            GameManager.Instance.LevelCompleted();
+            //SaveManager.Instance.EnterLevel(SaveManager.Instance.CurrentLevel + 1);
         }
     }
 }

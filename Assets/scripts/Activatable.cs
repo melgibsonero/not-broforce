@@ -14,6 +14,9 @@ namespace not_broforce
         //private LayerMask possibleActivators;
 
         [SerializeField]
+        private bool stateSprites = true;
+
+        [SerializeField]
         private Sprite onSprite;
 
         [SerializeField]
@@ -39,6 +42,11 @@ namespace not_broforce
             return activationCode;
         }
 
+        protected void DisableStateSprites()
+        {
+            stateSprites = false;
+        }
+
         public bool IsActivated()
         {
             return activated;
@@ -55,7 +63,7 @@ namespace not_broforce
             {
                 activated = true;
 
-                if (sr != null)
+                if (stateSprites && sr != null)
                 {
                     sr.sprite = onSprite;
                 }
@@ -70,7 +78,7 @@ namespace not_broforce
             {
                 activated = false;
 
-                if (sr != null)
+                if (stateSprites && sr != null)
                 {
                     sr.sprite = offSprite;
                 }
@@ -81,39 +89,42 @@ namespace not_broforce
 
         private void OnDrawGizmos()
         {
-            // Radius of a sphere
-            float radius = 0.2f;
-
-            // A point above the switch
-            //Vector3 pointAbove = transform.position + Vector3.up;
-
-            // Sets the gizmo's color green if the switch is activated
-            if (activated)
+            if (activationCode >= 0)
             {
-                Gizmos.color = Color.green;
-            }
-            // Sets the gizmo's color to correspond with the
-            // switch's activation code if it is not activated
-            else
-            {
-                if (activationCode <= 0)
+                // Radius of a sphere
+                float radius = 0.2f;
+
+                // A point above the switch
+                //Vector3 pointAbove = transform.position + Vector3.up;
+
+                // Sets the gizmo's color green if the switch is activated
+                if (activated)
                 {
-                    Gizmos.color = Color.black;
+                    Gizmos.color = Color.green;
                 }
+                // Sets the gizmo's color to correspond with the
+                // switch's activation code if it is not activated
                 else
                 {
-                    // TODO: At least 5 easily told apart colors
+                    if (activationCode == 0)
+                    {
+                        Gizmos.color = Color.black;
+                    }
+                    else
+                    {
+                        // TODO: At least 5 easily told apart colors
 
-                    Gizmos.color = new Color(1,
-                                             1 - (0.1f * 2 * activationCode),
-                                             1 - 0.1f * 1 * activationCode);
+                        Gizmos.color = new Color(1,
+                                                 1 - (0.1f * 2 * activationCode),
+                                                 1 - 0.1f * 1 * activationCode);
+                    }
+
+                    //Gizmos.color = Color.red;
                 }
 
-                //Gizmos.color = Color.red;
+                // Draws a sphere
+                Gizmos.DrawSphere(transform.position, radius);
             }
-
-            // Draws a sphere
-            Gizmos.DrawSphere(transform.position, radius);
         }
     }
 }
