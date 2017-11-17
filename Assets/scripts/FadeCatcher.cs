@@ -10,12 +10,12 @@ namespace not_broforce
         [SerializeField]
         private Camera gameCamera;
 
-        private FadeToColor fade;
+        public FadeToColor Fade { get; private set; }
 
         private void Awake()
         {
             FindFade();
-            FadeIn();
+            //FadeIn();
         }
 
         private void FindFade()
@@ -32,9 +32,9 @@ namespace not_broforce
                 // If the fade is being used, it is
                 // immediately set to fade and the
                 // loop is ended
-                if (f.IsBeingUsed)
+                if (f.UsedInAllScenes)
                 {
-                    fade = f;
+                    Fade = f;
                     Debug.Log("Fade successfully caught from previous scene");
                     break;
                 }
@@ -46,12 +46,12 @@ namespace not_broforce
             }
 
             // No used fade found
-            if (fade == null)
+            if (Fade == null)
             {
                 // An unused fade found
                 if (tempFade != null)
                 {
-                    fade = tempFade;
+                    Fade = tempFade;
                     Debug.Log("Only a debug fade found");
                 }
                 // No fade found
@@ -65,19 +65,14 @@ namespace not_broforce
             }
 
             // Initializes the fade
-            fade.InitAfterSceneChange(gameCamera);
-        }
-
-        public FadeToColor GetFade()
-        {
-            return fade;
+            Fade.InitAfterSceneChange(gameCamera);
         }
 
         private void FadeIn()
         {
-            if (fade != null)
+            if (Fade != null)
             {
-                fade.StartFadeIn();
+                Fade.StartFadeIn();
             }
         }
     }

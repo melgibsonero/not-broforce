@@ -384,7 +384,7 @@ RectTransform:
   - {fileID: 1825711487}
   - {fileID: 460640915}
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -402,7 +402,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e02ae6b22422d8c44b89fed06132148a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scene: 2
+  scene: 0
+  targetLevelNum: 0
   fade: {fileID: 840472302}
 --- !u!1001 &840472301
 Prefab:
@@ -441,23 +442,13 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4127513465443652, guid: 66b72bee0560bf347b07f2d5fbd97809, type: 2}
       propertyPath: m_RootOrder
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 114439001856602416, guid: 66b72bee0560bf347b07f2d5fbd97809,
         type: 2}
       propertyPath: followedCamera
       value: 
       objectReference: {fileID: 1539961323}
-    - target: {fileID: 114439001856602416, guid: 66b72bee0560bf347b07f2d5fbd97809,
-        type: 2}
-      propertyPath: fadeOutTime
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 114439001856602416, guid: 66b72bee0560bf347b07f2d5fbd97809,
-        type: 2}
-      propertyPath: fadeInTime
-      value: 0.5
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 66b72bee0560bf347b07f2d5fbd97809, type: 2}
   m_IsPrefabParent: 0
@@ -467,6 +458,48 @@ MonoBehaviour:
     type: 2}
   m_PrefabInternal: {fileID: 840472301}
   m_Script: {fileID: 11500000, guid: da00fe80dd6bd184c831e60096cdc625, type: 3}
+--- !u!1001 &1108794864
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4819681539436914, guid: de536705c90471d45a2b1414a9164346, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 614.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4819681539436914, guid: de536705c90471d45a2b1414a9164346, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 342.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4819681539436914, guid: de536705c90471d45a2b1414a9164346, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4819681539436914, guid: de536705c90471d45a2b1414a9164346, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4819681539436914, guid: de536705c90471d45a2b1414a9164346, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4819681539436914, guid: de536705c90471d45a2b1414a9164346, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4819681539436914, guid: de536705c90471d45a2b1414a9164346, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4819681539436914, guid: de536705c90471d45a2b1414a9164346, type: 2}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 100100000, guid: de536705c90471d45a2b1414a9164346, type: 2}
+  m_IsPrefabParent: 0
 --- !u!1 &1242551234
 GameObject:
   m_ObjectHideFlags: 0
@@ -534,7 +567,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Speak Friend and Enter
+  m_Text: Start Game
 --- !u!222 &1242551237
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -750,7 +783,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1696984564
 GameObject:
@@ -964,7 +997,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Fly, You Fool
+  m_Text: Goodbye
 --- !u!222 &2114675149
 CanvasRenderer:
   m_ObjectHideFlags: 0

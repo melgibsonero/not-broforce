@@ -29,11 +29,11 @@ namespace not_broforce
                         if (GameManager.Instance.CurrentLevel != 0)
                         {
                             Debug.LogError("A LevelEntrance was reached " +
-                                           "but the  current level number " +
-                                           "was not 0 (hub level).");
+                                           "but the current level number " +
+                                           "is not 0 (hub level).");
                         }
 
-                        GameManager.Instance.EnterLevel(levelNumber);
+                        GameManager.Instance.SetLevel(levelNumber);
 
                         Deactivate();
                     }

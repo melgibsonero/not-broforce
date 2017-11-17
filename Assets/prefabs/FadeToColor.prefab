@@ -20,7 +20,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4127513465443652}
   - component: {fileID: 114439001856602416}
-  - component: {fileID: 114513256323201650}
   - component: {fileID: 212417336355886968}
   m_Layer: 5
   m_Name: FadeToColor
@@ -37,7 +36,7 @@ Transform:
   m_GameObject: {fileID: 1233173202016506}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2200, y: 1300, z: 1}
+  m_LocalScale: {x: 3000, y: 1300, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -57,21 +56,6 @@ MonoBehaviour:
   fadeOutTime: 2
   fadeInTime: 1
   followedCamera: {fileID: 0}
---- !u!114 &114513256323201650
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1233173202016506}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2651b848f43186f40ac418a2a2ed10d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  activationCode: 1
-  onSprite: {fileID: 0}
-  offSprite: {fileID: 0}
-  fade: {fileID: 114439001856602416}
 --- !u!212 &212417336355886968
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -102,7 +86,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1231551439
-  m_SortingLayer: 3
+  m_SortingLayer: 4
   m_SortingOrder: 105
   m_Sprite: {fileID: 21300000, guid: cf162576d3e4f7c42bd26a3d0f340602, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 0}

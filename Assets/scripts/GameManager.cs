@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace not_broforce
 {
@@ -16,8 +17,17 @@ namespace not_broforce
             {
                 if (instance == null)
                 {
+                    // Note:
+                    // There must be a Resources folder under Assets and
+                    // GameManager there for this to work. Not necessary if
+                    // a GameManager object is present in a scene from the
+                    // get-go.
+
                     instance = 
                         Instantiate(Resources.Load<GameManager>("GameManager"));
+
+                    //GameObject gmObj = Instantiate(Resources.Load("GameManager") as GameObject);
+                    //instance = gmObj.GetComponent<GameManager>();
                 }
 
                 return instance;
@@ -30,6 +40,9 @@ namespace not_broforce
 
         [SerializeField]
         private bool debug_ResetData;
+
+        [SerializeField]
+        private bool debug_ReturnToHub;
 
         [SerializeField]
         private int currentLevel = 0;
@@ -116,14 +129,18 @@ namespace not_broforce
             }
         }
 
-        public void EnterLevel(int levelNum)
+        public void SetLevel(int levelNum)
         {
             CurrentLevel = levelNum;
-            Debug.Log("Level entered: " + levelNum);
+            //Debug.Log("Level set: " + levelNum);
         }
 
         public void LevelCompleted()
         {
+            // TODO: Get the info about where the player goes
+            // from endScreen and give it to GameManager
+            CurrentLevel = 0;
+
             if (CurrentLevel == LatestUnlockedLevel)
             {
                 LatestUnlockedLevel++;
@@ -132,6 +149,9 @@ namespace not_broforce
 
         private void SaveGame()
         {
+            // Note: Saved data can be found in
+            // regedit > Tietokone\HKEY_CURRENT_USER\Software\Unity\UnityEditor\TeamAF\not - broforce
+
             PlayerPrefs.SetInt("latestUnlockedLevel", latestUnlockedLevel);
             PlayerPrefs.Save();
 
@@ -145,6 +165,17 @@ namespace not_broforce
 
             Debug.Log("--[ Game loaded ]--");
             Debug.Log("latestUnlockedLevel: " + latestUnlockedLevel);
+        }
+
+        private void Update()
+        {
+            // Testing purposes only
+            if (debug_ReturnToHub)
+            {
+                debug_ReturnToHub = false;
+                CurrentLevel = 0;
+                SceneManager.LoadScene("Hub");
+            }
         }
     }
 }

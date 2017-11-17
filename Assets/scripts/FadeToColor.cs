@@ -25,20 +25,12 @@ namespace not_broforce
         private float fadeProgress;
         private float elapsedTime;
         private bool active;
-        private bool used;
-
-        private bool debug = false;
 
         /// <summary>
-        /// Returns whether the fade is being used.
+        /// Returns whether the fade is still
+        /// used even if the scene changes.
         /// </summary>
-        public bool IsBeingUsed
-        {
-            get
-            {
-                return used;
-            }
-        }
+        public bool UsedInAllScenes { get; private set; }
 
         public bool FadedOut
         {
@@ -60,7 +52,7 @@ namespace not_broforce
         {
             sr = GetComponent<SpriteRenderer>();
 
-            InitSceneChange();
+            InitUsageInAllScenes();
 
             CheckForErrors();
         }
@@ -69,24 +61,30 @@ namespace not_broforce
         /// Checks if there's a FadeCatcher object in the original scene.
         /// If not, the fade will be transferred between scenes.
         /// </summary>
-        private void InitSceneChange()
+        private void InitUsageInAllScenes()
         {
             FadeCatcher catcher = FindObjectOfType<FadeCatcher>();
             if (catcher == null)
             {
+                UsedInAllScenes = true;
                 DontDestroyOnLoad(gameObject);
-                Debug.Log("Fade set to not be destroyed on load");
             }
             else
             {
-                debug = true;
+                UsedInAllScenes = false;
             }
         }
 
         public void InitAfterSceneChange(Camera camera)
         {
+            StartFadeIn();
             SetFollowedCamera(camera);
             ResetCompatibleSwitches();
+        }
+
+        private Camera FindCamera()
+        {
+            return FindObjectOfType<Camera>();
         }
 
         private void SetFollowedCamera(Camera camera)
@@ -102,16 +100,16 @@ namespace not_broforce
             {
                 activator.FindCompatibleSwitches();
             }
-            else
-            {
-                Debug.LogError("FadeActivator component could " +
-                               "not be found in the object.");
-            }
+            //else
+            //{
+            //    Debug.LogError("FadeActivator component could " +
+            //                   "not be found in the object.");
+            //}
         }
 
         private void CheckForErrors()
         {
-            if (!debug)
+            if (UsedInAllScenes)
             {
                 if (followedCamera == null)
                 {
@@ -158,18 +156,12 @@ namespace not_broforce
             fadeProgress = 0;
             elapsedTime = 0;
             active = true;
-            used = true;
         }
 
         private void FinishFade()
         {
             fadeProgress = 1;
             active = false;
-
-            if (!fadeOut)
-            {
-                used = false;
-            }
         }
 
         private void FollowCamera()
@@ -185,6 +177,10 @@ namespace not_broforce
             if (followedCamera != null)
             {
                 FollowCamera();
+            }
+            else if (UsedInAllScenes)
+            {
+                InitAfterSceneChange(FindCamera());
             }
 
             if (active)

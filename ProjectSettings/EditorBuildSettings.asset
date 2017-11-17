@@ -9,11 +9,17 @@ EditorBuildSettings:
     path: Assets/_scenes/MainMenu.unity
     guid: 3c8c461da62f9bb43b47906fb6c89977
   - enabled: 1
+    path: Assets/_scenes/Hub.unity
+    guid: e286ed6aa4094a14a9dac04d594b8a23
+  - enabled: 1
+    path: Assets/_scenes/Level1.unity
+    guid: 5f24970f3b0d49a488e16a6558b638bb
+  - enabled: 1
     path: Assets/_scenes/TestZoneX.unity
     guid: c2b816e377ddd49439937972463cdb31
   - enabled: 1
-    path: Assets/_scenes/Katsoa saa muttei Koskela.unity
-    guid: 28258274912c43a4eb85283912763f5a
-  - enabled: 1
     path: Assets/_scenes/Valtterin Playground.unity
     guid: c84f82759c001564f8e627a011bb1723
+  - enabled: 1
+    path: Assets/_scenes/Katsoa saa muttei Koskela.unity
+    guid: 28258274912c43a4eb85283912763f5a

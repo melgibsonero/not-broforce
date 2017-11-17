@@ -8,47 +8,50 @@ namespace not_broforce
     public class MainMenu : MonoBehaviour
     {
         [SerializeField]
-        private Scene scene;
+        private SceneType scene;
+
+        [SerializeField]
+        private int targetLevelNum;
 
         [SerializeField]
         private FadeToColor fade;
 
-        private bool gameStarted;
+        //private bool gameStarted;
 
-        private enum Scene
-        {
-            TestZoneX,
-            ValtterinPlayground,
-            KatsoaSaaMutteiKoskela
-        }
+        //private enum Scene
+        //{
+        //    TestZoneX,
+        //    ValtterinPlayground,
+        //    KatsoaSaaMutteiKoskela
+        //}
 
-        private string SceneName(Scene scene)
-        {
-            // TODO: Better way to change scene
+        //private string SceneName(Scene scene)
+        //{
+        //    // TODO: Better way to change scene
 
-            string sceneName = "";
+        //    string sceneName = "";
 
-            switch (scene)
-            {
-                case Scene.TestZoneX:
-                {
-                    sceneName = "TestZoneX";
-                    break;
-                }
-                case Scene.ValtterinPlayground:
-                {
-                    sceneName = "Valtterin Playground";
-                    break;
-                }
-                case Scene.KatsoaSaaMutteiKoskela:
-                {
-                    sceneName = "Katsoa saa muttei Koskela";
-                    break;
-                }
-            }
+        //    switch (scene)
+        //    {
+        //        case Scene.TestZoneX:
+        //        {
+        //            sceneName = "TestZoneX";
+        //            break;
+        //        }
+        //        case Scene.ValtterinPlayground:
+        //        {
+        //            sceneName = "Valtterin Playground";
+        //            break;
+        //        }
+        //        case Scene.KatsoaSaaMutteiKoskela:
+        //        {
+        //            sceneName = "Katsoa saa muttei Koskela";
+        //            break;
+        //        }
+        //    }
 
-            return sceneName;
-        }
+        //    return sceneName;
+        //}
 
         public void StartGame()
         {
@@ -64,8 +67,8 @@ namespace not_broforce
         {
             if (fade.FadedOut)
             {
-                SceneManager.LoadScene(SceneName(scene));
-                //fade.StartFadeIn();
+                SceneManager.LoadScene(
+                    LevelChanger_Hub.SceneName(scene, targetLevelNum));
             }
         }
     }

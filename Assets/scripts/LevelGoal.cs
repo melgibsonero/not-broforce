@@ -18,17 +18,23 @@ namespace not_broforce
 
                 if (goalReached)
                 {
+                    // TODO: Get the info about where the player goes
+                    // from endScreen and give it to GameManager
+
+                    Debug.Log("Level completed: " +
+                              GameManager.Instance.CurrentLevel);
+
                     endScreen.ActivateButtons();
-                    Debug.Log("LEVEL COMPLETED!");
-                    SaveGame();
+                    GameManager.Instance.LevelCompleted();
+                    //SaveGame();
                 }
             }
         }
 
-        private void SaveGame()
-        {
-            GameManager.Instance.LevelCompleted();
-            //SaveManager.Instance.EnterLevel(SaveManager.Instance.CurrentLevel + 1);
-        }
+        //private void SaveGame()
+        //{
+        //    GameManager.Instance.LevelCompleted();
+        //    //SaveManager.Instance.EnterLevel(SaveManager.Instance.CurrentLevel + 1);
+        //}
     }
 }
