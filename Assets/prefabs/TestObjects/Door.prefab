@@ -36,8 +36,8 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1059725778912374}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 25.505, y: 21.987, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 36.045765, y: 4.419475, z: 0}
+  m_LocalScale: {x: 0.78125, y: 1.5625, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -61,11 +61,11 @@ BoxCollider2D:
     oldSize: {x: 0.64, y: 1.28}
     newSize: {x: 0.8, y: 2}
     adaptiveTilingThreshold: 0
-    drawMode: 2
+    drawMode: 0
     adaptiveTiling: 1
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.9, y: 1.9}
+  m_Size: {x: 1.28, y: 1.28}
   m_EdgeRadius: 0
 --- !u!114 &114582707493740248
 MonoBehaviour:
@@ -78,7 +78,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2cb8c14666a46f2478c1fe57a879a0f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  activationCode: 5
+  activationCode: 3
+  stateSprites: 1
   onSprite: {fileID: 21300000, guid: bc75b703ea620bb4180865beab732f54, type: 3}
   offSprite: {fileID: 21300000, guid: 19560d7971121bf47bdcc415ca52f5a3, type: 3}
 --- !u!212 &212155412212009278
@@ -117,7 +118,7 @@ SpriteRenderer:
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
-  m_DrawMode: 2
+  m_DrawMode: 0
   m_Size: {x: 0.8, y: 2}
   m_AdaptiveModeThreshold: 0
   m_SpriteTileMode: 1

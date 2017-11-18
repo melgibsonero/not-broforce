@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace not_broforce
 {
-    public class Utils {
+    public static class Utils {
 
         public enum Direction { Up, Down, Left, Right}
 
@@ -34,8 +34,6 @@ namespace not_broforce
                 }
             }
         }
-
-        
 
         /// <summary>
         /// Gets grid coordinates one cell to the given direction.
@@ -593,6 +591,17 @@ namespace not_broforce
             }
 
             return romanNumerals;
+        }
+
+        public static bool IsNumerical(this string s)
+        {
+            // Note: This is an extension method.
+            // It is used just like an instance method
+            // on the parameter marked by 'this'.
+            // E.g. if (text.IsNumerical()) ...
+
+            float output;
+            return float.TryParse(s, out output);
         }
     }
 }
