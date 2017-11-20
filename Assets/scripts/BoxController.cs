@@ -41,25 +41,21 @@ namespace not_broforce {
 
         // Update is called once per frame
         void Update() {
-            if(Input.GetKey(KeyCode.P))
+            if(Input.GetKeyDown(KeyCode.Escape))
             {
-                Time.timeScale = 4f;
-            } else
+                Time.timeScale = 0f;
+            }
+            else if(Input.GetKeyDown(KeyCode.P))
             {
-                Time.timeScale = 1f;
+                Time.timeScale += 0.8f;
             }
 
-            if(Input.GetKeyDown(KeyCode.L))
-            {
-                CheckRemovingBoxes(placedBoxes[1]);
-            }
-            
             if(boxes.Count > 0 && roboCount != null)
             {
                 roboCount.text = "Robot count " + boxes.Count;
             } else if (roboCount != null)
             {
-                roboCount.text = "";
+                roboCount.text = "Robot count 0";
             }
         }
 

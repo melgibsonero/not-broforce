@@ -83,13 +83,12 @@ namespace not_broforce {
             
             if(_UnitToFollow != null)
             {
-                _target = new Vector3(_UnitToFollow.position.x, _UnitToFollow.position.y,0);
+                _target = new Vector3(_UnitToFollow.position.x, _UnitToFollow.position.y - 0.5f,0);
             }
             if(_repathTimer > 0)
             {
                 _repathTimer -= Time.deltaTime;            
             }
-
             if(controller.collisions.below && _repathTimer <= 0 && !_donePositionTaking && Vector3.Distance(transform.position,
                 _target) > _followDistance)
             {
@@ -303,7 +302,7 @@ namespace not_broforce {
         {
             if(pathFinder.isGrounded(_followTarget) || pathFinder.isGrounded(new Vector3(_followTarget.x,_followTarget.y - 1, _followTarget.z)))
             {
-                _followDistance = 0.45f;
+                _followDistance = 0.5f;
             }
             else
             {
