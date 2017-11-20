@@ -22,8 +22,9 @@ namespace not_broforce
         public List<Vector2> FindPath( Vector3 startPos, Vector3 targetPos )
         {
             Node1 startNode = grid.NodeFromWorldPoint(startPos);
+            
             Node1 targetNode = grid.NodeFromWorldPoint(targetPos);
-
+            
             List<Node1> openSet = new List<Node1>();
             HashSet<Node1> closedSet = new HashSet<Node1>();
             openSet.Add(startNode);
