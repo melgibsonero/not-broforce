@@ -702,6 +702,15 @@ namespace not_broforce
 
                 boxController.RemovePlacedBox();
                 UnselectBox();
+
+                // TODO: Give this to door
+                //PathFinding1 pf = FindObjectOfType<PathFinding1>();
+                //GameObject aStar = pf.gameObject;
+                //Grid1 grid = aStar.GetComponent<Grid1>();
+
+                //Node1 gridNode = grid.NodeFromWorldPoint(transform.position);
+
+                //pf.UpdateNode(gridNode.gridX, gridNode.y, true);
             }
         }
 
