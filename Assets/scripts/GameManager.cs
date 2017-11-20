@@ -48,7 +48,7 @@ namespace not_broforce
         private int currentLevel = 0;
 
         [SerializeField]
-        private int latestUnlockedLevel = 0;
+        private int latestCompletedLevel = 0;
 
         private void Awake()
         {
@@ -73,7 +73,7 @@ namespace not_broforce
             if (debug_UnlockAll)
             {
                 // TODO: Decide how many levels are there in total.
-                LatestUnlockedLevel = 10;
+                LatestCompletedLevel = 10;
             }
 
             if (debug_ResetData)
@@ -85,7 +85,7 @@ namespace not_broforce
         public void Reset()
         {
             CurrentLevel = 0;
-            LatestUnlockedLevel = 0;
+            LatestCompletedLevel = 0;
 
             // Overwrites the existing save!
             SaveGame();
@@ -103,18 +103,18 @@ namespace not_broforce
 
                 currentLevel = value;
 
-                if (currentLevel > LatestUnlockedLevel)
-                {
-                    LatestUnlockedLevel = currentLevel;
-                }
+                //if (currentLevel > LatestCompletedLevel)
+                //{
+                //    LatestCompletedLevel = currentLevel;
+                //}
             }
         }
 
-        public int LatestUnlockedLevel
+        public int LatestCompletedLevel
         {
             get
             {
-                return latestUnlockedLevel;
+                return latestCompletedLevel;
             }
             private set
             {
@@ -123,7 +123,7 @@ namespace not_broforce
                     value = 0;
                 }
 
-                latestUnlockedLevel = value;
+                latestCompletedLevel = value;
 
                 SaveGame();
             }
@@ -137,14 +137,14 @@ namespace not_broforce
 
         public void LevelCompleted()
         {
+            if (CurrentLevel > LatestCompletedLevel)
+            {
+                LatestCompletedLevel = currentLevel;
+            }
+
             // TODO: Get the info about where the player goes
             // from endScreen and give it to GameManager
             CurrentLevel = 0;
-
-            if (CurrentLevel == LatestUnlockedLevel)
-            {
-                LatestUnlockedLevel++;
-            }
         }
 
         private void SaveGame()
@@ -152,19 +152,19 @@ namespace not_broforce
             // Note: Saved data can be found in
             // regedit > Tietokone\HKEY_CURRENT_USER\Software\Unity\UnityEditor\TeamAF\not - broforce
 
-            PlayerPrefs.SetInt("latestUnlockedLevel", latestUnlockedLevel);
+            PlayerPrefs.SetInt("latestCompletedLevel", latestCompletedLevel);
             PlayerPrefs.Save();
 
             Debug.Log("--[ Game saved ]--");
-            Debug.Log("latestUnlockedLevel: " + latestUnlockedLevel);
+            Debug.Log("latestCompletedLevel: " + latestCompletedLevel);
         }
 
         private void LoadGame()
         {
-            latestUnlockedLevel = PlayerPrefs.GetInt("latestUnlockedLevel", 0);
+            latestCompletedLevel = PlayerPrefs.GetInt("latestCompletedLevel", 0);
 
             Debug.Log("--[ Game loaded ]--");
-            Debug.Log("latestUnlockedLevel: " + latestUnlockedLevel);
+            Debug.Log("latestCompletedLevel: " + latestCompletedLevel);
         }
 
         private void Update()
