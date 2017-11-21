@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace not_broforce
 {
-    public class PressurePlate : Switch
+    public class PressurePlate : SwitchInteractable
     {
         [SerializeField]
         private BoxController boxController;

@@ -53,5 +53,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   debug_UnlockAll: 0
   debug_ResetData: 0
+  debug_ReturnToHub: 0
   currentLevel: 0
-  latestUnlockedLevel: 0
+  latestCompletedLevel: 0

@@ -8,43 +8,18 @@ namespace not_broforce
     public abstract class Activatable : MonoBehaviour
     {
         [SerializeField]
-        private int activationCode;
-
-        //[SerializeField]
-        //private LayerMask possibleActivators;
+        protected int activationCode;
 
         [SerializeField]
-        private bool stateSprites = true;
+        private bool enableGizmo;
 
-        [SerializeField]
-        private Sprite onSprite;
+        protected bool activated = false;
 
-        [SerializeField]
-        private Sprite offSprite;
-
-        private SpriteRenderer sr;
-
-        private bool activated = false;
-
-        public virtual void Awake()
-        {
-            sr = GetComponent<SpriteRenderer>();
-
-            if (sr == null)
-            {
-                Debug.LogError("SpriteRenderer component could not " +
-                               "be found in the object.");
-            }
-        }
+        public virtual void Awake() { }
 
         public int GetCode()
         {
             return activationCode;
-        }
-
-        protected void DisableStateSprites()
-        {
-            stateSprites = false;
         }
 
         public bool IsActivated()
@@ -57,39 +32,27 @@ namespace not_broforce
             return (code == activationCode && activated);
         }
 
-        public void Activate()
+        public virtual void Activate()
         {
             if (!activated)
             {
                 activated = true;
-
-                if (stateSprites && sr != null)
-                {
-                    sr.sprite = onSprite;
-                }
-
                 //Debug.Log("Activated");
             }
         }
 
-        public void Deactivate()
+        public virtual void Deactivate()
         {
             if (activated)
             {
                 activated = false;
-
-                if (stateSprites && sr != null)
-                {
-                    sr.sprite = offSprite;
-                }
-
                 //Debug.Log("Deactivated");
             }
         }
 
         private void OnDrawGizmos()
         {
-            if (activationCode >= 0)
+            if (enableGizmo)
             {
                 // Radius of a sphere
                 float radius = 0.2f;
@@ -106,7 +69,7 @@ namespace not_broforce
                 // switch's activation code if it is not activated
                 else
                 {
-                    if (activationCode == 0)
+                    if (activationCode <= 0)
                     {
                         Gizmos.color = Color.black;
                     }

@@ -5,15 +5,10 @@ using UnityEngine;
 
 namespace not_broforce
 {
-    public class LevelEntrance : Switch
+    public class LevelEntrance : SwitchInteractable
     {
         [SerializeField]
         private int levelNumber;
-
-        private void Start()
-        {
-            DisableStateSprites();
-        }
 
         private void Update()
         {

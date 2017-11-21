@@ -14,7 +14,6 @@ namespace not_broforce
         {
             FindFade();
             FindCompatibleSwitches();
-            DisableStateSprites();
         }
 
         private void FindFade()

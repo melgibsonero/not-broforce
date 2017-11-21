@@ -10,11 +10,6 @@ namespace not_broforce
         [SerializeField]
         private int completedLevelReq = 1;
 
-        public override void Awake()
-        {
-            DisableStateSprites();
-        }
-
         public void Start()
         {
             if (LevelRequirementFilled())
@@ -24,17 +19,6 @@ namespace not_broforce
                 //          " has been completed - switch activated.");
             }
         }
-
-        //private void Update()
-        //{
-        //    if (!IsActivated())
-        //    {
-        //        if (LevelRequirementFilled())
-        //        {
-        //            Activate();
-        //        }
-        //    }
-        //}
 
         public bool LevelRequirementFilled()
         {

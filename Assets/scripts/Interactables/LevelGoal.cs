@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace not_broforce
 {
-    public class LevelGoal : Switch
+    public class LevelGoal : SwitchInteractable
     {
         [SerializeField]
         private LevelChanger endScreen;

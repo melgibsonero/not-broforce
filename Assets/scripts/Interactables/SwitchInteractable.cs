@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace not_broforce
 {
-    public abstract class Switch : Activatable, IGridObject
+    public abstract class SwitchInteractable : Switch, IGridObject
     {
         [SerializeField]
         private GameObject player;
