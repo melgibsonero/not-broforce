@@ -97,6 +97,8 @@ namespace not_broforce
         /// </summary>
         private LayerMask groundMask;
 
+        private AudioSource boxRemoveSound;
+
         public Vector2 GridCoordinates
         {
             get { return gridCoordinates; }
@@ -147,6 +149,8 @@ namespace not_broforce
             {
                 playerCtrl = player.GetComponent<PlayerController>();
             }
+
+            boxRemoveSound = GetComponent<AudioSource>();
 
             // Checks if any necessary objects are not attached
             CheckForErrors();
@@ -782,6 +786,12 @@ namespace not_broforce
 
                 // Prints debug info
                 //Debug.Log("Box unselected");
+
+                // Plays a sound
+                if (boxRemoveSound != null)
+                {
+                    boxRemoveSound.PlayOneShot(boxRemoveSound.clip, 1f);
+                }
             }
         }
 
