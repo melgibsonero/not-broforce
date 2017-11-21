@@ -11,6 +11,10 @@ namespace not_broforce
 
         private List<Switch> compatibleSwitches;
 
+        private PathFinding1 pf;
+        private Grid1 grid;
+        private Node1[] takenNodes;
+
         public override void Awake()
         {
             base.Awake();
@@ -18,6 +22,11 @@ namespace not_broforce
             InitCollider();
 
             FindCompatibleSwitches();
+        }
+
+        private void Start()
+        {
+            InitPathfinding();
         }
 
         private void InitCollider()
@@ -29,6 +38,58 @@ namespace not_broforce
             {
                 Debug.LogError("BoxCollider2D component could " +
                                "not be found in the object.");
+            }
+        }
+
+        private void InitPathfinding()
+        {
+            // The obstacle's height
+            float height = GetComponent<BoxCollider2D>().bounds.size.y;
+
+            // The world y-coordinate of the obstacle's bottom side
+            float bottomY =
+                (transform.position + new Vector3(0, -1 * height / 2)).y;
+
+            // The amount of nodes the obstacle occupies in the y-axis
+            int vertNodes =
+                (int) (height / LevelController.gridCellWidth + 0.5f);
+
+            // Initializes the taken node array
+            takenNodes = new Node1[vertNodes];
+
+            pf = FindObjectOfType<PathFinding1>();
+
+            if (pf != null)
+            {
+                grid = pf.GetComponent<Grid1>();
+            }
+            else
+            {
+                Debug.LogError("PathFinding1 component could " +
+                               "not be found in the scene.");
+            }
+
+            if (grid != null)
+            {
+                for (int i = 0; i < takenNodes.Length; i++)
+                {
+                    // The world point of the current node's center
+                    Vector3 nodeCenterWP = transform.position;
+
+                    // Set's the node's center's y-coordinate
+                    // (bottomY plus i times the whole gridCellWidth
+                    // and a half gridCellWidth)
+                    nodeCenterWP.y = bottomY +
+                                     i * LevelController.gridCellWidth +
+                                     LevelController.gridCellWidth / 2;
+
+                    takenNodes[i] = grid.NodeFromWorldPoint(nodeCenterWP);
+                }
+            }
+            else
+            {
+                Debug.LogError("Grid1 component could " +
+                               "not be found in the scene.");
             }
         }
 
@@ -73,13 +134,18 @@ namespace not_broforce
                 }
             }
 
-            if (oldState && !newState)
+            if (oldState != newState)
             {
-                MakeImpassable();
-            }
-            else if (!oldState && newState)
-            {
-                MakePassable();
+                if (!newState)
+                {
+                    MakeImpassable();
+                }
+                else if (newState)
+                {
+                    MakePassable();
+                }
+
+                UpdatePathfinding();
             }
         }
 
@@ -100,6 +166,17 @@ namespace not_broforce
             if (boxCollider != null)
             {
                 boxCollider.enabled = true;
+            }
+        }
+
+        private void UpdatePathfinding()
+        {
+            if (pf != null)
+            {
+                foreach (Node1 node in takenNodes)
+                {
+                    pf.UpdateNode(node.gridX, node.gridY, IsActivated());
+                }
             }
         }
     }
