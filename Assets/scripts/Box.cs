@@ -102,6 +102,10 @@ namespace not_broforce {
                         _followTarget = followWaypoints[0];
                         CheckFollowDistance();
                     }
+                } else if (followWaypoints == null && _takingPosition)
+                {
+                    BackToLine();
+                    boxController.addBox(this);
                 }
             }
 
@@ -136,6 +140,11 @@ namespace not_broforce {
                     } else
                     {
                         pathNotFound = true;
+                        if(_takingPosition)
+                        {
+                            BackToLine();
+                            boxController.addBox(this);
+                        }
                     }
                     
                 }
