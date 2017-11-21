@@ -97,7 +97,7 @@ namespace not_broforce
         /// </summary>
         private LayerMask groundMask;
 
-        private AudioSource boxRemoveSound;
+        private AudioSource testSound;
 
         public Vector2 GridCoordinates
         {
@@ -150,7 +150,7 @@ namespace not_broforce
                 playerCtrl = player.GetComponent<PlayerController>();
             }
 
-            boxRemoveSound = GetComponent<AudioSource>();
+            testSound = GetComponent<AudioSource>();
 
             // Checks if any necessary objects are not attached
             CheckForErrors();
@@ -430,10 +430,19 @@ namespace not_broforce
         /// </summary>
         private void Update()
         {
-            HandleInput();
+            //HandleInput();
 
             if (visibility.enabled)
             {
+                if (cursor.PlayingUsingMouse)
+                {
+                    MouseMovevent();
+                }
+                else
+                {
+                    DirectionalMovevent();
+                }
+
                 CheckIfPlayerGrounded();
                 CheckPlacementValidity();
             }
@@ -454,69 +463,105 @@ namespace not_broforce
             }
         }
 
-        private void HandleInput()
+        public void OnActivationInputDown()
         {
-            HandleSelectorActivation();
-
-            // Only accepts input for the selector if it is visible
-            if (visibility.enabled)
+            // If the selector is just now being made visible,
+            // its position is set next to the player character
+            // and placement validity is checked
+            if (!visibility.enabled)
             {
-                if (cursor.PlayingUsingMouse)
-                {
-                    MouseMovevent();
-
-                    // Input for placing and removing a box
-                    if (Input.GetKeyDown(KeyCode.E) || Input.GetMouseButtonDown(0))
-                    {
-                        if (validRemove)
-                        {
-                            RemoveBox();
-                        }
-                        else if (validPlacement)
-                        {
-                            PlaceBox();
-                        }
-                    }
-                }
-                else
-                {
-                    DirectionalMovevent();
-
-                    // Input for placing and removing a box
-                    if (Input.GetKeyDown(KeyCode.E))
-                    {
-                        if (validRemove)
-                        {
-                            RemoveBox();
-                        }
-                        else if (validPlacement)
-                        {
-                            PlaceBox();
-                        }
-                    }
-                }
+                ShowSelector();
             }
         }
 
-        private void HandleSelectorActivation()
+        public void OnActivationInputUp()
         {
-            // If the left shift key is held, the selector is visible
-            if (Input.GetKey(KeyCode.LeftShift))
-            {
-                // If the selector is just now being made visible,
-                // its position is set next to the player character
-                // and placement validity is checked
-                if (!visibility.enabled)
-                {
-                    ShowSelector();
-                }
-            }
-            // If the left shift key is released, the selector is hidden
-            else if (visibility.enabled)
+            // The selector is hidden
+            if (visibility.enabled)
             {
                 HideSelector();
             }
         }
+
+        public void OnPlacementInputDown()
+        {
+            // Only accepts input for the selector if it is visible
+            if (visibility.enabled)
+            {
+                if (validRemove)
+                {
+                    RemoveBox();
+                }
+                else if (validPlacement)
+                {
+                    PlaceBox();
+                }
+            }
+        }
+
+        //private void HandleInput()
+        //{
+        //    HandleSelectorActivation();
+
+        //    // Only accepts input for the selector if it is visible
+        //    if (visibility.enabled)
+        //    {
+        //        if (cursor.PlayingUsingMouse)
+        //        {
+        //            MouseMovevent();
+
+        //            // Input for placing and removing a box
+        //            if (Input.GetKeyDown(KeyCode.E) || Input.GetMouseButtonDown(0))
+        //            {
+        //                if (validRemove)
+        //                {
+        //                    RemoveBox();
+        //                }
+        //                else if (validPlacement)
+        //                {
+        //                    PlaceBox();
+        //                }
+        //            }
+        //        }
+        //        else
+        //        {
+        //            DirectionalMovevent();
+
+        //            // Input for placing and removing a box
+        //            if (Input.GetKeyDown(KeyCode.E))
+        //            {
+        //                if (validRemove)
+        //                {
+        //                    RemoveBox();
+        //                }
+        //                else if (validPlacement)
+        //                {
+        //                    PlaceBox();
+        //                }
+        //            }
+        //        }
+        //    }
+        //}
+
+        //private void HandleSelectorActivation()
+        //{
+        //    // If the left shift key is held, the selector is visible
+        //    if (Input.GetKey(KeyCode.LeftShift))
+        //    {
+        //        // If the selector is just now being made visible,
+        //        // its position is set next to the player character
+        //        // and placement validity is checked
+        //        if (!visibility.enabled)
+        //        {
+        //            ShowSelector();
+        //        }
+        //    }
+        //    // If the left shift key is released, the selector is hidden
+        //    else if (visibility.enabled)
+        //    {
+        //        HideSelector();
+        //    }
+        //}
 
         private void ToggleActivation()
         {
@@ -710,13 +755,19 @@ namespace not_broforce
                 if (placed)
                 {
                     AddReservedBoxPlace();
+
+                    // Plays a sound
+                    if (testSound != null)
+                    {
+                        testSound.PlayOneShot(testSound.clip, 1f);
+                    }
                 }
 
-                if (boxController.MovingBoxAmount() == 0)
-                {
-                    // Prints debug info
-                    //Debug.Log("Out of boxes to place");
-                }
+                //if (boxController.MovingBoxAmount() == 0)
+                //{
+                //    // Prints debug info
+                //    Debug.Log("Out of boxes to place");
+                //}
             }
         }
 
@@ -786,12 +837,6 @@ namespace not_broforce
 
                 // Prints debug info
                 //Debug.Log("Box unselected");
-
-                // Plays a sound
-                if (boxRemoveSound != null)
-                {
-                    boxRemoveSound.PlayOneShot(boxRemoveSound.clip, 1f);
-                }
             }
         }
 

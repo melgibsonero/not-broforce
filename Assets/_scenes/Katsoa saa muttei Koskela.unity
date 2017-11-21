@@ -4591,6 +4591,11 @@ Prefab:
       propertyPath: m_Pivot.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 114733486022601102, guid: a0f8092ec09deee4588d71147c576f6f,
+        type: 2}
+      propertyPath: m_Text
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 114342316530944064, guid: a0f8092ec09deee4588d71147c576f6f,
         type: 2}
       propertyPath: scene
