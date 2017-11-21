@@ -319,6 +319,28 @@ namespace not_broforce
         //    return playerSideGridXCoords;
         //}
 
+        public void RemoveReservedBoxPlace(Vector3 position)
+        {
+            RemoveReservedBoxPlace(
+                LevelController.GetGridCoordinates(position));
+        }
+
+        public void RemoveReservedBoxPlace(Vector2 gridCoordinates)
+        {
+            foreach (Vector2 reservedPlace in reservedBoxPlaceCoords)
+            {
+                if (gridCoordinates == reservedPlace)
+                {
+                    reservedBoxPlaceCoords.Remove(reservedPlace);
+
+                    //Debug.Log("Reserved space removed. Spaces left: " +
+                    //    reservedBoxPlaceCoords.Count);
+
+                    return;
+                }
+            }
+        }
+
         private bool SelectorIsInReservedBoxPlace()
         {
             foreach (Vector2 reservedPlace in reservedBoxPlaceCoords)

@@ -65,8 +65,8 @@ namespace not_broforce
             }
             else
             {
-                Debug.LogError("PathFinding1 component could " +
-                               "not be found in the scene.");
+                Debug.LogError("An object with a PathFinding1 component " +
+                               "could not be found in the scene.");
             }
 
             if (grid != null)
@@ -88,8 +88,8 @@ namespace not_broforce
             }
             else
             {
-                Debug.LogError("Grid1 component could " +
-                               "not be found in the scene.");
+                Debug.LogError("An object with a Grid1 component " +
+                               "could not be found in the scene.");
             }
         }
 
@@ -128,7 +128,7 @@ namespace not_broforce
             {
                 newState = activator.IsActivated();
 
-                if (newState)
+                if (newState == true)
                 {
                     break;
                 }
@@ -136,14 +136,14 @@ namespace not_broforce
 
             if (oldState != newState)
             {
-                if (!newState)
-                {
-                    MakeImpassable();
-                }
-                else if (newState)
+                if (newState == true)
                 {
                     MakePassable();
                 }
+                else
+                {
+                    MakeImpassable();
+                } 
 
                 UpdatePathfinding();
             }
