@@ -120,6 +120,7 @@ namespace not_broforce
             if (audioSrcPrefab != null)
             {
                 GameObject audioObj = Instantiate(audioSrcPrefab, transform);
+                audioObj.transform.position = transform.position;
                 audioSrc = audioObj.GetComponent<AudioSource>();
                 audioSrcPool.Add(audioSrc);
 
