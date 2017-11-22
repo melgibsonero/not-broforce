@@ -409,16 +409,38 @@ namespace not_broforce
             return false;
         }
 
+        /// <summary>
+        /// Checks if the selector's x-coordinate is not
+        /// too far from the given x-coordinate.
+        /// </summary>
+        /// <param name="otherGridCoordX">an x-coordinate</param>
+        /// <returns></returns>
         private bool SelectorIsWithinHorBounds(float otherGridCoordX)
         {
-            return ((int) Mathf.Abs(otherGridCoordX - gridCoordinates.x) <= maxGroundPlaceDistX);
+            return ((int) Mathf.Abs(otherGridCoordX - gridCoordinates.x)
+                <= maxGroundPlaceDistX);
         }
 
-        private bool SelectorIsWithinHorBounds(float leftCoordX, float rightCoordX)
+        /// <summary>
+        /// Checks if the selector's x-coordinate is not
+        /// too far from one of the given x-coordinates.
+        /// </summary>
+        /// <param name="leftCoordX">x-coordinate of an object's
+        /// left side</param>
+        /// <param name="rightCoordX">x-coordinate of an object's
+        /// right side</param>
+        private bool SelectorIsWithinHorBounds(float leftCoordX,
+                                               float rightCoordX)
         {
-            bool leftOK = (int) Mathf.Abs(leftCoordX - gridCoordinates.x) <= maxGroundPlaceDistX;
-            bool rightOK = (int) Mathf.Abs(rightCoordX - gridCoordinates.x) <= maxGroundPlaceDistX;
+            // Checks if the selector is not too far from the left x-coord
+            bool leftOK = (int) Mathf.Abs(leftCoordX - gridCoordinates.x)
+                <= maxGroundPlaceDistX;
 
+            // Checks if the selector is not too far from the right x-coord
+            bool rightOK = (int) Mathf.Abs(rightCoordX - gridCoordinates.x)
+                <= maxGroundPlaceDistX;
+
+            // Returns whether either of the checks was true
             return (leftOK || rightOK);
         }
 

@@ -42,14 +42,21 @@ namespace not_broforce
         private float progress;
 
         [SerializeField,
+            Tooltip("Starts the track (testing purposes only)")]
+        private bool play;
+
+        [SerializeField,
             Tooltip("Is the playback paused")]
         private bool paused;
+
+        [SerializeField,
+            Tooltip("Should the music fade out")]
+        private bool fadeOut;
 
         private int currentTrack = 0;
 
         private AudioSource audioSrc;
 
-        // Testing purposes only
         private float oldProgress;
 
         //private bool active;
@@ -128,9 +135,22 @@ namespace not_broforce
                 {
                     ChangeProgress(progress);
                 }
+
+                if (fadeOut)
+                {
+                    UpdateFadeOut();
+                }
             }
             else if (!paused)
             {
+                // Testing purposes only
+                // Starts playing the current track
+                if (play)
+                {
+                    play = false;
+                    Play();
+                }
+
                 // The track is unpaused
                 if (progress < 0.99f)
                 {
@@ -145,6 +165,12 @@ namespace not_broforce
             }
         }
 
+        public void ChangeProgress(float progress)
+        {
+            audioSrc.time = progress * tracks[currentTrack].length;
+            oldProgress = progress;
+        }
+
         private void Play()
         {
             if (tracks.Count > 0 && currentTrack < tracks.Count)
@@ -152,6 +178,12 @@ namespace not_broforce
                 audioSrc.clip = tracks[currentTrack];
                 audioSrc.Play();
             }
+        }
+
+        private void Finish()
+        {
+            Reset();
+            NextTrack();
         }
 
         public void Pause()
@@ -166,13 +198,17 @@ namespace not_broforce
             paused = false;
         }
 
-        private void Finish()
+        private void Stop()
+        {
+            audioSrc.Stop();
+            Reset();
+        }
+
+        private void Reset()
         {
             audioSrc.time = 0;
             progress = 0;
             oldProgress = 0;
-
-            NextTrack();
         }
 
         private void NextTrack()
@@ -191,15 +227,50 @@ namespace not_broforce
             }
         }
 
-        public void ChangeProgress(float progress)
-        {
-            audioSrc.time = progress * tracks[currentTrack].length;
-            oldProgress = progress;
-        }
-
+        /// <summary>
+        /// Sets the AudioSource's volume.
+        /// </summary>
+        /// <param name="volume">volume level</param>
         public void SetVolume(float volume)
         {
-            audioSrc.volume = volume;
+            // Allows any changes to the volume if fade-out is not
+            // active, and if it is, allows only decreasing the volume
+            if (!fadeOut || volume < audioSrc.volume)
+            {
+                audioSrc.volume = volume;
+            }
+        }
+
+        private void StartFadeOut()
+        {
+            fadeOut = true;
+        }
+
+        /// <summary>
+        /// Updates the fade-out by decreasing the volume until it reaches 0.
+        /// After that, playback will be stopped and the volume reset.
+        /// </summary>
+        private void UpdateFadeOut()
+        {
+            float fadeSpeed = 0.08f;
+            float newVolume = audioSrc.volume - 
+                fadeSpeed * Time.deltaTime;
+
+            if (newVolume <= 0)
+            {
+                FinishFadeOut();
+            }
+            else
+            {
+                SetVolume(newVolume);
+            }
+        }
+
+        private void FinishFadeOut()
+        {
+            fadeOut = false;
+            Stop();
+            SetVolume(GameManager.Instance.MusicVolume);
         }
     }
 }
