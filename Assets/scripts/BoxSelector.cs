@@ -97,8 +97,6 @@ namespace not_broforce
         /// </summary>
         private LayerMask groundMask;
 
-        private AudioSource testSound;
-
         public Vector2 GridCoordinates
         {
             get { return gridCoordinates; }
@@ -149,8 +147,6 @@ namespace not_broforce
             {
                 playerCtrl = player.GetComponent<PlayerController>();
             }
-
-            testSound = GetComponent<AudioSource>();
 
             // Checks if any necessary objects are not attached
             CheckForErrors();
@@ -471,6 +467,10 @@ namespace not_broforce
             if (!visibility.enabled)
             {
                 ShowSelector();
+
+                // Testing purposes only
+                // Plays a sound
+                SFXPlayer.Instance.Play(Sound.Score);
             }
         }
 
@@ -748,6 +748,10 @@ namespace not_broforce
 
         private void PlaceBox()
         {
+            // Testing purposes only
+            // Plays a sound
+            SFXPlayer.Instance.Play(Sound.Impact);
+
             if (BoxCanBePlaced())
             {
                 bool placed = boxController.PlaceBox(transform.position);
@@ -755,12 +759,6 @@ namespace not_broforce
                 if (placed)
                 {
                     AddReservedBoxPlace();
-
-                    // Plays a sound
-                    if (testSound != null)
-                    {
-                        testSound.PlayOneShot(testSound.clip, 1f);
-                    }
                 }
 
                 //if (boxController.MovingBoxAmount() == 0)
