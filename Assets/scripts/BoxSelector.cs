@@ -97,6 +97,8 @@ namespace not_broforce
         /// </summary>
         private LayerMask groundMask;
 
+        private bool isAlwaysShown;
+
         public Vector2 GridCoordinates
         {
             get { return gridCoordinates; }
@@ -482,6 +484,10 @@ namespace not_broforce
                 CheckIfPlayerGrounded();
                 CheckPlacementValidity();
             }
+            else if (isAlwaysShown)
+            {
+                ShowSelector();
+            }
         }
 
         private void CheckIfPlayerGrounded()
@@ -605,19 +611,22 @@ namespace not_broforce
 
         private void ToggleActivation()
         {
-            // Displays or hides the selector
-            visibility.enabled = !visibility.enabled;
+            if (!isAlwaysShown)
+            {
+                // Displays or hides the selector
+                visibility.enabled = !visibility.enabled;
 
-            // If the selector was made visible, its position is set next to
-            // the player character and placement validity is checked
-            if (visibility.enabled)
-            {
-                ShowSelector();
-            }
-            // Otherwise any selected box is unselected
-            else
-            {
-                HideSelector();
+                // If the selector was made visible, its position is set next to
+                // the player character and placement validity is checked
+                if (visibility.enabled)
+                {
+                    ShowSelector();
+                }
+                // Otherwise any selected box is unselected
+                else
+                {
+                    HideSelector();
+                }
             }
         }
 
@@ -745,14 +754,27 @@ namespace not_broforce
 
         private void HideSelector()
         {
-            visibility.enabled = false;
-            collidesWithObstacle = false;
-            UnselectAll();
-
-            if (cursor.PlayingUsingMouse)
+            if (!isAlwaysShown)
             {
-                cursor.Visible = true;
+                visibility.enabled = false;
+                collidesWithObstacle = false;
+                UnselectAll();
+
+                if (cursor.PlayingUsingMouse)
+                {
+                    cursor.Visible = true;
+                }
             }
+        }
+
+        /// <summary>
+        /// Set whether the selector will always
+        /// be shown and can't be hidden.
+        /// </summary>
+        /// <param name="showAlways">is the selector always shown</param>
+        public void ShowAlways(bool showAlways)
+        {
+            isAlwaysShown = showAlways;
         }
 
         private void AddReservedBoxPlace()
@@ -766,7 +788,8 @@ namespace not_broforce
 
             reservedBoxPlaceCoords.Add(gridCoordinates);
 
-            //Debug.Log("Reserved space added. Spaces: " + reservedBoxPlaceCoords.Count);
+            //Debug.Log("Reserved space added. Spaces: " +
+            //          reservedBoxPlaceCoords.Count);
         }
 
         private void UpdateReservedBoxPlaces()
@@ -1004,6 +1027,9 @@ namespace not_broforce
 
         private void OnTriggerStay2D(Collider2D other)
         {
+            // TODO: Fix a bug where the selector shows
+            // green while colliding with the environment
+
             if (IsUsable())
             {
                 // The collider which collides with the selector
