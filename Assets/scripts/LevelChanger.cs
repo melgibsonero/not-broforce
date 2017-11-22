@@ -165,7 +165,10 @@ namespace not_broforce
             GameManager.Instance.SaveSettings();
             settingsOpened = false;
             settings.SetActive(false);
-            ShowPauseMenu(true);
+            if(paused)
+            {
+                ShowPauseMenu(true);
+            }
         }
 
         public void BackToMainMenu ()
