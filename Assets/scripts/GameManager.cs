@@ -56,6 +56,32 @@ namespace not_broforce
         [SerializeField]
         public float effectVolume;
 
+        public float EffectVolume
+        {
+            get
+            {
+                return effectVolume;
+            }
+            set
+            {
+                effectVolume = value;
+                FindObjectOfType<SFXPlayer>().ChangeVolume(value);
+            }
+        }
+
+        public float MusicVolume
+        {
+            get
+            {
+                return musicVolume;
+            }
+            set
+            {
+                effectVolume = value;
+                FindObjectOfType<MusicPlayer>().ChangeVolume(value);
+            }
+        }
+
         private void Awake()
         {
             if (instance == null)

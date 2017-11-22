@@ -59,6 +59,7 @@ namespace not_broforce
         private void Init()
         {
             audioSrc = GetComponent<AudioSource>();
+            audioSrc.volume = GameManager.Instance.MusicVolume;
             active = true;
 
             DontDestroyOnLoad(gameObject);

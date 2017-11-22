@@ -26,9 +26,9 @@ namespace not_broforce {
         // Update is called once per frame
         void Update() {
             musicVolume.text = "Music Volume: " + (int)(musicSlider.value * 100) + "%";
-            effectVolume.text = "Effect Volue: " + (int)(effectSlider.value * 100) + "%";
-            GameManager.Instance.effectVolume = effectSlider.value;
-            GameManager.Instance.musicVolume = musicSlider.value;
+            effectVolume.text = "Effect Volume: " + (int)(effectSlider.value * 100) + "%";
+            GameManager.Instance.EffectVolume = effectSlider.value;
+            GameManager.Instance.MusicVolume = musicSlider.value;
         }
     }
 }

@@ -83,6 +83,7 @@ namespace not_broforce
         private void Init()
         {
             InitPool();
+            volume = GameManager.Instance.EffectVolume;
             DontDestroyOnLoad(gameObject);
         }
 
