@@ -117,61 +117,72 @@ namespace not_broforce
             // The track is playing
             if (audioSrc.isPlaying)
             {
-                if (paused)
-                {
-                    Pause();
-                    return;
-                }
-
-                // The playback progresses normally
-                if (progress == oldProgress)
-                {
-                    progress = audioSrc.time / tracks[currentTrack].length;
-                    oldProgress = progress;
-                }
-                // The playback progress has been changed in the editor
-                // and the playback time is adjusted accordingly
-                else
-                {
-                    ChangeProgress(progress);
-                }
-
-                if (fadeOut)
-                {
-                    UpdateFadeOut();
-                }
+                UpdateWhenPlaying();
             }
             else if (!paused)
             {
-                // Testing purposes only
-                // Starts playing the current track
-                if (play)
-                {
-                    play = false;
-                    Play();
-                }
-
-                // The track is unpaused
-                if (progress < 0.99f)
-                {
-                    Unpause();
-                }
-
-                // The track is over
-                else
-                {
-                    Finish();
-                }
+                UpdateWhenNotPlaying();
             }
         }
 
-        public void ChangeProgress(float progress)
+        private void UpdateWhenPlaying()
+        {
+            if (paused)
+            {
+                Pause();
+                return;
+            }
+
+            // The playback progresses normally
+            if (progress == oldProgress)
+            {
+                progress = audioSrc.time / tracks[currentTrack].length;
+                oldProgress = progress;
+            }
+            // The playback progress has been changed in the editor
+            // and the playback time is adjusted accordingly
+            else
+            {
+                SetProgress(progress);
+            }
+
+            if (fadeOut)
+            {
+                UpdateFadeOut();
+            }
+        }
+
+        private void UpdateWhenNotPlaying()
+        {
+            // Testing purposes only
+            // Starts playing the current track
+            if (play)
+            {
+                play = false;
+                Play();
+            }
+
+            // (Testing purposes only)
+            // The track is unpaused
+            if (progress < 0.99f)
+            {
+                Unpause();
+            }
+
+            // The track is over
+            else
+            {
+                Finish();
+            }
+        }
+
+        private void SetProgress(float progress)
         {
             audioSrc.time = progress * tracks[currentTrack].length;
             oldProgress = progress;
         }
 
-        private void Play()
+        public void Play()
         {
             if (tracks.Count > 0 && currentTrack < tracks.Count)
             {
@@ -198,7 +209,7 @@ namespace not_broforce
             paused = false;
         }
 
-        private void Stop()
+        public void Stop()
         {
             audioSrc.Stop();
             Reset();
@@ -252,7 +263,7 @@ namespace not_broforce
         /// </summary>
         private void UpdateFadeOut()
         {
-            float fadeSpeed = 0.08f;
+            float fadeSpeed = 0.06f;
             float newVolume = audioSrc.volume - 
                 fadeSpeed * Time.deltaTime;
 
