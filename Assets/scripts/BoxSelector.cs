@@ -301,23 +301,27 @@ namespace not_broforce
             return GetPlacedBoxInCoordinates(gridCoordinates);
         }
 
-        //private float[] GetPlayerSideGridXCoords()
-        //{
-        //    float[] playerSideGridXCoords = new float[2];
+        private float[] GetPlayerSideGridCoordXs()
+        {
+            float[] playerSideGridXCoords = new float[2];
 
-        //    Vector3 playerSize =
-        //        player.GetComponent<BoxCollider2D>().bounds.size;
+            Vector3 playerSize =
+                player.GetComponent<BoxCollider2D>().bounds.size;
 
-        //    // Left
-        //    playerSideGridXCoords[0] = LevelController.GetGridCoordinates
-        //        (player.transform.position + new Vector3(-1 * playerSize.x / 2, 0)).x;
+            // Error correction; it isn't enough if only
+            // a pixel is in the bordering grid node
+            playerSize.x -= 0.1f;
 
-        //    // Right
-        //    playerSideGridXCoords[1] = LevelController.GetGridCoordinates
-        //        (player.transform.position + new Vector3(playerSize.x / 2, 0)).x;
+            // Left
+            playerSideGridXCoords[0] = LevelController.GetGridCoordinates
+                (player.transform.position + new Vector3(-1 * playerSize.x / 2, 0)).x;
 
-        //    return playerSideGridXCoords;
-        //}
+            // Right
+            playerSideGridXCoords[1] = LevelController.GetGridCoordinates
+                (player.transform.position + new Vector3(playerSize.x / 2, 0)).x;
+
+            return playerSideGridXCoords;
+        }
 
         public void RemoveReservedBoxPlace(Vector3 position)
         {
@@ -381,14 +385,20 @@ namespace not_broforce
             Vector2 playerGridCoord = 
                 LevelController.GetGridCoordinates(player.transform.position);
 
-            bool horizontalOK = SelectorIsWithinHorBounds(playerGridCoord);
-            bool verticalOK = SelectorIsWithinVertBounds(playerGridCoord);
+            float[] playerSideGridCoordXs = GetPlayerSideGridCoordXs();
+
+            bool horizontalOK = 
+                SelectorIsWithinHorBounds(playerSideGridCoordXs[0],
+                                          playerSideGridCoordXs[1]);
+            bool verticalOK = SelectorIsWithinVertBounds(playerGridCoord.y);
 
             if (horizontalOK && verticalOK)
             {
-                // Uses raycast to determine if the selector is on top of solid ground
-                Vector3 center = transform.position;// + new Vector3(0, -1 * level.GridCellWidth / 2);
-                RaycastHit2D grounded = Physics2D.Raycast(center, Vector2.down, 1f, groundMask);
+                // Uses raycast to determine if the
+                // selector is on top of solid ground
+                Vector3 center = transform.position;
+                RaycastHit2D grounded =
+                    Physics2D.Raycast(center, Vector2.down, 1f, groundMask);
 
                 if (grounded)
                 {
@@ -399,24 +409,32 @@ namespace not_broforce
             return false;
         }
 
-        private bool SelectorIsWithinHorBounds(Vector2 otherGridCoord)
+        private bool SelectorIsWithinHorBounds(float otherGridCoordX)
         {
-            return ((int) Mathf.Abs(otherGridCoord.x - gridCoordinates.x) <= maxGroundPlaceDistX);
+            return ((int) Mathf.Abs(otherGridCoordX - gridCoordinates.x) <= maxGroundPlaceDistX);
         }
 
-        private bool SelectorIsWithinVertBounds(Vector2 otherGridCoord)
+        private bool SelectorIsWithinHorBounds(float leftCoordX, float rightCoordX)
+        {
+            bool leftOK = (int) Mathf.Abs(leftCoordX - gridCoordinates.x) <= maxGroundPlaceDistX;
+            bool rightOK = (int) Mathf.Abs(rightCoordX - gridCoordinates.x) <= maxGroundPlaceDistX;
+
+            return (leftOK || rightOK);
+        }
+
+        private bool SelectorIsWithinVertBounds(float otherGridCoordY)
         {
             // The selector is above or at the
             // same level as the other coordinates
-            if (gridCoordinates.y >= otherGridCoord.y)
+            if (gridCoordinates.y >= otherGridCoordY)
             {
-                return ((int) (gridCoordinates.y - otherGridCoord.y)
+                return ((int) (gridCoordinates.y - otherGridCoordY)
                         <= maxGroundPlaceDistUp);
             }
             // The selector is below the other coordinates
             else
             {
-                return ((int) (otherGridCoord.y - gridCoordinates.y)
+                return ((int) (otherGridCoordY - gridCoordinates.y)
                         <= maxGroundPlaceDistDown);
             }
         }
