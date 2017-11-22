@@ -65,7 +65,9 @@ namespace not_broforce
         {
             Scene scene = SceneManager.GetActiveScene();
             currentScene = scene.name;
+            DeactivateSettings();
             ShowPauseMenu(false);
+            
         }
 
         private void Update()
