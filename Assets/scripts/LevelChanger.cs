@@ -21,11 +21,16 @@ namespace not_broforce
         [SerializeField]
         private GameObject pauseMenu;
 
+        [SerializeField]
+        private GameObject settings;
+
         protected bool paused = false;
 
         protected bool endScreenActivated = false;
 
         private string currentScene = "";
+
+        private bool settingsOpened = false;
 
         private enum _sceneName
         {
@@ -65,7 +70,7 @@ namespace not_broforce
 
         private void Update()
         {
-            if(Input.GetKeyDown(KeyCode.Escape))
+            if(Input.GetKeyDown(KeyCode.Escape) && !settingsOpened)
             {
                 if(!paused)
                 {
@@ -73,11 +78,13 @@ namespace not_broforce
                     paused = true;
                 } else if (paused)
                 {
-                    Pause(false);
-                    paused = false;
+                    ResumeGame();
                 }
+            } else if (Input.GetKeyDown(KeyCode.Escape) && settingsOpened)
+            {
+                DeactivateSettings();
             }
-            if(endScreenActivated)
+            if(endScreenActivated && !paused)
             {
                 if(Input.GetKey(KeyCode.Space))
                 {
@@ -111,14 +118,29 @@ namespace not_broforce
             endScreenActivated = true;
         }
 
+        private void DeactivateButtons()
+        {
+            restart.gameObject.SetActive(false);
+            nextLevel.gameObject.SetActive(false);
+        }
+
         private void Pause (bool pause)
         {
             if(pause)
             {
                 Time.timeScale = 0f;
+                if(endScreenActivated)
+                {
+                    DeactivateButtons();
+                }
+
             } else
             {
                 Time.timeScale = 1f;
+                if(endScreenActivated)
+                {
+                    ActivateButtons();
+                }
             }
             ShowPauseMenu(pause);
         }
@@ -131,7 +153,17 @@ namespace not_broforce
 
         public void ActivateSettings ()
         {
-            //TODO open settings and disable pauseMenu
+            settingsOpened = true;
+            settings.SetActive(true);
+            ShowPauseMenu(false);
+        }
+
+        public void DeactivateSettings ()
+        {
+            GameManager.Instance.SaveSettings();
+            settingsOpened = false;
+            settings.SetActive(false);
+            ShowPauseMenu(true);
         }
 
         public void BackToMainMenu ()

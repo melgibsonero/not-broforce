@@ -50,6 +50,12 @@ namespace not_broforce
         [SerializeField]
         private int latestCompletedLevel = 0;
 
+        [SerializeField]
+        public float musicVolume;
+
+        [SerializeField]
+        public float effectVolume;
+
         private void Awake()
         {
             if (instance == null)
@@ -153,8 +159,9 @@ namespace not_broforce
             // regedit > Tietokone\HKEY_CURRENT_USER\Software\Unity\UnityEditor\TeamAF\not - broforce
 
             PlayerPrefs.SetInt("latestCompletedLevel", latestCompletedLevel);
+            PlayerPrefs.SetFloat("musicVolume", musicVolume);
+            PlayerPrefs.SetFloat("effectVolume", effectVolume);
             PlayerPrefs.Save();
-
             Debug.Log("--[ Game saved ]--");
             Debug.Log("latestCompletedLevel: " + latestCompletedLevel);
         }
@@ -162,9 +169,19 @@ namespace not_broforce
         private void LoadGame()
         {
             latestCompletedLevel = PlayerPrefs.GetInt("latestCompletedLevel", 0);
-
+            musicVolume = PlayerPrefs.GetFloat("musicVolume", 0.5f);
+            effectVolume = PlayerPrefs.GetFloat("effectVolume", 0.5f);
             Debug.Log("--[ Game loaded ]--");
             Debug.Log("latestCompletedLevel: " + latestCompletedLevel);
+        }
+
+        public void SaveSettings()
+        {
+
+            PlayerPrefs.SetFloat("musicVolume", musicVolume);
+            PlayerPrefs.SetFloat("effectVolume", effectVolume);
+            PlayerPrefs.Save();
+            Debug.Log("Settings saved");
         }
 
         private void Update()
