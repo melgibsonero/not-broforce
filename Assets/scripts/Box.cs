@@ -48,6 +48,7 @@ namespace not_broforce {
         public Sprite box;
         public Sprite boxLit;
         private Vector2 gridCoordinates;
+        BoxSelector selector;
 
         public Vector2 GridCoordinates
         {
@@ -76,6 +77,7 @@ namespace not_broforce {
             maxJumpVelocity = player.maxJumpVelocity * 1.3f;
             minJumpVelocity = player.minJumpVelocity;
             pathFinder = GameObject.FindGameObjectWithTag("PathFinder").GetComponent<PathFinding1>();
+            selector = FindObjectOfType<BoxSelector>();
         }
 
         // Update is called once per frame
@@ -104,6 +106,7 @@ namespace not_broforce {
                     }
                 } else if (followWaypoints == null && _takingPosition)
                 {
+                    selector.RemoveReservedBoxPlace(_target);
                     BackToLine();
                     boxController.addBox(this);
                 }
@@ -142,6 +145,7 @@ namespace not_broforce {
                         pathNotFound = true;
                         if(_takingPosition)
                         {
+                            selector.RemoveReservedBoxPlace(_target);
                             BackToLine();
                             boxController.addBox(this);
                         }
@@ -250,6 +254,7 @@ namespace not_broforce {
             transform.position = _target;
             if(!boxController.IsInStructure(this))
             {
+                selector.RemoveReservedBoxPlace(_target);
                 BackToLine();
                 boxController.addBox(this);
                 return;
@@ -260,7 +265,7 @@ namespace not_broforce {
             boxController.addPlacedBox(this);
             pathFinder.UpdateNode((int)transform.position.x, (int)transform.position.y, false);
             GetComponent<SpriteRenderer>().sprite = boxLit;
-            BoxSelector selector = FindObjectOfType<BoxSelector>();
+            
             selector.RefreshSelectedBox();
         }
 
