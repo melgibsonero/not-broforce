@@ -54,6 +54,7 @@ MonoBehaviour:
   sounds:
   - {fileID: 8300000, guid: 7f2d64ba88c992049bc6244575c271af, type: 3}
   - {fileID: 8300000, guid: 4188de9745ddcd84983c541f29b46016, type: 3}
+  - {fileID: 8300000, guid: 73fd71adf04fb5d41b587ab362068a5d, type: 3}
   volume: 1
   audioSrcPoolSize: 10
   flexiblePoolSize: 0

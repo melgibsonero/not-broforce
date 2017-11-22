@@ -20,15 +20,15 @@ namespace not_broforce {
 
         private void Start()
         {
-            musicSlider.value = GameManager.Instance.musicVolume;
-            effectSlider.value = GameManager.Instance.effectVolume;
+            musicSlider.value = GameManager.Instance.MusicVolume;
+            effectSlider.value = GameManager.Instance.EffectVolume;
         }
         // Update is called once per frame
         void Update() {
             musicVolume.text = "Music Volume: " + (int)(musicSlider.value * 100) + "%";
             effectVolume.text = "Effect Volume: " + (int)(effectSlider.value * 100) + "%";
-            GameManager.Instance.EffectVolume = effectSlider.value;
             GameManager.Instance.MusicVolume = musicSlider.value;
+            GameManager.Instance.EffectVolume = effectSlider.value;
         }
     }
 }

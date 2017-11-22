@@ -56,6 +56,19 @@ namespace not_broforce
         [SerializeField]
         public float effectVolume;
 
+        public float MusicVolume
+        {
+            get
+            {
+                return musicVolume;
+            }
+            set
+            {
+                musicVolume = value;
+                MusicPlayer.Instance.SetVolume(value);
+            }
+        }
+
         public float EffectVolume
         {
             get
@@ -65,20 +78,7 @@ namespace not_broforce
             set
             {
                 effectVolume = value;
-                FindObjectOfType<SFXPlayer>().ChangeVolume(value);
-            }
-        }
-
-        public float MusicVolume
-        {
-            get
-            {
-                return musicVolume;
-            }
-            set
-            {
-                effectVolume = value;
-                FindObjectOfType<MusicPlayer>().ChangeVolume(value);
+                SFXPlayer.Instance.SetVolume(value);
             }
         }
 
@@ -101,6 +101,10 @@ namespace not_broforce
         {
             LoadGame();
             DontDestroyOnLoad(gameObject);
+
+            // Creates a new MusicPlayer instance
+            // if one does not already exist
+            MusicPlayer.Instance.Create();
 
             if (debug_UnlockAll)
             {

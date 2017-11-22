@@ -13,12 +13,14 @@ namespace not_broforce
 
         Impact = 0,
         Score = 1,
-        RobotJump = 2,
-        RobotStep = 3,
-        RobotLand = 4,
-        BoxJump = 5,
-        BoxStep = 6,
-        BoxLand = 7,
+        Success = 2,
+        Failure = 3,
+        RobotJump = 4,
+        RobotStep = 5,
+        RobotLand = 6,
+        BoxJump = 7,
+        BoxStep = 8,
+        BoxLand = 9
     }
 
     public class SFXPlayer : MonoBehaviour
@@ -228,8 +230,18 @@ namespace not_broforce
             }
         }
 
+        private void ReturnAllAudioSrcsToPool()
+        {
+            // TODO: Call on scene change.
 
-        public void ChangeVolume(float volume)
+            foreach (AudioSource audioSrc in audioSrcPool)
+            {
+                audioSrc.Stop();
+                audioSrc.enabled = false;
+            }
+        }
+
+        public void SetVolume(float volume)
         {
             this.volume = volume;
         }

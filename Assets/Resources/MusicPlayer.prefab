@@ -137,3 +137,4 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 81269fa8eda63704684be2df093b8e4e, type: 3}
   - {fileID: 8300000, guid: 2cd9ab6557e7cb944a65461af9d19113, type: 3}
   progress: 0
+  currentTrack: 0

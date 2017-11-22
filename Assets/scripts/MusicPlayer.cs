@@ -7,6 +7,30 @@ namespace not_broforce
     [RequireComponent(typeof(AudioSource))]
     public class MusicPlayer : MonoBehaviour
     {
+        #region Statics
+        private static MusicPlayer instance;
+
+        public static MusicPlayer Instance
+        {
+            get
+            {
+                if (instance == null)
+                {
+                    // Note:
+                    // There must be a Resources folder under Assets and
+                    // MusicPlayer there for this to work. Not necessary if
+                    // a MusicPlayer object is present in a scene from the
+                    // get-go.
+
+                    instance =
+                        Instantiate(Resources.Load<MusicPlayer>("MusicPlayer"));
+                }
+
+                return instance;
+            }
+        }
+        #endregion Statics
+
         [SerializeField]
         private List<AudioClip> tracks;
 
@@ -17,50 +41,64 @@ namespace not_broforce
             Tooltip("The playback progress")]
         private float progress;
 
-        private AudioSource audioSrc;
+        [SerializeField,
+            Tooltip("Is the playback paused")]
+        private bool paused;
 
         private int currentTrack = 0;
+
+        private AudioSource audioSrc;
 
         // Testing purposes only
         private float oldProgress;
 
-        private bool active;
+        //private bool active;
 
-        //private void Awake()
+        /// <summary>
+        /// Lets a new instance be created.
+        /// </summary>
+        public void Create()
+        {
+            // Does nothing
+        }
+
+        private void Awake()
+        {
+            if (instance == null)
+            {
+                instance = this;
+            }
+            else if (instance != this)
+            {
+                Destroy(gameObject);
+                return;
+            }
+
+            Init();
+        }
+
+        //private void Start()
         //{
-        //    if (FindObjectOfType<MusicPlayer>() != false)
+        //    if (!active)
         //    {
-        //        Destroy(this);
-        //        return;
-        //    }
-        //    else
-        //    {
-        //        DontDestroyOnLoad(gameObject);
+        //        MusicPlayer[] musicPlayers =
+        //            FindObjectsOfType<MusicPlayer>();
+        //        if (musicPlayers.Length > 1)
+        //        {
+        //            Destroy(gameObject);
+        //        }
+        //        else
+        //        {
+        //            Init();
+        //        }
         //    }
         //}
-
-        private void Start()
-        {
-            if (!active)
-            {
-                MusicPlayer[] musicPlayers =
-                    FindObjectsOfType<MusicPlayer>();
-                if (musicPlayers.Length > 1)
-                {
-                    Destroy(gameObject);
-                }
-                else
-                {
-                    Init();
-                }
-            }
-        }
 
         private void Init()
         {
             audioSrc = GetComponent<AudioSource>();
             audioSrc.volume = GameManager.Instance.MusicVolume;
-            active = true;
+            //active = true;
 
             DontDestroyOnLoad(gameObject);
 
@@ -72,6 +110,12 @@ namespace not_broforce
             // The track is playing
             if (audioSrc.isPlaying)
             {
+                if (paused)
+                {
+                    Pause();
+                    return;
+                }
+
                 // The playback progresses normally
                 if (progress == oldProgress)
                 {
@@ -85,30 +129,41 @@ namespace not_broforce
                     ChangeProgress(progress);
                 }
             }
-            // The track is over
-            else if (progress > 0)
+            else if (!paused)
             {
-                Finish();
+                // The track is unpaused
+                if (progress < 0.99f)
+                {
+                    Unpause();
+                }
+
+                // The track is over
+                else
+                {
+                    Finish();
+                }
             }
         }
 
         private void Play()
         {
-            if (tracks.Count > 0)
+            if (tracks.Count > 0 && currentTrack < tracks.Count)
             {
                 audioSrc.clip = tracks[currentTrack];
                 audioSrc.Play();
             }
         }
 
-        private void Pause()
+        public void Pause()
         {
             audioSrc.Pause();
+            paused = true;
         }
 
-        private void Unpause()
+        public void Unpause()
         {
             audioSrc.UnPause();
+            paused = false;
         }
 
         private void Finish()
@@ -142,7 +197,7 @@ namespace not_broforce
             oldProgress = progress;
         }
 
-        public void ChangeVolume(float volume)
+        public void SetVolume(float volume)
         {
             audioSrc.volume = volume;
         }

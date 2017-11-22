@@ -10,13 +10,6 @@ namespace not_broforce
         [SerializeField]
         private LevelChanger endScreen;
 
-        private AudioSource winSound;
-
-        private void Start()
-        {
-            winSound = GetComponent<AudioSource>();
-        }
-
         private void Update()
         {
             if (!IsActivated())
@@ -34,10 +27,7 @@ namespace not_broforce
                               GameManager.Instance.CurrentLevel);
 
                     // Plays a sound
-                    if (winSound != null)
-                    {
-                        winSound.PlayOneShot(winSound.clip, 1f);
-                    }
+                    SFXPlayer.Instance.Play(Sound.Success);
 
                     // Activates the level end screen
                     endScreen.ActivateButtons();
