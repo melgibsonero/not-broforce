@@ -35,7 +35,32 @@ namespace not_broforce
             }
         }
 
-        
+        public static Quaternion DirectionToQuaternion(Direction direction)
+        {
+            switch (direction)
+            {
+                case Direction.Up:
+                {
+                    return Quaternion.Euler(0, 0, 0);
+                }
+                case Direction.Down:
+                {
+                    return Quaternion.Euler(0, 0, Mathf.PI);
+                }
+                case Direction.Left:
+                {
+                    return Quaternion.Euler(0, 0, -1 * Mathf.PI / 2);
+                }
+                case Direction.Right:
+                {
+                    return Quaternion.Euler(0, 0, Mathf.PI / 2);
+                }
+                default:
+                {
+                    return Quaternion.Euler(0, 0, 0);
+                }
+            }
+        }
 
         /// <summary>
         /// Gets grid coordinates one cell to the given direction.
@@ -593,6 +618,27 @@ namespace not_broforce
             }
 
             return romanNumerals;
+        }
+
+        public static void DrawGizmoRectangle(Vector3 bottomLeft,
+                                              float width, float height)
+        {
+            // The three other corners
+            Vector3 topLeft = bottomLeft + Vector3.up * height;
+            Vector3 topRight = topLeft + Vector3.right * width;
+            Vector3 bottomRight = topRight + Vector3.down * height;
+
+            // Top side
+            Gizmos.DrawLine(topLeft, topRight);
+
+            // Bottom side
+            Gizmos.DrawLine(bottomRight, bottomLeft);
+
+            // Left side
+            Gizmos.DrawLine(bottomLeft, topLeft);
+
+            // Right side
+            Gizmos.DrawLine(topRight, bottomRight);
         }
     }
 }

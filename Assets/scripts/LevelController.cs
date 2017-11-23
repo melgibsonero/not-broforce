@@ -45,7 +45,7 @@ namespace not_broforce
             return new Vector3(scaleX, scaleY);
         }
 
-        public static Vector3 GetPosFromGridCoord( Vector2 gridCoordinates)
+        public static Vector3 GetPosFromGridCoord(Vector2 gridCoordinates)
         {
             return new Vector3(gridCoordinates.x * gridCellWidth
                                    + gridOffset.x,
@@ -56,12 +56,11 @@ namespace not_broforce
         public static Vector3 GetBottomLeftPosFromGridCoord(
                                                        Vector2 gridCoordinates)
         {
-            return GetPosFromGridCoord
-                       (gridCoordinates) +
-                   new Vector3(-1 * gridCellWidth / 2, -1 * gridCellWidth / 2);
+            return GetPosFromGridCoord(gridCoordinates) +
+                new Vector3(-1 * gridCellWidth / 2, -1 * gridCellWidth / 2);
         }
 
-        public static Vector2 GetGridCoordinates( Vector2 position )
+        public static Vector2 GetGridCoordinates(Vector2 position)
         {
             // Modifies the current position to be
             // in line with the grid coordinates

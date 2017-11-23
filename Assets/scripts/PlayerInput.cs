@@ -38,6 +38,24 @@ namespace not_broforce
 
             #region Box selector controls
 
+            // Moving the box selector with the arrow keys
+            if (Input.GetKeyDown(KeyCode.UpArrow))
+            {
+                boxSelector.DirectionalMovement(Utils.Direction.Up);
+            }
+            else if (Input.GetKeyDown(KeyCode.DownArrow))
+            {
+                boxSelector.DirectionalMovement(Utils.Direction.Down);
+            }
+            else if (Input.GetKeyDown(KeyCode.LeftArrow))
+            {
+                boxSelector.DirectionalMovement(Utils.Direction.Left);
+            }
+            else if (Input.GetKeyDown(KeyCode.RightArrow))
+            {
+                boxSelector.DirectionalMovement(Utils.Direction.Right);
+            }
+
             // Activating the box selector
             if (Input.GetKeyDown(KeyCode.LeftShift))
             {

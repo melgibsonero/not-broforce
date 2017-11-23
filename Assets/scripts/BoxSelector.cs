@@ -32,7 +32,7 @@ namespace not_broforce
         private Color generalInvalidColor;
 
         [SerializeField]
-        private float maxDistanceFromPlayer = 3f;
+        private int maxDistFromPlayer = 3;
 
         [SerializeField, Range(0, 5)]
         private int maxGroundPlaceDistX = 3;
@@ -56,11 +56,13 @@ namespace not_broforce
         private SpriteRenderer sr;
 
         private Vector2 gridCoordinates;
+        private Vector2 playerGridCoord;
 
         private Box selectedBox;
         private NewBoxPlace selectedNewBoxPlace;
         private List<Box> placedBoxes;
         private List<Vector2> reservedBoxPlaceCoords;
+        private List<ValidBoxPlace> validBoxPlaces;
         private List<NewBoxPlace> newBoxPlacesInLevel;
         private NewBoxPlace liquidNewBoxPlace;
 
@@ -88,6 +90,8 @@ namespace not_broforce
         /// Is the player character standing on the ground
         /// </summary>
         private bool playerGrounded;
+
+        private Vector3 playerSize;
 
         private PlayerController playerCtrl;
 
@@ -118,6 +122,9 @@ namespace not_broforce
             // in the same node)
             reservedBoxPlaceCoords = new List<Vector2>();
 
+            // Places where a box can be placed
+            validBoxPlaces = new List<ValidBoxPlace>();
+
             // Initializes the new box place next to a
             // placed box and next to the player character
             liquidNewBoxPlace = GetComponentInChildren<NewBoxPlace>();
@@ -147,6 +154,11 @@ namespace not_broforce
 
             if (player != null)
             {
+                // Gets the player character's size
+                playerSize =
+                    player.GetComponent<BoxCollider2D>().bounds.size;
+
+                // Gets the player controller
                 playerCtrl = player.GetComponent<PlayerController>();
             }
 
@@ -185,14 +197,14 @@ namespace not_broforce
         private bool TooFarAwayFromPlayer(Vector3 position)
         {
             return (Utils.Distance(position, player.transform.position)
-                    > maxDistanceFromPlayer);
+                    > maxDistFromPlayer);
         }
 
         private bool TooFarAwayFromPlayer_Coord(Vector2 coord)
         {
             return (Utils.Distance(LevelController.GetPosFromGridCoord(coord),
                                    player.transform.position)
-                    > maxDistanceFromPlayer);
+                    > maxDistFromPlayer);
         }
 
         private void CheckForErrors()
@@ -303,26 +315,46 @@ namespace not_broforce
             return GetPlacedBoxInCoordinates(gridCoordinates);
         }
 
-        private float[] GetPlayerSideGridCoordXs()
+        private float[] PlayerSideGridCoordXs()
         {
             float[] playerSideGridXCoords = new float[2];
 
-            Vector3 playerSize =
-                player.GetComponent<BoxCollider2D>().bounds.size;
+            Vector3 pSize = playerSize;
 
             // Error correction; it isn't enough if only
             // a pixel is in the bordering grid node
-            playerSize.x -= 0.1f;
+            pSize.x -= 0.1f;
 
             // Left
             playerSideGridXCoords[0] = LevelController.GetGridCoordinates
-                (player.transform.position + new Vector3(-1 * playerSize.x / 2, 0)).x;
+                (player.transform.position + new Vector3(-1 * pSize.x / 2, 0)).x;
 
             // Right
             playerSideGridXCoords[1] = LevelController.GetGridCoordinates
-                (player.transform.position + new Vector3(playerSize.x / 2, 0)).x;
+                (player.transform.position + new Vector3(pSize.x / 2, 0)).x;
 
             return playerSideGridXCoords;
+        }
+
+        private int PlayerExtraGridCoordSide()
+        {
+            // Defaults to middle: 0 (no extra grid coord side)
+            int side = 0;
+
+            float[] playerSideGridXCoords = PlayerSideGridCoordXs();
+
+            // Left: -1
+            if (playerSideGridXCoords[0] < playerGridCoord.x)
+            {
+                side--;
+            }
+            // Right: 1
+            else if (playerSideGridXCoords[1] > playerGridCoord.x)
+            {
+                side++;
+            }
+
+            return side;
         }
 
         public void RemoveReservedBoxPlace(Vector3 position)
@@ -383,11 +415,7 @@ namespace not_broforce
 
         private bool SelectorIsNextToPlayer()
         {
-            // TODO: Add IGridObject to player, use player.GridCoord
-            Vector2 playerGridCoord = 
-                LevelController.GetGridCoordinates(player.transform.position);
-
-            float[] playerSideGridCoordXs = GetPlayerSideGridCoordXs();
+            float[] playerSideGridCoordXs = PlayerSideGridCoordXs();
 
             bool horizontalOK = 
                 SelectorIsWithinHorBounds(playerSideGridCoordXs[0],
@@ -472,14 +500,21 @@ namespace not_broforce
 
             if (visibility.enabled)
             {
+                // Updates the player character's grid coordinates
+                playerGridCoord =
+                    LevelController.GetGridCoordinates(
+                        player.transform.position);
+
+                // Updates the selector's position if
+                // the game is played using the mouse
                 if (cursor.PlayingUsingMouse)
                 {
                     MouseMovevent();
                 }
-                else
-                {
-                    DirectionalMovevent();
-                }
+                //else
+                //{
+                //    DirectionalMovevent();
+                //}
 
                 CheckIfPlayerGrounded();
                 CheckPlacementValidity();
@@ -534,11 +569,11 @@ namespace not_broforce
             // Only accepts input for the selector if it is visible
             if (visibility.enabled)
             {
-                if (validRemove)
+                if (BoxCanBeRemoved()) //validRemove)
                 {
                     RemoveBox();
                 }
-                else if (validPlacement)
+                else if (BoxCanBePlaced()) //validPlacement)
                 {
                     PlaceBox();
                 }
@@ -673,9 +708,56 @@ namespace not_broforce
         }
 
         /// <summary>
+        /// Moves the selector to the given direction.
+        /// </summary>
+        public void DirectionalMovement(Utils.Direction direction)
+        {
+            Vector2 movement = Vector2.zero;
+
+            switch (direction)
+            {
+                case Utils.Direction.Up:
+                {
+                    movement.y++;
+                    break;
+                }
+                case Utils.Direction.Down:
+                {
+                    movement.y--;
+                    break;
+                }
+                case Utils.Direction.Left:
+                {
+                    movement.x--;
+                    break;
+                }
+                case Utils.Direction.Right:
+                {
+                    movement.x++;
+                    break;
+                }
+            }
+
+            // Moves the selector to the coordinates if they
+            // are not too far away from the player character
+            if (TooFarAwayFromPlayer_Coord(gridCoordinates + movement))
+            {
+                if (TooFarAwayFromPlayer_Coord(gridCoordinates))
+                {
+                    PlaceSelectorNextToPlayer();
+                }
+            }
+            else
+            {
+                gridCoordinates += movement;
+                MoveToGridCoordinates();
+            }
+        }
+
+        /// <summary>
         /// Checks input for moving the selector with directional buttons.
         /// </summary>
-        private void DirectionalMovevent()
+        private void DirectionalMovement()
         {
             bool moved = false;
 
@@ -815,32 +897,36 @@ namespace not_broforce
             // Plays a sound
             SFXPlayer.Instance.Play(Sound.Impact);
 
-            if (BoxCanBePlaced())
+            //if (BoxCanBePlaced())
+            //{
+
+            bool placed = boxController.PlaceBox(transform.position);
+
+            if (placed)
             {
-                bool placed = boxController.PlaceBox(transform.position);
-
-                if (placed)
-                {
-                    AddReservedBoxPlace();
-                }
-
-                //if (boxController.MovingBoxAmount() == 0)
-                //{
-                //    // Prints debug info
-                //    Debug.Log("Out of boxes to place");
-                //}
+                AddReservedBoxPlace();
             }
+
+            //if (boxController.MovingBoxAmount() == 0)
+            //{
+            //    // Prints debug info
+            //    Debug.Log("Out of boxes to place");
+            //}
+
+            //}
         }
 
         private void RemoveBox()
         {
-            if (BoxCanBeRemoved())
-            {
-                UpdateReservedBoxPlaces();
+            //if (BoxCanBeRemoved())
+            //{
 
-                boxController.RemovePlacedBox();
-                UnselectBox();
-            }
+            UpdateReservedBoxPlaces();
+
+            boxController.RemovePlacedBox();
+            UnselectBox();
+
+            //}
         }
 
         private void SelectBox(Box box)
@@ -1092,11 +1178,162 @@ namespace not_broforce
             }
         }
 
-        //private void OnDrawGizmos()
+        //private Vector2 SetValidBoxPlaces()
         //{
-        //    if (player)
-        //    Gizmos.color = Color.green;
-        //    Gizmos.DrawLine(bottomCenter, Vector2.down * 0.5f);
+        //    validBoxPlaces.Clear();
+
+        //    // TODO
         //}
+
+        private Vector2 ValidBoxGroundPlaceAreaPos(int extraGridCoordSide)
+        {
+            // The bottom left grid cell
+            Vector2 bottomLeftGridCoord = playerGridCoord;
+            bottomLeftGridCoord.x -= maxGroundPlaceDistX;
+            bottomLeftGridCoord.y -= maxGroundPlaceDistDown;
+
+            // Left grid coord may be different when
+            // the player character is between cells
+            if (extraGridCoordSide < 0)
+            {
+                bottomLeftGridCoord.x--;
+            }
+
+            return bottomLeftGridCoord;
+        }
+
+        private Vector2 ValidBoxGroundPlaceAreaSize(int extraGridCoordSide)
+        {
+            int width = 2 * maxGroundPlaceDistX + 1;
+            int height = maxGroundPlaceDistDown + maxGroundPlaceDistUp + 1;
+
+            // Width may be different when the
+            // player character is between cells
+            if (extraGridCoordSide != 0)
+            {
+                width++;
+            }
+
+            return new Vector2(width, height);
+        }
+
+        private Vector2[] BoxPlacesWithinRange(int extraGridCoordSide)
+        {
+            int yDiameter = 2 * maxDistFromPlayer + 1;
+            int xDiameter = yDiameter;
+
+            // Horizontal diameter may be different when
+            // the player character is between cells
+            if (extraGridCoordSide != 0)
+            {
+                xDiameter++;
+            }
+
+            Vector2[] coords =
+                new Vector2[xDiameter * yDiameter];
+
+            int minX = (int) playerGridCoord.x - maxDistFromPlayer;
+            int minY = (int) playerGridCoord.y - maxDistFromPlayer;
+
+            // Minimum x-coord may be different when
+            // the player character is between cells
+            if (extraGridCoordSide < 0)
+            {
+                minX--;
+            }
+
+            int index = 0;
+
+            for (int y = minY; y < minY + yDiameter; y++)
+            {
+                for (int x = minX; x < minX + xDiameter; x++)
+                {
+                    if (index < coords.Length)
+                    {
+                        coords[index] = new Vector2(x, y);
+                        //Debug.Log("index: " + index + "; x,y: " + coords[index]);
+                        index++;
+                    }
+                }
+            }
+
+            return coords;
+        }
+
+        private void OnDrawGizmos()
+        {
+            if (visibility != null && visibility.enabled)
+            {
+                int extraGCSide = PlayerExtraGridCoordSide();
+
+                // Draws valid box groundplace area
+                DrawValidBoxGroundPlaceArea(extraGCSide);
+
+                // Draws the maximum range of the selector
+                DrawMaxRange(extraGCSide);
+            }
+        }
+
+        private void DrawValidBoxGroundPlaceArea(int extraGCSide)
+        {
+            // Sets the color of the rectangle
+            Gizmos.color = Color.white;
+
+            // The bottom left corner of the bottom left grid cell
+            Vector3 bottomLeft =
+                LevelController.GetBottomLeftPosFromGridCoord(
+                    ValidBoxGroundPlaceAreaPos(extraGCSide));
+
+            // The size of the rectangle
+            Vector2 size = ValidBoxGroundPlaceAreaSize(extraGCSide);
+
+            // Draws the rectangle
+            Utils.DrawGizmoRectangle(bottomLeft,
+                size.x * LevelController.gridCellWidth,
+                size.y * LevelController.gridCellWidth);
+        }
+
+        private void DrawMaxRange(int extraGCSide)
+        {
+            // Sets the color of the rectangle based
+            // on what can be done with the selector
+            if (BoxCanBeRemoved())
+            {
+                Gizmos.color = removeColor;
+            }
+            else if (BoxCanBePlaced())
+            {
+                Gizmos.color = validPlacementColor;
+            }
+            else
+            {
+                Gizmos.color = generalInvalidColor;
+                //Gizmos.color = invalidPlacementColor;
+            }
+
+            // Box places within range
+            Vector2[] boxPlacesWithinRange =
+                BoxPlacesWithinRange(extraGCSide);
+
+            // The corners
+            Vector3 bottomLeft = LevelController.GetBottomLeftPosFromGridCoord(
+                                 boxPlacesWithinRange[0]);
+
+            // The size of the rectangle
+            int vertDiameter = 2 * maxDistFromPlayer + 1;
+            int horDiameter = vertDiameter;
+
+            if (extraGCSide != 0)
+            {
+                horDiameter++;
+            }
+
+            // Draws the rectangle
+            Utils.DrawGizmoRectangle(bottomLeft,
+                horDiameter * LevelController.gridCellWidth,
+                vertDiameter * LevelController.gridCellWidth);
+
+            //Gizmos.DrawWireSphere(player.transform.position, maxDistanceFromPlayer);
+        }
     }
 }

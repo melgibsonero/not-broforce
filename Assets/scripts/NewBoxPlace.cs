@@ -17,10 +17,9 @@ namespace not_broforce
         public enum Parent { Environment, Selector };
 
         public void Initialize(Vector2 gridCoordinates,
-                               LevelController levelController,
                                Parent owner)
         {
-            this.gridCoordinates = gridCoordinates;
+            GridCoordinates = gridCoordinates;
             this.owner = owner;
         }
 
