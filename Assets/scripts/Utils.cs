@@ -6,7 +6,7 @@ namespace not_broforce
 {
     public class Utils {
 
-        public enum Direction { Up, Down, Left, Right}
+        public enum Direction { Up, Down, Left, Right, Middle, None }
 
         public static Vector3 DirectionToVector3(Direction direction)
         {
@@ -45,15 +45,15 @@ namespace not_broforce
                 }
                 case Direction.Down:
                 {
-                    return Quaternion.Euler(0, 0, Mathf.PI);
+                    return Quaternion.Euler(0, 0, 180);
                 }
                 case Direction.Left:
                 {
-                    return Quaternion.Euler(0, 0, -1 * Mathf.PI / 2);
+                    return Quaternion.Euler(0, 0, 90);
                 }
                 case Direction.Right:
                 {
-                    return Quaternion.Euler(0, 0, Mathf.PI / 2);
+                    return Quaternion.Euler(0, 0, -90);
                 }
                 default:
                 {

@@ -147,6 +147,8 @@ MonoBehaviour:
   boxController: {fileID: 0}
   player: {fileID: 0}
   cursor: {fileID: 0}
+  validBoxPlacePrefab: {fileID: 114561158216132928, guid: 29c686437cbcab34980cc5cdc6ce093b,
+    type: 2}
   validPlacementColor: {r: 0.15884516, g: 0.8308824, b: 0.32204863, a: 1}
   invalidPlacementColor: {r: 0.7205882, g: 0.7205882, b: 0.7205882, a: 1}
   removeColor: {r: 1, g: 0.67545635, b: 0.2647059, a: 1}
