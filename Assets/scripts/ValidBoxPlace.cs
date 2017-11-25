@@ -20,13 +20,24 @@ namespace not_broforce
 
         public bool IsAttachedToBox { get; private set; }
 
+        private void Start()
+        {
+            sr = GetComponent<SpriteRenderer>();
+        }
+
         public void Initialize(Vector2 gridCoordinates,
                                bool attachedToBox,
-                               Utils.Direction direction)
+                               Utils.Direction direction =
+                                 Utils.Direction.Up)
         {
+            if (sr == null)
+            {
+                Start();
+            }
+
             GridCoordinates = gridCoordinates;
             IsAttachedToBox = attachedToBox;
-            sr = GetComponent<SpriteRenderer>();
+            //sr = GetComponent<SpriteRenderer>();
 
             if (attachedToBox)
             {

@@ -129,9 +129,6 @@ namespace not_broforce
             // in the same node)
             reservedBoxPlaceCoords = new List<Vector2>();
 
-            // Places where a box can be placed
-            validBoxPlaces = new List<ValidBoxPlace>();
-
             // Initializes the new box place next to a
             // placed box and next to the player character
             liquidNewBoxPlace = GetComponentInChildren<NewBoxPlace>();
@@ -169,6 +166,10 @@ namespace not_broforce
                 // Gets the player controller
                 playerCtrl = player.GetComponent<PlayerController>();
             }
+
+            // Places where a box can be placed
+            validBoxPlaces = new List<ValidBoxPlace>();
+            //InitValidBoxPlaces();
 
             // Checks if any necessary objects are not attached
             CheckForErrors();
@@ -388,27 +389,6 @@ namespace not_broforce
             playerSideGridXCoords[1] = LevelController.GetGridCoordinates
                 (player.transform.position + new Vector3(pSize.x / 2, 0)).x;
         }
-
-        //private float[] PlayerSideGridCoordXs()
-        //{
-        //    float[] playerSideGridXCoords = new float[2];
-
-        //    Vector3 pSize = playerSize;
-
-        //    // Error correction; it isn't enough if only
-        //    // a pixel is in the bordering grid node
-        //    pSize.x -= 0.1f;
-
-        //    // Left
-        //    playerSideGridXCoords[0] = LevelController.GetGridCoordinates
-        //        (player.transform.position + new Vector3(-1 * pSize.x / 2, 0)).x;
-
-        //    // Right
-        //    playerSideGridXCoords[1] = LevelController.GetGridCoordinates
-        //        (player.transform.position + new Vector3(pSize.x / 2, 0)).x;
-
-        //    return playerSideGridXCoords;
-        //}
 
         private int PlayerExtraGridCoordSide()
         {
@@ -856,19 +836,36 @@ namespace not_broforce
             Vector2 newGridCoordinates =
                 LevelController.GetGridCoordinates(cursor.Position);
 
-            if (!TooFarAwayFromPlayer_Coord(newGridCoordinates))
+            // If the new grid coordinates are different to the
+            // old ones, the selector is moved there or to the
+            // closest possible coordinates
+            if (newGridCoordinates != gridCoordinates)
             {
-                // If the new cell is different to the old one,
-                // the selector is moved to the new position
-                if (newGridCoordinates != gridCoordinates)
-                {
-                    // Updates the grid coordinates
-                    gridCoordinates = newGridCoordinates;
+                // Gets the closest possible grid coordinates
+                newGridCoordinates = Utils.GetClosestValidGridCoord(
+                    gridCoordinates, newGridCoordinates, playerGridCoord,
+                    maxDistFromPlayer, maxDistFromPlayer);
 
-                    // Moves the selector to the coordinates
-                    MoveToGridCoordinates();
-                }
+                // Updates the grid coordinates
+                gridCoordinates = newGridCoordinates;
+
+                // Moves the selector to the coordinates
+                MoveToGridCoordinates();
             }
+
+            //if (!TooFarAwayFromPlayer_Coord(newGridCoordinates))
+            //{
+            //    // If the new cell is different to the old one,
+            //    // the selector is moved to the new position
+            //    if (newGridCoordinates != gridCoordinates)
+            //    {
+            //        // Updates the grid coordinates
+            //        gridCoordinates = newGridCoordinates;
+
+            //        // Moves the selector to the coordinates
+            //        MoveToGridCoordinates();
+            //    }
+            //}
         }
 
         /// <summary>
@@ -876,31 +873,8 @@ namespace not_broforce
         /// </summary>
         public void DirectionalMovement(Utils.Direction direction)
         {
-            Vector2 movement = Vector2.zero;
-
-            switch (direction)
-            {
-                case Utils.Direction.Up:
-                {
-                    movement.y++;
-                    break;
-                }
-                case Utils.Direction.Down:
-                {
-                    movement.y--;
-                    break;
-                }
-                case Utils.Direction.Left:
-                {
-                    movement.x--;
-                    break;
-                }
-                case Utils.Direction.Right:
-                {
-                    movement.x++;
-                    break;
-                }
-            }
+            Vector2 movement =
+                Utils.GetAdjacentGridCoord(Vector2.zero, direction);
 
             // Moves the selector to the coordinates if they
             // are too far away from the player character
@@ -985,9 +959,6 @@ namespace not_broforce
             // Makes the selector visible
             visibility.enabled = true;
 
-            // Places the selector next to the player character
-            PlaceSelectorNextToPlayer();
-
             // If the game is played using the
             // mouse, the selector is moved under
             // the mouse cursor which is hidden
@@ -996,11 +967,14 @@ namespace not_broforce
                 MouseMovevent();
                 cursor.Visible = false;
             }
-
-            foreach (ValidBoxPlace vbp in validBoxPlaces)
+            // Otherwise the selector is moved to
+            // the player character's coordinates
+            else
             {
-                vbp.SetVisibility(true);
+                PlaceSelectorNextToPlayer();
             }
+
+            ShowValidBoxPlaces();
         }
 
         private void HideSelector()
@@ -1016,10 +990,7 @@ namespace not_broforce
                     cursor.Visible = true;
                 }
 
-                foreach (ValidBoxPlace vbp in validBoxPlaces)
-                {
-                    vbp.SetVisibility(false);
-                }
+                HideValidBoxPlaces();
             }
         }
 
@@ -1080,9 +1051,30 @@ namespace not_broforce
             return null;
         }
 
+        private void InitValidBoxPlaces()
+        {
+            Vector2[] boxPlacesWithinRange =
+                BoxPlacesWithinRange(PlayerExtraGridCoordSide());
+
+            for (int i = 0; i < 15; i++)
+            {
+                CreateValidBoxPlace(Vector2.zero, false);
+            }
+            //foreach (Vector2 boxPlace in boxPlacesWithinRange)
+            //{
+            //    CreateValidBoxPlace(boxPlace, false);
+            //}
+
+            HideValidBoxPlaces();
+
+            Debug.Log("InitValidBoxPlaces");
+        }
+
         private void SetValidBoxPlaces()
         {
-            DestroyValidBoxPlaces();
+            // TODO: Save memory by not destroying and creating VBPs every frame
+
+            ResetValidBoxPlaces();
 
             Vector2[] boxPlacesWithinRange =
                 BoxPlacesWithinRange(PlayerExtraGridCoordSide());
@@ -1092,8 +1084,6 @@ namespace not_broforce
 
             foreach (Vector2 boxPlace in boxPlacesWithinRange)
             {
-                //TODO: Sanctum 2 ilmane HB:ssa
-
                 // Uses overlap circle to determine if the
                 // coordinates are on top of the environment
                 Vector3 center =
@@ -1153,7 +1143,7 @@ namespace not_broforce
                     //    if (dirNextToPlacedBox != Utils.Direction.Up &&
                     //        nextToPlayer)
                     //    {
-                    //        CreateValidBoxPlace(boxPlace, false);
+                   ///        CreateValidBoxPlace(boxPlace, false);
 
                     //        //nextToPlayerNum++;
                     //    }
@@ -1174,6 +1164,68 @@ namespace not_broforce
             //Debug.Log("Total: " + (nextToPlacedBoxNum + nextToPlayerNum));
         }
 
+        private void UpdateValidBoxPlaces()
+        {
+            // TODO: If this is used instead of SetVBPs,
+            // disable drawing all VBPs when the selector is activated
+
+            if (validBoxPlaces.Count == 0)
+            {
+                InitValidBoxPlaces();
+            }
+            else
+            {
+                HideValidBoxPlaces();
+            }
+
+            Vector2[] boxPlacesWithinRange =
+                BoxPlacesWithinRange(PlayerExtraGridCoordSide());
+
+            // TODO: Fix the iteration. There is a set amount of VBPs
+            // which is less than the amount of every box place within range.
+            int currentVBP = 0;
+
+            for (int i = 0; i < boxPlacesWithinRange.Length; i++)
+            {
+                // Uses overlap circle to determine if the
+                // coordinates are on top of the environment
+                Vector3 center = LevelController.GetPosFromGridCoord(
+                                    boxPlacesWithinRange[i]);
+                Collider2D onEnvironment =
+                    Physics2D.OverlapCircle(
+                        center, LevelController.gridCellWidth / 4, groundMask);
+
+                if (!onEnvironment)
+                {
+                    //Debug.Log("[BoxSelector]: " + i);
+
+                    Utils.Direction dirNextToPlacedBox =
+                        DirectionNextToPlacedBox(boxPlacesWithinRange[i]);
+
+                    bool nextToPlayer = NextToPlayer(boxPlacesWithinRange[i]);
+
+                    if (dirNextToPlacedBox == Utils.Direction.Up)
+                    {
+                        validBoxPlaces[i].Initialize(boxPlacesWithinRange[i],
+                                                     true, dirNextToPlacedBox);
+                        validBoxPlaces[i].SetVisibility(true);
+                    }
+                    else if (nextToPlayer)
+                    {
+                        validBoxPlaces[i].Initialize(boxPlacesWithinRange[i],
+                                                     false);
+                        validBoxPlaces[i].SetVisibility(true);
+                    }
+                    else if (dirNextToPlacedBox != Utils.Direction.None)
+                    {
+                        validBoxPlaces[i].Initialize(boxPlacesWithinRange[i],
+                                                     true, dirNextToPlacedBox);
+                        validBoxPlaces[i].SetVisibility(true);
+                    }
+                }
+            }
+        }
+
         private void CreateValidBoxPlace(Vector2 gridCoordinates,
                                          bool attachedToBox,
                                          Utils.Direction direction =
@@ -1184,12 +1236,28 @@ namespace not_broforce
             validBoxPlaces.Add(vbp);
         }
 
-        private void DestroyValidBoxPlaces()
+        private void ResetValidBoxPlaces()
         {
             for (int i = validBoxPlaces.Count - 1; i >= 0; i--)
             {
                 Destroy(validBoxPlaces[i].gameObject);
                 validBoxPlaces.RemoveAt(i);
+            }
+        }
+
+        private void ShowValidBoxPlaces()
+        {
+            foreach (ValidBoxPlace vbp in validBoxPlaces)
+            {
+                vbp.SetVisibility(true);
+            }
+        }
+
+        private void HideValidBoxPlaces()
+        {
+            foreach (ValidBoxPlace vbp in validBoxPlaces)
+            {
+                vbp.SetVisibility(false);
             }
         }
 

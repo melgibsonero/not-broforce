@@ -68,37 +68,97 @@ namespace not_broforce
         /// <param name="gridCoordinates">original grid coordinates</param>
         /// <param name="direction">a direction</param>
         /// <returns>grid coordinates next to the original</returns>
-        public static Vector3 GetAdjacentGridCoordinates(
-                                            Vector2 gridCoordinates,
-                                            Direction direction)
+        public static Vector3 GetAdjacentGridCoord(Vector2 gridCoordinates,
+                                                   Direction direction)
         {
-            Vector2 newGridCoordinates = gridCoordinates;
-
             switch (direction)
             {
                 case Direction.Up:
                 {
-                    newGridCoordinates.y++;
+                    gridCoordinates.y++;
                     break;
                 }
                 case Direction.Down:
                 {
-                    newGridCoordinates.y--;
+                    gridCoordinates.y--;
                     break;
                 }
                 case Direction.Left:
                 {
-                    newGridCoordinates.x--;
+                    gridCoordinates.x--;
                     break;
                 }
                 case Direction.Right:
                 {
-                    newGridCoordinates.x++;
+                    gridCoordinates.x++;
                     break;
                 }
             }
 
-            return newGridCoordinates;
+            return gridCoordinates;
+        }
+
+        /// <summary>
+        /// Gets grid coordinates that are as close
+        /// as possible to the target coordinates.
+        /// </summary>
+        /// <param name="startGridCoord">starting grid coordinates</param>
+        /// <param name="targetGridCoord">target grid coordinates</param>
+        /// <returns>grid coordinates between the start and
+        /// target coordinates (inclusive)</returns>
+        public static Vector3 GetClosestValidGridCoord(Vector2 startGridCoord,
+                                                       Vector2 targetGridCoord,
+                                                       int minX, int maxX,
+                                                       int minY, int maxY)
+        {
+            // The grid coordinates that will be returned
+            Vector2 gridCoordinates = targetGridCoord;
+
+            if (targetGridCoord != startGridCoord)
+            {
+                while (gridCoordinates.x < minX)
+                {
+                    gridCoordinates.x++;
+                }
+                while (gridCoordinates.x > maxX)
+                {
+                    gridCoordinates.x--;
+                }
+                while (gridCoordinates.y < minY)
+                {
+                    gridCoordinates.y++;
+                }
+                while (gridCoordinates.y > maxY)
+                {
+                    gridCoordinates.y--;
+                }
+            }
+
+            return gridCoordinates;
+        }
+
+        /// <summary>
+        /// Gets grid coordinates that are as close
+        /// as possible to the target coordinates.
+        /// Calculates the limits.
+        /// </summary>
+        /// <param name="startGridCoord">starting grid coordinates</param>
+        /// <param name="targetGridCoord">target grid coordinates</param>
+        /// <returns>grid coordinates between the start and
+        /// target coordinates (inclusive)</returns>
+        public static Vector3 GetClosestValidGridCoord(Vector2 startGridCoord,
+                                                       Vector2 targetGridCoord,
+                                                       Vector2 centerGridCoord,
+                                                       int radiusX, int radiusY)
+        {
+            // The limits
+            int minX = (int) centerGridCoord.x - radiusX;
+            int maxX = (int) centerGridCoord.x + radiusX;
+            int minY = (int) centerGridCoord.y - radiusY;
+            int maxY = (int) centerGridCoord.y + radiusY;
+
+            return GetClosestValidGridCoord(startGridCoord, targetGridCoord,
+                                            minX, maxX, minY, maxY);
         }
 
         /// <summary>
