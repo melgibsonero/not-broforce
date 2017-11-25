@@ -157,6 +157,7 @@ MonoBehaviour:
   maxGroundPlaceDistX: 2
   maxGroundPlaceDistUp: 2
   maxGroundPlaceDistDown: 2
+  maxValidBoxPlaceAmount: 15
 --- !u!114 &114824027036465250
 MonoBehaviour:
   m_ObjectHideFlags: 1

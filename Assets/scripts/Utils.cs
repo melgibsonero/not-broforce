@@ -106,32 +106,28 @@ namespace not_broforce
         /// <param name="targetGridCoord">target grid coordinates</param>
         /// <returns>grid coordinates between the start and
         /// target coordinates (inclusive)</returns>
-        public static Vector3 GetClosestValidGridCoord(Vector2 startGridCoord,
-                                                       Vector2 targetGridCoord,
+        public static Vector3 GetClosestValidGridCoord(Vector2 targetGridCoord,
                                                        int minX, int maxX,
                                                        int minY, int maxY)
         {
             // The grid coordinates that will be returned
             Vector2 gridCoordinates = targetGridCoord;
 
-            if (targetGridCoord != startGridCoord)
+            while (gridCoordinates.x < minX)
             {
-                while (gridCoordinates.x < minX)
-                {
-                    gridCoordinates.x++;
-                }
-                while (gridCoordinates.x > maxX)
-                {
-                    gridCoordinates.x--;
-                }
-                while (gridCoordinates.y < minY)
-                {
-                    gridCoordinates.y++;
-                }
-                while (gridCoordinates.y > maxY)
-                {
-                    gridCoordinates.y--;
-                }
+                gridCoordinates.x++;
+            }
+            while (gridCoordinates.x > maxX)
+            {
+                gridCoordinates.x--;
+            }
+            while (gridCoordinates.y < minY)
+            {
+                gridCoordinates.y++;
+            }
+            while (gridCoordinates.y > maxY)
+            {
+                gridCoordinates.y--;
             }
 
             return gridCoordinates;
@@ -146,10 +142,10 @@ namespace not_broforce
         /// <param name="targetGridCoord">target grid coordinates</param>
         /// <returns>grid coordinates between the start and
         /// target coordinates (inclusive)</returns>
-        public static Vector3 GetClosestValidGridCoord(Vector2 startGridCoord,
-                                                       Vector2 targetGridCoord,
+        public static Vector3 GetClosestValidGridCoord(Vector2 targetGridCoord,
                                                        Vector2 centerGridCoord,
-                                                       int radiusX, int radiusY)
+                                                       int radiusX, int radiusY,
+                                                       int extraXCoordSide)
         {
             // The limits
             int minX = (int) centerGridCoord.x - radiusX;
@@ -157,7 +153,19 @@ namespace not_broforce
             int minY = (int) centerGridCoord.y - radiusY;
             int maxY = (int) centerGridCoord.y + radiusY;
 
-            return GetClosestValidGridCoord(startGridCoord, targetGridCoord,
+            // One extra x-coordinate in the left
+            if (extraXCoordSide < 0)
+            {
+                minX--;
+            }
+            // One extra x-coordinate in the right
+            else if (extraXCoordSide > 0)
+            {
+                maxX++;
+            }
+            // Otherwise there is no extra x-coordinate
+
+            return GetClosestValidGridCoord(targetGridCoord,
                                             minX, maxX, minY, maxY);
         }
 
