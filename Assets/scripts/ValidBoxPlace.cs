@@ -7,6 +7,12 @@ namespace not_broforce
     public class ValidBoxPlace : MonoBehaviour, IGridObject
     {
         [SerializeField]
+        private Sprite glowSprite;
+
+        [SerializeField]
+        private Sprite reservedSprite;
+
+        [SerializeField]
         private Color attachedToBoxColor;
 
         [SerializeField]
@@ -20,24 +26,47 @@ namespace not_broforce
 
         public bool IsAttachedToBox { get; private set; }
 
+        public bool IsReserved { get; set; }
+
+        public bool IsVisible
+        {
+            get
+            {
+                return (sr != null && sr.enabled);
+            }
+            set
+            {
+                if (sr != null)
+                {
+                    sr.enabled = value;
+                }
+            }
+        }
+
         private void Start()
+        {
+            Init();
+        }
+
+        private void Init()
         {
             sr = GetComponent<SpriteRenderer>();
         }
 
-        public void Initialize(Vector2 gridCoordinates,
-                               bool attachedToBox,
-                               Utils.Direction direction =
-                                 Utils.Direction.Up)
+        public void Set(Vector2 gridCoordinates,
+                        bool attachedToBox,
+                        bool reservedPlace,
+                        Utils.Direction direction =
+                          Utils.Direction.Up)
         {
             if (sr == null)
             {
-                Start();
+                Init();
             }
 
             GridCoordinates = gridCoordinates;
             IsAttachedToBox = attachedToBox;
-            //sr = GetComponent<SpriteRenderer>();
+            IsReserved = reservedPlace;
 
             if (attachedToBox)
             {
@@ -50,16 +79,17 @@ namespace not_broforce
                 sr.color = onGroundColor;
             }
 
+            if (reservedPlace)
+            {
+                sr.sprite = reservedSprite;
+            }
+            else
+            {
+                sr.sprite = glowSprite;
+            }
+
             transform.rotation = 
                 Utils.DirectionToQuaternion(this.direction);
-        }
-
-        public void SetVisibility(bool active)
-        {
-            if (sr != null)
-            {
-                sr.enabled = active;
-            }
         }
 
         public Vector2 GridCoordinates

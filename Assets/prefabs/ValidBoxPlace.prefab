@@ -52,6 +52,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b58c989283e41b4eb4f2b5415f27abd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  glowSprite: {fileID: 21300000, guid: 7b2b1b280130e3647907cea11d36a78c, type: 3}
+  reservedSprite: {fileID: 21300000, guid: 586e3cc272cfe6b48b4b03e75db0c7ad, type: 3}
   attachedToBoxColor: {r: 0.7058824, g: 0.84705883, b: 0.21568628, a: 0.39215687}
   onGroundColor: {r: 0.11813366, g: 0.785385, b: 0.8455882, a: 0.39215687}
 --- !u!212 &212065913111852384
