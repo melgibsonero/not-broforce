@@ -1802,6 +1802,10 @@ Prefab:
       propertyPath: m_Name
       value: boxWithLegs (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 1278220245204688, guid: 2fd17fd0e65558e4f97c6e64bb617899, type: 2}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 95994993388053082, guid: 2fd17fd0e65558e4f97c6e64bb617899, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: 2fd17fd0e65558e4f97c6e64bb617899, type: 2}
@@ -1918,6 +1922,10 @@ Prefab:
     - target: {fileID: 1278220245204688, guid: 2fd17fd0e65558e4f97c6e64bb617899, type: 2}
       propertyPath: m_Name
       value: boxWithLegs (3)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1278220245204688, guid: 2fd17fd0e65558e4f97c6e64bb617899, type: 2}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 95994993388053082, guid: 2fd17fd0e65558e4f97c6e64bb617899, type: 2}
@@ -2181,6 +2189,10 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: m_Enabled
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1278220245204688, guid: 2fd17fd0e65558e4f97c6e64bb617899, type: 2}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 0}
