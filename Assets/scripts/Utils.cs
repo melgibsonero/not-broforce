@@ -230,6 +230,26 @@ namespace not_broforce
             return (Mathf.PI + Mathf.Atan((end.y - start.y) / (end.x - start.x))); //180 degrees + ...
         }
 
+        /// <summary>
+        /// Uses overlap circle to check if there's something
+        /// from the masked layers in the grid coordinates.
+        /// </summary>
+        /// <param name="gridCoordinates">checked grid coordinates</param>
+        /// <param name="mask">a layer mask</param>
+        /// <returns></returns>
+        public static bool GridCoordContainsObject(Vector2 gridCoordinates,
+                                                   LayerMask mask)
+        {
+            Vector3 center =
+                LevelController.GetPosFromGridCoord(gridCoordinates);
+
+            Collider2D coordContainsObj =
+                Physics2D.OverlapCircle(
+                    center, LevelController.gridCellWidth / 4, mask);
+
+            return coordContainsObj;
+        }
+
         public static bool ColliderContainsPoint(BoxCollider2D collider,
                                                  Vector3 point)
         {

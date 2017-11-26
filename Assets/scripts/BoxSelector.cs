@@ -353,7 +353,12 @@ namespace not_broforce
             return false;
         }
 
-        private Box GetPlacedBoxInCoordinates(Vector2 coordinates)
+        private Box PlacedBoxInSelectorCoord()
+        {
+            return PlacedBoxInCoord(gridCoordinates);
+        }
+
+        private Box PlacedBoxInCoord(Vector2 coordinates)
         {
             Box placedBox = null;
 
@@ -369,11 +374,6 @@ namespace not_broforce
 
             // Returns the placed box
             return placedBox;
-        }
-
-        private Box GetPlacedBoxInSelectorCoord()
-        {
-            return GetPlacedBoxInCoordinates(gridCoordinates);
         }
 
         private void UpdatePlayerSideGridXCoords()
@@ -998,9 +998,29 @@ namespace not_broforce
             for (int i = reservedBoxPlaceCoords.Count - 1; i >= 0; i--)
             {
                 Vector2 reservedPlace = reservedBoxPlaceCoords[i];
-                Box placedBox = GetPlacedBoxInCoordinates(reservedPlace);
+                Box placedBox = PlacedBoxInCoord(reservedPlace);
 
                 if (placedBox != null)
+                {
+                    reservedBoxPlaceCoords.RemoveAt(i);
+
+                    //Debug.Log("Reserved space removed. Spaces left: " +
+                    //    reservedBoxPlaceCoords.Count);
+                }
+            }
+        }
+
+        private void UpdateReservedBoxPlaces2()
+        {
+            // TODO: Use this?
+
+            for (int i = reservedBoxPlaceCoords.Count - 1; i >= 0; i--)
+            {
+                Vector2 reservedPlace = reservedBoxPlaceCoords[i];
+                ValidBoxPlace vbp = ValidBoxPlaceInCoord(reservedPlace);
+
+                if (vbp != null &&
+                    Utils.GridCoordContainsObject(reservedPlace, groundMask))
                 {
                     reservedBoxPlaceCoords.RemoveAt(i);
 
@@ -1014,6 +1034,11 @@ namespace not_broforce
         {
             // TODO: Check placement validity with this
 
+            return ValidBoxPlaceInCoord(gridCoordinates);
+        }
+
+        private ValidBoxPlace ValidBoxPlaceInCoord(Vector2 gridCoordinates)
+        {
             foreach (ValidBoxPlace vbp in validBoxPlaces)
             {
                 if (gridCoordinates == vbp.GridCoordinates)
@@ -1034,14 +1059,6 @@ namespace not_broforce
                 CreateValidBoxPlace(Vector2.zero, false, false);
             }
 
-            //Vector2[] boxPlacesWithinRange =
-            //    BoxPlacesWithinRange(PlayerExtraGridCoordSide());
-
-            //foreach (Vector2 boxPlace in boxPlacesWithinRange)
-            //{
-            //    CreateValidBoxPlace(boxPlace, false);
-            //}
-
             HideValidBoxPlaces();
 
             Debug.Log("ValidBoxPlaces initialized");
@@ -1049,8 +1066,6 @@ namespace not_broforce
 
         private void SetValidBoxPlaces()
         {
-            // TODO: Save memory by not destroying and creating VBPs every frame
-
             ResetValidBoxPlaces();
 
             Vector2[] boxPlacesWithinRange =
@@ -1061,13 +1076,10 @@ namespace not_broforce
 
             foreach (Vector2 boxPlace in boxPlacesWithinRange)
             {
-                // Uses overlap circle to determine if the
-                // coordinates are on top of the environment
-                Vector3 center =
-                    LevelController.GetPosFromGridCoord(boxPlace);
-                Collider2D onEnvironment =
-                    Physics2D.OverlapCircle(
-                        center, LevelController.gridCellWidth / 4, groundMask);
+                // Are the coordinates on top of
+                // the environment or a placed box
+                bool onEnvironment = 
+                    Utils.GridCoordContainsObject(boxPlace, groundMask);
 
                 if (!onEnvironment)
                 {
@@ -1143,9 +1155,6 @@ namespace not_broforce
 
         private void UpdateValidBoxPlaces()
         {
-            // TODO: If this is used instead of SetVBPs,
-            // disable drawing all VBPs when the selector is activated
-
             if (validBoxPlaces.Count == 0)
             {
                 InitValidBoxPlaces();
@@ -1167,42 +1176,63 @@ namespace not_broforce
                  currentVBP < validBoxPlaces.Count;
                  i++)
             {
-                // Uses overlap circle to determine if the
-                // coordinates are on top of the environment
-                Vector3 center = LevelController.GetPosFromGridCoord(
-                                    boxPlacesWithinRange[i]);
-                Collider2D onEnvironment =
-                    Physics2D.OverlapCircle(
-                        center, LevelController.gridCellWidth / 4, groundMask);
+                // Are the coordinates on top of
+                // the environment or a placed box
+                bool onEnvironment = Utils.GridCoordContainsObject(
+                    boxPlacesWithinRange[i], groundMask);
 
-                // TODO: Reserved place markers will not be hidden or replaced until they are filled
-                // (also, another marker will not be drawn on them)
+                // TODO: Decide if reserved place markers will not be hidden or replaced
+                // until they are filled (also, another marker will not be drawn on them)
 
-                //bool alreadyReservedPlace = validBoxPlaces[currentVBP].IsReserved;
-                //if (alreadyReservedPlace)
+                bool alreadyReservedPlace = false;
+
+                //ValidBoxPlace VBPInCoord = ValidBoxPlaceInCoord(boxPlacesWithinRange[i]);
+
+                //bool reservedChecked = false;
+                //if (VBPInCoord != null)
                 //{
-                //    if (validBoxPlaces[currentVBP].GridCoordinates == boxPlacesWithinRange[i] &&
-                //        onEnvironment)
+                //    if (VBPInCoord == validBoxPlaces[currentVBP])
                 //    {
-                //        validBoxPlaces[currentVBP].IsReserved = false;
-                //    }
-                //    else
-                //    {
-                //        currentVBP++;
-                //        if (currentVBP >= validBoxPlaces.Count)
+                //        if (VBPInCoord.IsReserved && !onEnvironment)
                 //        {
-                //            break;
+                //            alreadyReservedPlace = true;
                 //        }
                 //    }
                 //}
 
-                //if (validBoxPlaces[currentVBP].GridCoordinates == boxPlacesWithinRange[i] &&
-                //        onEnvironment)
+                //while (validBoxPlaces[currentVBP].IsReserved) //if
                 //{
-                //    validBoxPlaces[currentVBP].IsReserved = false;
+                //    //alreadyReservedPlace = true;
+
+                //    currentVBP++;
+                //    if (currentVBP >= validBoxPlaces.Count)
+                //    {
+                //        return;
+                //    }
                 //}
 
-                bool emptyPlace = !onEnvironment;// && !alreadyReservedPlace;
+                //foreach (ValidBoxPlace vbp in validBoxPlaces)
+                //{
+                //    if (vbp.GridCoordinates == boxPlacesWithinRange[i])
+                //    {
+                //        if (vbp.IsReserved && !onEnvironment)
+                //        {
+                //            alreadyReservedPlace = true;
+                //        }
+
+                //        break;
+                //    }
+                //    else if (vbp == validBoxPlaces[currentVBP] && vbp.IsReserved)
+                //    {
+                //        currentVBP++;
+                //        if (currentVBP >= validBoxPlaces.Count)
+                //        {
+                //            return;
+                //        }
+                //    }
+                //}
+
+                bool emptyPlace = !onEnvironment && !alreadyReservedPlace;
                 //bool filledReservedPlace = onEnvironment && alreadyReservedPlace;
 
                 // Initializes a VBP if the coordinates
@@ -1228,10 +1258,6 @@ namespace not_broforce
                     // On top of placed box
                     else if (dirNextToPlacedBox == Utils.Direction.Up)
                     {
-                        //validBoxPlaces[i].Initialize(boxPlacesWithinRange[i],
-                        //                             true, dirNextToPlacedBox);
-                        //validBoxPlaces[i].SetVisibility(true);
-
                         InitPooledValidBoxPlace(currentVBP,
                             boxPlacesWithinRange[i],
                             true, false, dirNextToPlacedBox, true);
@@ -1309,10 +1335,14 @@ namespace not_broforce
         {
             foreach (ValidBoxPlace vbp in validBoxPlaces)
             {
-                if (!vbp.IsReserved)
-                {
-                    vbp.IsVisible = false;
-                }
+                vbp.IsVisible = false;
+
+                // TODO: Do not hide reserved places if they should always be visible
+
+                //if (!vbp.IsReserved)
+                //{
+                //    vbp.IsVisible = false;
+                //}
             }
         }
 
@@ -1485,7 +1515,7 @@ namespace not_broforce
             // when no boxes are being placed or removed.
 
             // Selects a placed box in the same grid coordinates as the selector
-            Box placedBox = GetPlacedBoxInSelectorCoord();
+            Box placedBox = PlacedBoxInSelectorCoord();
             if (placedBox != null)
             {
                 SelectBox(placedBox);
