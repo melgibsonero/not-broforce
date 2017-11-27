@@ -32,6 +32,12 @@ namespace not_broforce
 
         private bool settingsOpened = false;
 
+        public bool Paused {
+
+            get { return paused; }
+        }
+
+
         private enum _sceneName
         {
             HubLevel,
@@ -81,14 +87,7 @@ namespace not_broforce
        
         public void Restart ()
         {
-            if(endScreenActivated && !paused)
-            {
-                if(paused)
-                {
-                    TogglePause();
-                }
-                SceneManager.LoadScene(currentScene);
-            }
+            SceneManager.LoadScene(currentScene);
         }
         
         public void ActivateButtons()
