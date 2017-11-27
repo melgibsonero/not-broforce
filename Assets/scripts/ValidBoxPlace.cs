@@ -18,6 +18,9 @@ namespace not_broforce
         [SerializeField]
         private Color onGroundColor;
 
+        [SerializeField]
+        private Color reservedColor;
+
         private Vector2 gridCoordinates;
 
         private Utils.Direction direction;
@@ -68,24 +71,26 @@ namespace not_broforce
             IsAttachedToBox = attachedToBox;
             IsReserved = reservedPlace;
 
-            if (attachedToBox)
-            {
-                this.direction = direction;
-                sr.color = attachedToBoxColor;
-            }
-            else
-            {
-                this.direction = Utils.Direction.Up;
-                sr.color = onGroundColor;
-            }
-
             if (reservedPlace)
             {
                 sr.sprite = reservedSprite;
+                sr.color = reservedColor;
+                this.direction = Utils.Direction.Up;
             }
             else
             {
                 sr.sprite = glowSprite;
+
+                if (attachedToBox)
+                {
+                    this.direction = direction;
+                    sr.color = attachedToBoxColor;
+                }
+                else
+                {
+                    this.direction = Utils.Direction.Up;
+                    sr.color = onGroundColor;
+                }
             }
 
             transform.rotation = 

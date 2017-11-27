@@ -44,6 +44,8 @@ namespace not_broforce
         [SerializeField]
         private bool debug_ReturnToHub;
 
+        private PlayerInput input;
+
         [SerializeField]
         private int currentLevel = 0;
 
@@ -55,6 +57,10 @@ namespace not_broforce
 
         [SerializeField]
         public float effectVolume;
+
+        private bool alwaysShowBoxSelector;
+
+        private bool holdToActivateBoxSelector;
 
         public float MusicVolume
         {
@@ -82,6 +88,32 @@ namespace not_broforce
             }
         }
 
+        public bool AlwaysShowBoxSelector
+        {
+            get
+            {
+                return alwaysShowBoxSelector;
+            }
+            set
+            {
+                alwaysShowBoxSelector = value;
+                input.SetAlwaysShowBS(value);
+            }
+        }
+
+        public bool HoldToActivateBoxSelector
+        {
+            get
+            {
+                return holdToActivateBoxSelector;
+            }
+            set
+            {
+                holdToActivateBoxSelector = value;
+                input.SetHoldToActivateBS(value);
+            }
+        }
+
         private void Awake()
         {
             if (instance == null)
@@ -99,7 +131,10 @@ namespace not_broforce
 
         private void Init()
         {
+            input = FindObjectOfType<PlayerInput>();
+
             LoadGame();
+
             DontDestroyOnLoad(gameObject);
 
             // Creates a new MusicPlayer instance
@@ -191,6 +226,13 @@ namespace not_broforce
             PlayerPrefs.SetInt("latestCompletedLevel", latestCompletedLevel);
             PlayerPrefs.SetFloat("musicVolume", musicVolume);
             PlayerPrefs.SetFloat("effectVolume", effectVolume);
+
+            // TODO: Put these to settings menu
+            Utils.PlayerPrefsSetBool(
+                "alwaysShowBoxSelector", alwaysShowBoxSelector);
+            Utils.PlayerPrefsSetBool(
+                "holdToActivateBoxSelector", holdToActivateBoxSelector);
+
             PlayerPrefs.Save();
             Debug.Log("--[ Game saved ]--");
             Debug.Log("latestCompletedLevel: " + latestCompletedLevel);
@@ -201,15 +243,28 @@ namespace not_broforce
             latestCompletedLevel = PlayerPrefs.GetInt("latestCompletedLevel", 0);
             musicVolume = PlayerPrefs.GetFloat("musicVolume", 0.5f);
             effectVolume = PlayerPrefs.GetFloat("effectVolume", 0.5f);
+
+            // TODO: Put these to settings menu
+            alwaysShowBoxSelector =
+                Utils.PlayerPrefsGetBool("alwaysShowBoxSelector", false);
+            holdToActivateBoxSelector =
+                Utils.PlayerPrefsGetBool("holdToActivateBoxSelector", false);
+
             Debug.Log("--[ Game loaded ]--");
             Debug.Log("latestCompletedLevel: " + latestCompletedLevel);
         }
 
         public void SaveSettings()
         {
-
             PlayerPrefs.SetFloat("musicVolume", musicVolume);
             PlayerPrefs.SetFloat("effectVolume", effectVolume);
+
+            // TODO: Put these to settings menu
+            Utils.PlayerPrefsSetBool(
+                "alwaysShowBoxSelector", alwaysShowBoxSelector);
+            Utils.PlayerPrefsSetBool(
+                "holdToActivateBoxSelector", holdToActivateBoxSelector);
+
             PlayerPrefs.Save();
             Debug.Log("Settings saved");
         }

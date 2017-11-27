@@ -728,5 +728,17 @@ namespace not_broforce
             // Right side
             Gizmos.DrawLine(topRight, bottomRight);
         }
+
+        public static void PlayerPrefsSetBool(string name, bool value)
+        {
+            PlayerPrefs.SetInt(name, value ? 1 : 0);
+        }
+
+        public static bool PlayerPrefsGetBool(string name, bool defaultValue)
+        {
+            int defaultNum = defaultValue ? 1 : 0;
+
+            return PlayerPrefs.GetInt(name, defaultNum) > 0;
+        }
     }
 }

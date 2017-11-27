@@ -6,13 +6,11 @@ namespace not_broforce
 {
     public class MouseCursorController : MonoBehaviour
     {
-        private const int Z_AXIS = 0;
-
         /// <summary>
-        /// The renderer of the object. Needed to
-        /// hide the object but still update it.
+        /// The sprite renderer of the object. Needed
+        /// to hide the object but still update it.
         /// </summary>
-        private Renderer visibility;
+        private SpriteRenderer visibility;
 
         private bool playingWithMouse;
 
@@ -23,13 +21,17 @@ namespace not_broforce
         {
             PlayingUsingMouse = true;
 
+            // Initializes the 
             InitVisibility();
             Visible = true;
+
+            // Hides the operating system's cursor
+            Cursor.visible = false;
         }
 
         private void InitVisibility()
         {
-            visibility = GetComponent<Renderer>();
+            visibility = GetComponent<SpriteRenderer>();
         }
 
         /// <summary>
@@ -106,7 +108,7 @@ namespace not_broforce
             // Sets the game mouse cursor's position
             transform.position = new Vector3(mousePosition.x,
                                              mousePosition.y,
-                                             Z_AXIS);
+                                             transform.position.z);
         }
     }
 }

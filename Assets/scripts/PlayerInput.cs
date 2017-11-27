@@ -8,16 +8,28 @@ namespace not_broforce
     {
         PlayerController player;
         BoxSelector boxSelector;
-        //UIController ui;
+        UIController ui;
 
+        // Game state: paused
         bool paused;
+
+        // Settings which affect input
+        bool alwaysShowBoxSelector;
+        bool holdToActivateBoxSelector;
 
         // Use this for initialization
         private void Start()
         {
             player = GetComponent<PlayerController>();
             boxSelector = FindObjectOfType<BoxSelector>();
-            //ui = FindObjectOfType<UIController>();
+            ui = FindObjectOfType<UIController>();
+
+            alwaysShowBoxSelector = 
+                GameManager.Instance.AlwaysShowBoxSelector;
+            holdToActivateBoxSelector = 
+                GameManager.Instance.HoldToActivateBoxSelector;
+
+            boxSelector.ShowAlways(alwaysShowBoxSelector);
         }
 
         // Update is called once per frame
@@ -51,6 +63,8 @@ namespace not_broforce
 
         private void CheckBoxSelectorInput()
         {
+            CheckBoxSelectorActivation();
+
             // Moving the box selector with the arrow keys
             if (Input.GetKeyDown(KeyCode.UpArrow))
             {
@@ -69,21 +83,42 @@ namespace not_broforce
                 boxSelector.DirectionalMovement(Utils.Direction.Right);
             }
 
-            // Activating the box selector
-            if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1))
-            {
-                boxSelector.OnActivationInputDown();
-            }
-            // Deactivating the box selector
-            else if (Input.GetMouseButtonDown(1))
-            {
-                boxSelector.OnActivationInputUp();
-            }
-
             // Placing and removing a box
             if (Input.GetKeyDown(KeyCode.E) || Input.GetMouseButtonDown(0))
             {
                 boxSelector.OnPlacementInputDown();
+            }
+        }
+
+        private void CheckBoxSelectorActivation()
+        {
+            // TODO: Use the settings to determine controls
+            // Activating and deactivating the box selector
+
+            if (!alwaysShowBoxSelector)
+            {
+                if (holdToActivateBoxSelector)
+                {
+                    if (Input.GetMouseButtonDown(1))
+                    {
+                        boxSelector.Activate();
+                    }
+                    else if (Input.GetMouseButtonUp(1))
+                    {
+                        boxSelector.Deactivate();
+                    }
+                }
+                else
+                {
+                    if (Input.GetMouseButtonDown(0))
+                    {
+                        boxSelector.Activate();
+                    }
+                    else if (Input.GetMouseButtonDown(1))
+                    {
+                        boxSelector.ToggleActivation();
+                    }
+                }
             }
         }
 
@@ -92,20 +127,36 @@ namespace not_broforce
             // Pausing, resuming and retuning to the previous menu screen
             if (Input.GetKeyDown(KeyCode.Escape))
             {
-                //paused = ui.ToggleMenus();
+                paused = ui.ToggleMenus();
             }
+
+            //if (paused && !ui.Paused)
+            //{
+            //    paused = false;
+            //}
 
             // Changing level
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                //ui.NextLevel();
+                ui.NextLevel();
             }
 
             // Restarting level
             if (Input.GetKeyDown(KeyCode.R))
             {
-                //ui.Restart();
+                ui.Restart();
             }
+        }
+
+        public void SetAlwaysShowBS(bool alwaysShowBS)
+        {
+            alwaysShowBoxSelector = alwaysShowBS;
+            boxSelector.ShowAlways(alwaysShowBoxSelector);
+        }
+
+        public void SetHoldToActivateBS(bool holdToActivateBS)
+        {
+            holdToActivateBoxSelector = holdToActivateBS;
         }
     }
 }

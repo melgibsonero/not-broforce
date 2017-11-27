@@ -560,6 +560,12 @@ namespace not_broforce
             return false;
         }
 
+        private bool SelectorIsWithinRange(float leftCoordX,
+                                             float rightCoordX)
+        {
+            return XCoordIsWithinRange(gridCoordinates.x, leftCoordX, rightCoordX);
+        }
+
         private bool SelectorXIsWithinRange(float leftCoordX,
                                              float rightCoordX)
         {
@@ -698,11 +704,9 @@ namespace not_broforce
             }
         }
 
-        public void OnActivationInputDown()
+        public void Activate()
         {
-            // If the selector is just now being made visible,
-            // its position is set next to the player character
-            // and placement validity is checked
+            // Shows the selector
             if (!visibility.enabled)
             {
                 ShowSelector();
@@ -713,12 +717,33 @@ namespace not_broforce
             }
         }
 
-        public void OnActivationInputUp()
+        public void Deactivate()
         {
-            // The selector is hidden
+            // Hides the selector
             if (visibility.enabled)
             {
                 HideSelector();
+            }
+        }
+
+        public void ToggleActivation()
+        {
+            if (!isAlwaysShown)
+            {
+                // Displays or hides the selector
+                visibility.enabled = !visibility.enabled;
+
+                // If the selector was made visible, its position is set next to
+                // the player character and placement validity is checked
+                if (visibility.enabled)
+                {
+                    ShowSelector();
+                }
+                // Otherwise any selected box is unselected
+                else
+                {
+                    HideSelector();
+                }
             }
         }
 
@@ -802,27 +827,6 @@ namespace not_broforce
         //    }
         //}
 
-        private void ToggleActivation()
-        {
-            if (!isAlwaysShown)
-            {
-                // Displays or hides the selector
-                visibility.enabled = !visibility.enabled;
-
-                // If the selector was made visible, its position is set next to
-                // the player character and placement validity is checked
-                if (visibility.enabled)
-                {
-                    ShowSelector();
-                }
-                // Otherwise any selected box is unselected
-                else
-                {
-                    HideSelector();
-                }
-            }
-        }
-
         /// <summary>
         /// Places the selector next to the player character.
         /// Used when the selector is made visible
@@ -864,20 +868,6 @@ namespace not_broforce
                 // Moves the selector to the coordinates
                 MoveToGridCoordinates();
             }
-
-            //if (!TooFarAwayFromPlayer_Coord(newGridCoordinates))
-            //{
-            //    // If the new cell is different to the old one,
-            //    // the selector is moved to the new position
-            //    if (newGridCoordinates != gridCoordinates)
-            //    {
-            //        // Updates the grid coordinates
-            //        gridCoordinates = newGridCoordinates;
-
-            //        // Moves the selector to the coordinates
-            //        MoveToGridCoordinates();
-            //    }
-            //}
         }
 
         /// <summary>
@@ -898,21 +888,6 @@ namespace not_broforce
 
             // Moves the selector to the coordinates
             MoveToGridCoordinates();
-
-            // Moves the selector to the coordinates if they
-            // aren't too far away from the player character
-            //if (TooFarAwayFromPlayer_Coord(gridCoordinates + movement))
-            //{
-            //    if (TooFarAwayFromPlayer_Coord())
-            //    {
-            //        PlaceSelectorNextToPlayer();
-            //    }
-            //}
-            //else
-            //{
-            //    gridCoordinates += movement;
-            //    MoveToGridCoordinates();
-            //}
         }
 
         /// <summary>
@@ -939,7 +914,7 @@ namespace not_broforce
             if (cursor.PlayingUsingMouse)
             {
                 MouseMovevent();
-                cursor.Visible = false;
+                //cursor.Visible = false;
             }
             // Otherwise the selector is moved to
             // the player character's coordinates
@@ -959,10 +934,10 @@ namespace not_broforce
                 collidesWithObstacle = false;
                 UnselectAll();
 
-                if (cursor.PlayingUsingMouse)
-                {
-                    cursor.Visible = true;
-                }
+                //if (cursor.PlayingUsingMouse)
+                //{
+                //    cursor.Visible = true;
+                //}
 
                 HideValidBoxPlaces();
             }
@@ -1066,7 +1041,7 @@ namespace not_broforce
 
         private void SetValidBoxPlaces()
         {
-            ResetValidBoxPlaces();
+            DestroyValidBoxPlaces();
 
             Vector2[] boxPlacesWithinRange =
                 BoxPlacesWithinRange(PlayerExtraGridCoordSide());
@@ -1314,7 +1289,7 @@ namespace not_broforce
             validBoxPlaces[index].IsVisible = visible;
         }
 
-        private void ResetValidBoxPlaces()
+        private void DestroyValidBoxPlaces()
         {
             for (int i = validBoxPlaces.Count - 1; i >= 0; i--)
             {
@@ -1331,7 +1306,7 @@ namespace not_broforce
             }
         }
 
-        private void HideValidBoxPlaces()
+        private void HideValidBoxPlaces(bool hideReserved = false)
         {
             foreach (ValidBoxPlace vbp in validBoxPlaces)
             {
@@ -1469,6 +1444,7 @@ namespace not_broforce
         {
             UnselectAll();
             reservedBoxPlaceCoords.Clear();
+            HideValidBoxPlaces(true);
         }
 
         /// <summary>
@@ -1477,6 +1453,8 @@ namespace not_broforce
         /// <returns>can a box be placed to the selector's position</returns>
         private void CheckPlacementValidity()
         {
+            // TODO: Use ValidBoxPlaces
+
             // If the selector is too far away from the player,
             // placing and removing boxes are made invalid
             if (TooFarAwayFromPlayer_Coord())
