@@ -29,7 +29,7 @@ namespace not_broforce {
         private BoxController boxController;
         private PlayerController player;
 
-        private Vector3 _followTarget;
+        public Vector3 _followTarget;
 
         private float gravity;
         private float maxJumpVelocity;
@@ -49,6 +49,9 @@ namespace not_broforce {
         public Sprite boxLit;
         private Vector2 gridCoordinates;
         BoxSelector selector;
+
+        public bool sleeping;
+        public float teleportWait;
 
         public Vector2 GridCoordinates
         {
@@ -82,111 +85,129 @@ namespace not_broforce {
 
         // Update is called once per frame
         void Update() {
-            
-            if(_UnitToFollow != null)
+            if(sleeping)
             {
-                _target = new Vector3(_UnitToFollow.position.x, _UnitToFollow.position.y - 0.5f,0);
-            }
-            if(_repathTimer > 0)
-            {
-                _repathTimer -= Time.deltaTime;            
-            }
-            if(controller.collisions.below && _repathTimer <= 0 && !_donePositionTaking && Vector3.Distance(transform.position,
-                _target) > _followDistance)
-            {
-                _repathTimer = RepathTime;
-                followWaypoints = pathFinder.FindPath(transform.position, _target);
-                if(followWaypoints != null)
-                {
-                    pathNotFound = false;
-                    if (followWaypoints.Count > 0)
-                    {
-                        _followTarget = followWaypoints[0];
-                        CheckFollowDistance();
-                    }
-                } else if (followWaypoints == null && _takingPosition)
-                {
-                    selector.RemoveReservedBoxPlace(_target);
-                    BackToLine();
-                    boxController.addBox(this);
-                }
-            }
 
-            if(_takingPosition && Vector3.Distance(transform.position,
-                _target) < _followDistance && !_donePositionTaking) {
-                ChangeProperties();
-            } else  if (_donePositionTaking){
-                //Do something if structure is broken
             }
-            else{
-                if(!_takingPosition && followWaypoints != null && Vector3.Distance(transform.position,
-                _target) > _followDistance)
+            else if (teleportWait <= 0)
+            {
+                if(_UnitToFollow != null)
                 {
-                    if(followWaypoints.Count > 0)
-                    {
-                        _followTarget = followWaypoints[0];
-                        CheckFollowDistance();
-                    }
+                    _target = new Vector3(_UnitToFollow.position.x, _UnitToFollow.position.y - 0.5f, 0);
                 }
-                if(Vector3.Distance(transform.position,
-                _target) > _followDistance && followWaypoints == null && !pathNotFound)
+                if(_repathTimer > 0)
                 {
-                   
+                    _repathTimer -= Time.deltaTime;
+                }
+                if(controller.collisions.below && _repathTimer <= 0 && !_donePositionTaking && Vector3.Distance(transform.position,
+                    _target) > _followDistance)
+                {
+                    _repathTimer = RepathTime;
                     followWaypoints = pathFinder.FindPath(transform.position, _target);
                     if(followWaypoints != null)
+                    {
+                        pathNotFound = false;
+                        if(followWaypoints.Count > 0)
+                        {
+                            _followTarget = followWaypoints[0];
+                            CheckFollowDistance();
+                        }
+                    }
+                    else if(followWaypoints == null && _takingPosition)
+                    {
+                        selector.RemoveReservedBoxPlace(_target);
+                        BackToLine();
+                        boxController.addBox(this);
+                    }
+                }
+
+                if(_takingPosition && Vector3.Distance(transform.position,
+                    _target) < _followDistance && !_donePositionTaking)
+                {
+                    ChangeProperties();
+                }
+                else if(_donePositionTaking)
+                {
+                    //Do something if structure is broken
+                }
+                else
+                {
+                    if(!_takingPosition && followWaypoints != null && Vector3.Distance(transform.position,
+                    _target) > _followDistance)
                     {
                         if(followWaypoints.Count > 0)
                         {
                             _followTarget = followWaypoints[0];
                             CheckFollowDistance();
                         }
-                    } else
+                    }
+                    if(Vector3.Distance(transform.position,
+                    _target) > _followDistance && followWaypoints == null && !pathNotFound)
                     {
-                        pathNotFound = true;
-                        if(_takingPosition)
+
+                        followWaypoints = pathFinder.FindPath(transform.position, _target);
+                        if(followWaypoints != null)
                         {
-                            selector.RemoveReservedBoxPlace(_target);
-                            BackToLine();
-                            boxController.addBox(this);
+                            if(followWaypoints.Count > 0)
+                            {
+                                _followTarget = followWaypoints[0];
+                                CheckFollowDistance();
+                            }
+                        }
+                        else
+                        {
+                            pathNotFound = true;
+                            if(_takingPosition)
+                            {
+                                selector.RemoveReservedBoxPlace(_target);
+                                BackToLine();
+                                boxController.addBox(this);
+                            }
+                        }
+
+                    }
+                    else if(Vector3.Distance(transform.position,
+                    _followTarget) < _followDistance && followWaypoints != null)
+                    {
+                        if(followWaypoints.Count > 0)
+                        {
+                            followWaypoints.RemoveAt(0);
+                        }
+                        if(followWaypoints.Count <= 0)
+                        {
+                            followWaypoints = null;
+                        }
+                        else
+                        {
+                            _followTarget = followWaypoints[0];
+                            CheckFollowDistance();
                         }
                     }
-                    
-                }
-                else if (Vector3.Distance(transform.position,
-                _followTarget) < _followDistance && followWaypoints != null)
-                {
-                    if(followWaypoints.Count > 0)
+                    if(followWaypoints != null)
                     {
-                        followWaypoints.RemoveAt(0);
+                        Move();
                     }
-                    if(followWaypoints.Count <= 0)
+                    else
                     {
-                        followWaypoints = null;
-                    } else
-                    {
-                        _followTarget = followWaypoints[0];
-                        CheckFollowDistance();
+                        velocity.x = 0;
                     }
-                }
-                if(followWaypoints != null)
-                {
-                    Move();
-                } else
-                {
-                    velocity.x = 0;
-                }
-                
-                velocity.y += gravity * Time.deltaTime;
 
-                //Onks tää varmasti pakollinen? Näyttää hölmöltä ku laatikot liitää
-                if (velocity.y < -5)
-                {
-                    velocity.y = -5;
+                    velocity.y += gravity * Time.deltaTime;
+
+                    //Onks tää varmasti pakollinen? Näyttää hölmöltä ku laatikot liitää
+                    if(velocity.y < -5)
+                    {
+                        velocity.y = -5;
+                    }
+
+                    controller.Move(velocity * Time.deltaTime);
                 }
-                
-                controller.Move(velocity * Time.deltaTime);
+            } else
+            {
+                teleportWait -= Time.deltaTime;
             }
-            
+
+
         }
 
         public void AddFollowTarget (Transform target) {
@@ -322,6 +343,30 @@ namespace not_broforce {
             {
                 _followDistance = 1.1f;
             }
+        }
+
+        public void TeleportToPlayer ()
+        {
+            if(_donePositionTaking)
+            {
+                BackToLine();
+            }
+            else if(_takingPosition)
+            {
+                selector.RemoveReservedBoxPlace(_target);
+                BackToLine();
+            }
+            else
+            {
+                followWaypoints = null;
+            }
+            teleportWait = 1f;
+            transform.position = player.transform.position;
+            _followTarget = transform.position;
+            velocity.x = 0;
+            velocity.y = 0;
+            boxController.addBox(this);
+
         }
         
     }

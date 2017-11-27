@@ -7,18 +7,23 @@ namespace not_broforce {
     public class BoxController : MonoBehaviour {
 
         [SerializeField]
-        private List<Box> boxes = new List<Box>();
+        private List<Box> movingBoxes = new List<Box>();
 
         [SerializeField]
         private List<Box> placedBoxes = new List<Box>();
 
         protected List<Box> removingBoxes = new List<Box>();
 
+        protected List<Box> allBoxes = new List<Box>();
+
+        protected BoxSelector selector;
+
         [SerializeField]
         private Text roboCount;
 
         // Use this for initialization
         void Start() {
+            selector = FindObjectOfType<BoxSelector>();
             if(roboCount == null)
             {
                 roboCount = GameObject.Find("RoboCount").GetComponent<Text>();
@@ -29,23 +34,25 @@ namespace not_broforce {
         /// Returns currently following boxes
         /// </summary>
         public List<Box> GetBoxes() {
-            return boxes;
+            return movingBoxes;
         }
 
         /// <summary>
         /// Returns amount of currently moving boxes
         /// </summary>
         public int MovingBoxAmount() {
-            return boxes.Count;
+            return movingBoxes.Count;
         }
 
         // Update is called once per frame
         void Update() {
-           
 
-            if(boxes.Count > 0 && roboCount != null)
+            if(Input.GetKeyDown(KeyCode.Q)) {
+                RecallAllBoxes();
+            }
+            if(movingBoxes.Count > 0 && roboCount != null)
             {
-                roboCount.text = "Robot count " + boxes.Count;
+                roboCount.text = "Robot count " + movingBoxes.Count;
             } else if (roboCount != null)
             {
                 roboCount.text = "Robot count 0";
@@ -56,7 +63,11 @@ namespace not_broforce {
         /// Adds box to follow the player.
         /// </summary>
         public void addBox(Box box) {
-            boxes.Add(box);
+            if(!allBoxes.Contains(box))
+            {
+                allBoxes.Add(box);
+            }
+            movingBoxes.Add(box);
             RefreshFollowTargets();
         }
 
@@ -82,13 +93,13 @@ namespace not_broforce {
         /// Refreshes following order for active boxes.
         /// </summary>
         private void RefreshFollowTargets() {
-            for(int i = 0; i < boxes.Count; i++) {
-                boxes[i].transform.GetChild(0).GetComponent<SpriteRenderer>().sortingOrder = (boxes.Count - i) * 2;
-                boxes[i].GetComponent<SpriteRenderer>().sortingOrder = (boxes.Count - i) * 2 - 1;
+            for(int i = 0; i < movingBoxes.Count; i++) {
+                movingBoxes[i].transform.GetChild(0).GetComponent<SpriteRenderer>().sortingOrder = (movingBoxes.Count - i) * 2;
+                movingBoxes[i].GetComponent<SpriteRenderer>().sortingOrder = (movingBoxes.Count - i) * 2 - 1;
                 if(i == 0) {
-                    boxes[i].AddFollowTarget(GameObject.FindGameObjectWithTag("Player").transform);
+                    movingBoxes[i].AddFollowTarget(GameObject.FindGameObjectWithTag("Player").transform);
                 } else {
-                    boxes[i].AddFollowTarget(boxes[i - 1].transform);
+                    movingBoxes[i].AddFollowTarget(movingBoxes[i - 1].transform);
                 } 
             }
         }
@@ -97,9 +108,9 @@ namespace not_broforce {
         ///  Removes box from follow line.
         /// </summary>
         public void removeBox() {
-            if (boxes.Count > 0) {
-                boxes[0].RemoveFollowTarget();
-                boxes.RemoveAt(0);
+            if (movingBoxes.Count > 0) {
+                movingBoxes[0].RemoveFollowTarget();
+                movingBoxes.RemoveAt(0);
                 RefreshFollowTargets();
             }
 
@@ -111,8 +122,8 @@ namespace not_broforce {
         /// <param name="followTarget"></param>
         public bool PlaceBox (Vector3 followTarget) {
             bool pathFound = false;
-            if (boxes.Count > 0) {
-                Box obj = boxes[0];
+            if (movingBoxes.Count > 0) {
+                Box obj = movingBoxes[0];
                 pathFound = obj.TakePosition(followTarget);
                 if(pathFound)
                 {
@@ -172,6 +183,17 @@ namespace not_broforce {
                 return box.FindPathInStructure(new Vector3(placedBoxes[0].transform.position.x, placedBoxes[0].transform.position.y - 1, 0), box);
             }
             return box.FindPathInStructure(new Vector3(transform.position.x, transform.position.y - 1, 0), box);
+        }
+
+        public void RecallAllBoxes()
+        {
+            placedBoxes.Clear();
+            movingBoxes.Clear();
+           selector.RemoveAllBoxes();
+           foreach(Box box in allBoxes)
+            {
+                box.TeleportToPlayer();
+            }
         }
     }
 }
