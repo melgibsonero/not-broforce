@@ -72,7 +72,7 @@ namespace not_broforce
             float percentY = worldPosition.y / gridWorldSize.y;
             percentX = Mathf.Clamp01(percentX);
             percentY = Mathf.Clamp01(percentY);
-
+            
             int x = Mathf.RoundToInt((gridSizeX - 1) * percentX);
             int y = Mathf.RoundToInt((gridSizeY - 1) * percentY);
             return grid[x, y];
@@ -92,10 +92,6 @@ namespace not_broforce
                     if(path != null)
                         if(path.Contains(n))
                             Gizmos.color = Color.black;
-                    if(n.gridY == 9 && n.gridX == 26)
-                    {
-                        Gizmos.color = Color.blue;
-                    }
                     Color colour = Gizmos.color;
                     colour.a = 0.4f;
                     Gizmos.color = colour;

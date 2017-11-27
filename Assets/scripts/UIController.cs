@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 namespace not_broforce
 {
-    public class LevelChanger: MonoBehaviour
+    public class UIController: MonoBehaviour
     {
         [SerializeField]
         private Button restart;
@@ -70,47 +70,25 @@ namespace not_broforce
             
         }
 
-        private void Update()
-        {
-            if(Input.GetKeyDown(KeyCode.Escape) && !settingsOpened)
-            {
-                if(!paused)
-                {
-                    Pause(true);
-                    paused = true;
-                } else if (paused)
-                {
-                    ResumeGame();
-                }
-            } else if (Input.GetKeyDown(KeyCode.Escape) && settingsOpened)
-            {
-                DeactivateSettings();
-            }
-            if(endScreenActivated && !paused)
-            {
-                if(Input.GetKey(KeyCode.Space))
-                {
-                    nextLevel.onClick.Invoke();
-                } else if(Input.GetKey(KeyCode.R))
-                {
-                    restart.onClick.Invoke();
-                }
-            }
-        }
 
         public void NextLevel()
         {
-            SceneManager.LoadScene(SceneName(scene));
+            if(endScreenActivated && !paused)
+            {
+                SceneManager.LoadScene(SceneName(scene));
+            }
         }
        
         public void Restart ()
         {
-            if(paused)
+            if(endScreenActivated && !paused)
             {
-                Pause(false);
-                paused = false;
+                if(paused)
+                {
+                    TogglePause();
+                }
+                SceneManager.LoadScene(currentScene);
             }
-            SceneManager.LoadScene(currentScene);
         }
         
         public void ActivateButtons()
@@ -126,10 +104,24 @@ namespace not_broforce
             nextLevel.gameObject.SetActive(false);
         }
 
-        private void Pause (bool pause)
+        public bool ToggleMenus ()
         {
-            if(pause)
+            if(!settingsOpened)
             {
+                TogglePause();
+            }
+            else if(settingsOpened)
+            {
+                DeactivateSettings();
+            }
+            return paused;
+        }
+
+        public void TogglePause ()
+        {
+            if(!paused)
+            {
+                paused = true;
                 Time.timeScale = 0f;
                 if(endScreenActivated)
                 {
@@ -138,20 +130,16 @@ namespace not_broforce
 
             } else
             {
+                paused = false;
                 Time.timeScale = 1f;
                 if(endScreenActivated)
                 {
                     ActivateButtons();
                 }
             }
-            ShowPauseMenu(pause);
+            ShowPauseMenu(paused);
         }
-
-        public void ResumeGame()
-        {
-            Pause(false);
-            paused = false;
-        }
+        
 
         public void ActivateSettings ()
         {
