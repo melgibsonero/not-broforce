@@ -22,6 +22,7 @@ namespace not_broforce
 
         float _jumpTimer;
         bool jumpTimerActive;
+        float extraGravity = 0;
         int wallDirX;
         int faceDirOld;
         bool wallSliding;
@@ -78,11 +79,15 @@ namespace not_broforce
             HandleWallSliding();
 
             _controller.Move(velocity * Time.deltaTime);
-
+            if (!_controller.collisions.below)
+            {
+                extraGravity += Time.deltaTime*1.7f;
+            }
             if (_controller.collisions.above || _controller.collisions.below)
             {
                 velocity.y = 0;
                 faceDirOld = 0;
+                extraGravity = 0;
             }
             Animate();
         }
@@ -115,7 +120,8 @@ namespace not_broforce
         {
                 if (wallSliding || earlyWalljump)
                 {
-                faceDirOld = wallDirX;                  
+                faceDirOld = wallDirX;
+                extraGravity = 0;
                     if (_directionalInput.x == 0) //neutral
                     {
                         velocity.x = -wallDirX * wallJumpOff.x;
@@ -176,9 +182,9 @@ namespace not_broforce
                 _animation.SetBool("moving", false);
             }
             
-            /* Till we get an animation for it. I can't figure out that shit
+            //Till we get an animation for it. I can't figure out that shit
             //If Vertical movement is not zero.
-            if (velocity.y > 0)
+            if (!_animation.GetBool("jumping") && velocity.y > 0)
             {
                 _animation.SetBool("jumping", true);
             }
@@ -186,7 +192,25 @@ namespace not_broforce
             {
                 _animation.SetBool("jumping", false);
             }
+
+            if (!_animation.GetBool("wallsliding") && wallSliding)
+            {
+                _animation.SetBool("wallsliding", true);
+            }
+            if(!wallSliding)
+            {
+                _animation.SetBool("wallsliding", false);
+            }
+            /*if (wallJumping)
+            {
+                _animation.SetBool("walljumping", true);
+            }
+            else
+            {
+                _animation.SetBool("walljumping", false);
+            }
             */
+            
         }
         private void HandleWallSliding()
         {
@@ -234,7 +258,7 @@ namespace not_broforce
 			if (wallSliding && velocity.y < 0) {
 				velocity.y += gravity / 3 * Time.deltaTime;
 			} else {
-				velocity.y += gravity * Time.deltaTime;
+				velocity.y += gravity * Time.deltaTime + gravity * extraGravity * Time.deltaTime;
 			}
         }
     }
