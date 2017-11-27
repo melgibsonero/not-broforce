@@ -8,7 +8,7 @@ namespace not_broforce
     public class LevelGoal : SwitchInteractable
     {
         [SerializeField]
-        private LevelChanger endScreen;
+        private UIController endScreen;
 
         private void Update()
         {
