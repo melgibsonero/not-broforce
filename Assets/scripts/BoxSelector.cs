@@ -37,17 +37,17 @@ namespace not_broforce
         [SerializeField]
         private Color generalInvalidColor;
 
-        [SerializeField]
-        private int maxDistFromPlayer = 3;
+        [SerializeField, Range(0, 10)]
+        private int maxDistFromPlayer = 5;
 
-        [SerializeField, Range(0, 5)]
-        private int maxGroundPlaceDistX = 3;
+        [SerializeField, Range(0, 10)]
+        private int maxGroundPlaceDistX = 5;
 
-        [SerializeField, Range(0, 5)]
-        private int maxGroundPlaceDistUp = 2;
+        [SerializeField, Range(0, 10)]
+        private int maxGroundPlaceDistUp = 5;
 
-        [SerializeField, Range(0, 5)]
-        private int maxGroundPlaceDistDown = 2;
+        [SerializeField, Range(0, 10)]
+        private int maxGroundPlaceDistDown = 5;
 
         [SerializeField, Range(1, 30)]
         private int maxValidBoxPlaceAmount = 15;

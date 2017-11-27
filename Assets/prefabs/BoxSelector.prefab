@@ -154,9 +154,9 @@ MonoBehaviour:
   removeColor: {r: 1, g: 0.67545635, b: 0.2647059, a: 1}
   generalInvalidColor: {r: 0.83823526, g: 0.255, b: 0.17874137, a: 1}
   maxDistFromPlayer: 5
-  maxGroundPlaceDistX: 2
-  maxGroundPlaceDistUp: 2
-  maxGroundPlaceDistDown: 2
+  maxGroundPlaceDistX: 5
+  maxGroundPlaceDistUp: 5
+  maxGroundPlaceDistDown: 5
   maxValidBoxPlaceAmount: 15
 --- !u!114 &114824027036465250
 MonoBehaviour:
