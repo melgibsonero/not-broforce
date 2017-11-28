@@ -87,7 +87,14 @@ namespace not_broforce
        
         public void Restart ()
         {
-            SceneManager.LoadScene(currentScene);
+            if(endScreenActivated || paused)
+            {
+                if(paused)
+                {
+                    Time.timeScale = 1f;
+                }
+                SceneManager.LoadScene(currentScene);
+            }
         }
         
         public void ActivateButtons()
