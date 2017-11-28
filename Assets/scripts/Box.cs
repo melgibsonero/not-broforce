@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace not_broforce {
+namespace not_broforce
+{
     public class Box : MonoBehaviour, IGridObject {
 
         [SerializeField]
@@ -50,8 +49,15 @@ namespace not_broforce {
         private Vector2 gridCoordinates;
         BoxSelector selector;
 
-        public bool sleeping;
-        public float teleportWait;
+        private bool sleeping = true;
+        private float teleportWait;
+
+        private bool teleportIn = false;
+        private bool teleportOut = false;
+
+        private SpriteRenderer spriteRend;
+
+        private SpriteRenderer childSR;
 
         public Vector2 GridCoordinates
         {
@@ -71,7 +77,6 @@ namespace not_broforce {
             controller = GetComponent<Controller2D>();
             followWaypoints = null;
             boxController = GameObject.FindGameObjectWithTag("BoxController").GetComponent<BoxController>();
-            boxController.addBox(this);
             _takingPosition = false;
             _donePositionTaking = false;
             _repathTimer = RepathTime;
@@ -81,13 +86,20 @@ namespace not_broforce {
             minJumpVelocity = player.minJumpVelocity;
             pathFinder = GameObject.FindGameObjectWithTag("PathFinder").GetComponent<PathFinding1>();
             selector = FindObjectOfType<BoxSelector>();
+            spriteRend = GetComponent<SpriteRenderer>();
+            childSR = GetComponentInChildren<EmoteChanger>().gameObject.GetComponent<SpriteRenderer>();
         }
 
         // Update is called once per frame
         void Update() {
             if(sleeping)
             {
-
+                if (Vector3.Distance(transform.position,
+                    player.transform.position) < _followDistance)
+                {
+                    sleeping = false;
+                    boxController.addBox(this);
+                }
             }
             else if (teleportWait <= 0)
             {
@@ -120,15 +132,10 @@ namespace not_broforce {
                         boxController.addBox(this);
                     }
                 }
-
                 if(_takingPosition && Vector3.Distance(transform.position,
                     _target) < _followDistance && !_donePositionTaking)
                 {
                     ChangeProperties();
-                }
-                else if(_donePositionTaking)
-                {
-                    //Do something if structure is broken
                 }
                 else
                 {
@@ -193,18 +200,43 @@ namespace not_broforce {
                     }
 
                     velocity.y += gravity * Time.deltaTime;
+                    
 
                     //Onks tää varmasti pakollinen? Näyttää hölmöltä ku laatikot liitää
                     if(velocity.y < -5)
                     {
                         velocity.y = -5;
                     }
-
+                    if(velocity.x > 0)
+                    {
+                        if(spriteRend.flipX)
+                        {
+                            spriteRend.flipX = false;
+                            childSR.flipX = false;
+                        }
+                    } else if (velocity.x < 0)
+                    {
+                        if(!spriteRend.flipX)
+                        {
+                            spriteRend.flipX = true;
+                            childSR.flipX = true;
+                        }
+                    }
                     controller.Move(velocity * Time.deltaTime);
                 }
-            } else
+            } else if (teleportWait > 0)
             {
                 teleportWait -= Time.deltaTime;
+                if(teleportWait < 0.5f && teleportOut)
+                {
+                    teleportOut = false;
+                    teleportIn = true;
+                    transform.position = player.transform.position;
+                    _followTarget = transform.position;
+                } else if (teleportWait <= 0f && teleportIn)
+                {
+                    teleportIn = false;
+                }
             }
 
 
@@ -361,12 +393,10 @@ namespace not_broforce {
                 followWaypoints = null;
             }
             teleportWait = 1f;
-            transform.position = player.transform.position;
-            _followTarget = transform.position;
             velocity.x = 0;
             velocity.y = 0;
             boxController.addBox(this);
-
+            teleportOut = true;
         }
         
     }

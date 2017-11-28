@@ -16,6 +16,14 @@ namespace not_broforce
         [SerializeField]
         private FadeToColor fade;
 
+        [SerializeField]
+        private GameObject settings;
+
+        [SerializeField]
+        private GameObject menuButtons;
+
+        private bool settingsOpened = false;
+
         //private bool gameStarted;
 
         //private enum Scene
@@ -53,6 +61,7 @@ namespace not_broforce
         //    return sceneName;
         //}
 
+
         public void StartGame()
         {
             fade.StartFadeOut();
@@ -61,6 +70,26 @@ namespace not_broforce
         public void QuitGame()
         {
             Application.Quit();
+        }
+
+        public void DeactivateSettings()
+        {
+            GameManager.Instance.SaveSettings();
+            settingsOpened = false;
+            settings.SetActive(false);
+            menuButtons.SetActive(true);
+        }
+
+        public void ActivateSettings()
+        {
+            settingsOpened = true;
+            settings.SetActive(true);
+            menuButtons.SetActive(false);
+        }
+
+        private void Awake()
+        {
+            DeactivateSettings();
         }
 
         private void Update()
