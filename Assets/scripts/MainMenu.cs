@@ -99,6 +99,13 @@ namespace not_broforce
                 SceneManager.LoadScene(
                     LevelChanger_Hub.SceneName(scene, targetLevelNum));
             }
+            if(Input.GetKeyDown(KeyCode.Escape))
+            {
+                if(settingsOpened)
+                {
+                    DeactivateSettings();
+                }
+            }
         }
     }
 }
