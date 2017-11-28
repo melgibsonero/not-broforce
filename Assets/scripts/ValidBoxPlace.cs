@@ -10,13 +10,16 @@ namespace not_broforce
         private Sprite glowSprite;
 
         [SerializeField]
+        private Sprite wallMagnetGlowSprite;
+
+        [SerializeField]
         private Sprite reservedSprite;
 
         [SerializeField]
         private Color attachedToBoxColor;
 
         [SerializeField]
-        private Color onGroundColor;
+        private Color basicColor;
 
         [SerializeField]
         private Color reservedColor;
@@ -77,6 +80,12 @@ namespace not_broforce
                 sr.color = reservedColor;
                 this.direction = Utils.Direction.Up;
             }
+            else if (direction == Utils.Direction.Middle)
+            {
+                sr.sprite = wallMagnetGlowSprite;
+                this.direction = direction;
+                sr.color = basicColor;
+            }
             else
             {
                 sr.sprite = glowSprite;
@@ -89,7 +98,7 @@ namespace not_broforce
                 else
                 {
                     this.direction = Utils.Direction.Up;
-                    sr.color = onGroundColor;
+                    sr.color = basicColor;
                 }
             }
 

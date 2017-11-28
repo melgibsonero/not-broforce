@@ -145,14 +145,14 @@ namespace not_broforce
         public void GoToLevel()
         {
             levelTransition = false;
-            SceneManager.LoadScene(SceneName(scene, targetLevelNum));
+            GameManager.Instance.LoadScene(SceneName(scene, targetLevelNum));
 
             // TODO: Start fade-in in a level's endScreen
         }
 
         public void RestartLevel()
         {
-            SceneManager.LoadScene(currentScene);
+            GameManager.Instance.LoadScene(currentScene);
         }
     }
 }

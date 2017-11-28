@@ -153,20 +153,6 @@ namespace not_broforce
         public void Play(Sound sound)
         {
             Play((int) sound);
-
-            //switch (sound)
-            //{
-            //    case Sound.Clang:
-            //    {
-            //        Play();
-            //        break;
-            //    }
-            //    case Sound.Win:
-            //    {
-            //        Play();
-            //        break;
-            //    }
-            //}
         }
 
         public void Play(int soundNum)

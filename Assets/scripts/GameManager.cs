@@ -46,6 +46,8 @@ namespace not_broforce
 
         private PlayerInput input;
 
+        private MouseCursorController cursor;
+
         [SerializeField]
         private int currentLevel = 0;
 
@@ -61,6 +63,8 @@ namespace not_broforce
         private bool alwaysShowBoxSelector;
 
         private bool holdToActivateBoxSelector;
+
+        private bool playingUsingMouse;
 
         public float MusicVolume
         {
@@ -111,6 +115,19 @@ namespace not_broforce
             {
                 holdToActivateBoxSelector = value;
                 input.SetHoldToActivateBS(value);
+            }
+        }
+
+        public bool PlayingUsingMouse
+        {
+            get
+            {
+                return playingUsingMouse;
+            }
+            set
+            {
+                playingUsingMouse = value;
+                cursor.PlayingUsingMouse = value;
             }
         }
 
@@ -276,8 +293,14 @@ namespace not_broforce
             {
                 debug_ReturnToHub = false;
                 CurrentLevel = 0;
-                SceneManager.LoadScene("Hub");
+                LoadScene("Hub");
             }
+        }
+
+        public void LoadScene(string sceneName)
+        {
+            Debug.Log("Loading scene: " + sceneName);
+            SceneManager.LoadScene(sceneName);
         }
     }
 }

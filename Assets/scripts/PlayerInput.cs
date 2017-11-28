@@ -130,10 +130,12 @@ namespace not_broforce
                 paused = ui.ToggleMenus();
             }
 
-            //if (paused && !ui.Paused)
-            //{
-            //    paused = false;
-            //}
+            // Sets pause off if the Resume button
+            // has been clicked in the pause menu
+            if (paused && !ui.Paused)
+            {
+                paused = false;
+            }
 
             // Changing level
             if (Input.GetKeyDown(KeyCode.Space))

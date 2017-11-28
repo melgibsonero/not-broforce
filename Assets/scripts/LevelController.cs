@@ -10,15 +10,15 @@ namespace not_broforce
         
         public static Vector2 gridOffset = new Vector2(0.5f, 0.5f);
 
-        public float GridCellWidth
-        {
-            get { return gridCellWidth; }
-        }
+        //public float GridCellWidth
+        //{
+        //    get { return gridCellWidth; }
+        //}
 
-        public Vector2 GridOffset
-        {
-            get { return gridOffset; }
-        }
+        //public Vector2 GridOffset
+        //{
+        //    get { return gridOffset; }
+        //}
 
         private void Start()
         {
@@ -35,7 +35,7 @@ namespace not_broforce
         /// Gets a scale which makes the given size into the grid's size.
         /// Works more reliably if the scale is originally [1, 1, 0].
         /// </summary>
-        public Vector3 GetGridScale(Vector3 size)
+        public static Vector3 GetGridScale(Vector3 size)
         {
             float scaleX =
                 gridCellWidth / size.x;

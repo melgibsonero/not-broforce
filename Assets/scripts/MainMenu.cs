@@ -96,7 +96,7 @@ namespace not_broforce
         {
             if (fade.FadedOut)
             {
-                SceneManager.LoadScene(
+                GameManager.Instance.LoadScene(
                     LevelChanger_Hub.SceneName(scene, targetLevelNum));
             }
         }

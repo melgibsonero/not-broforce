@@ -43,7 +43,7 @@ namespace not_broforce
             {
                 return playingWithMouse;
             }
-            private set
+            set
             {
                 playingWithMouse = value;
 

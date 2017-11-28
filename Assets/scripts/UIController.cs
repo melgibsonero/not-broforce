@@ -81,13 +81,14 @@ namespace not_broforce
         {
             if(endScreenActivated && !paused)
             {
-                SceneManager.LoadScene(SceneName(scene));
+                GameManager.Instance.LoadScene(SceneName(scene));
             }
         }
        
         public void Restart ()
         {
-            SceneManager.LoadScene(currentScene);
+            ContinueTime();
+            GameManager.Instance.LoadScene(currentScene);
         }
         
         public void ActivateButtons()
@@ -121,7 +122,7 @@ namespace not_broforce
             if(!paused)
             {
                 paused = true;
-                Time.timeScale = 0f;
+                StopTime();
                 if(endScreenActivated)
                 {
                     DeactivateButtons();
@@ -130,7 +131,7 @@ namespace not_broforce
             } else
             {
                 paused = false;
-                Time.timeScale = 1f;
+                ContinueTime();
                 if(endScreenActivated)
                 {
                     ActivateButtons();
@@ -138,7 +139,16 @@ namespace not_broforce
             }
             ShowPauseMenu(paused);
         }
-        
+
+        private void ContinueTime()
+        {
+            Time.timeScale = 1f;
+        }
+
+        private void StopTime()
+        {
+            Time.timeScale = 0f;
+        }
 
         public void ActivateSettings ()
         {
@@ -160,7 +170,8 @@ namespace not_broforce
 
         public void BackToMainMenu ()
         {
-            SceneManager.LoadScene("MainMenu");
+            ContinueTime();
+            GameManager.Instance.LoadScene("MainMenu");
         }
 
         public void ShowPauseMenu (bool activate)
