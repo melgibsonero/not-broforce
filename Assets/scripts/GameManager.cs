@@ -101,7 +101,10 @@ namespace not_broforce
             set
             {
                 alwaysShowBoxSelector = value;
-                input.SetAlwaysShowBS(value);
+                if(input != null)
+                {
+                    input.SetAlwaysShowBS(value);
+                }
             }
         }
 
@@ -114,7 +117,10 @@ namespace not_broforce
             set
             {
                 holdToActivateBoxSelector = value;
-                input.SetHoldToActivateBS(value);
+                if(input != null)
+                {
+                    input.SetHoldToActivateBS(value);
+                }
             }
         }
 

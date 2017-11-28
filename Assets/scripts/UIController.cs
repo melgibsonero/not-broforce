@@ -87,8 +87,14 @@ namespace not_broforce
        
         public void Restart ()
         {
-            ContinueTime();
-            GameManager.Instance.LoadScene(currentScene);
+            if(endScreenActivated || paused)
+            {
+                if(paused)
+                {
+                    ContinueTime();
+                }
+                GameManager.Instance.LoadScene(currentScene);
+            }
         }
         
         public void ActivateButtons()

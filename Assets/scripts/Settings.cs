@@ -18,10 +18,18 @@ namespace not_broforce {
         [SerializeField]
         private Slider effectSlider;
 
+        [SerializeField]
+        private Toggle showSelector;
+
+        [SerializeField]
+        private Toggle holdSelector;
+
         private void Start()
         {
             musicSlider.value = GameManager.Instance.MusicVolume;
             effectSlider.value = GameManager.Instance.EffectVolume;
+            showSelector.isOn = GameManager.Instance.AlwaysShowBoxSelector;
+            holdSelector.isOn = GameManager.Instance.HoldToActivateBoxSelector;
         }
         // Update is called once per frame
         void Update() {
@@ -29,6 +37,8 @@ namespace not_broforce {
             effectVolume.text = "Effect Volume: " + (int)(effectSlider.value * 100) + "%";
             GameManager.Instance.MusicVolume = musicSlider.value;
             GameManager.Instance.EffectVolume = effectSlider.value;
+            GameManager.Instance.AlwaysShowBoxSelector = showSelector.isOn;
+            GameManager.Instance.HoldToActivateBoxSelector = holdSelector.isOn;
         }
     }
 }
