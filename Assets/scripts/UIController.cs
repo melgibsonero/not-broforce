@@ -41,7 +41,9 @@ namespace not_broforce
         private enum _sceneName
         {
             HubLevel,
-            NextLevel
+            NextLevel,
+            Level2,
+            MainMenu
         }
 
         private string SceneName( _sceneName scene )
@@ -59,6 +61,16 @@ namespace not_broforce
                 case _sceneName.NextLevel:
                     {
                         sceneName = "Valtterin Playground";
+                        break;
+                    }
+                case _sceneName.Level2:
+                    {
+                        sceneName = "Level2";
+                        break;
+                    }
+                case _sceneName.MainMenu:
+                    {
+                        sceneName = "MainMenu";
                         break;
                     }
             }
