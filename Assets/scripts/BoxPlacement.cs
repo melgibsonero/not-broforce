@@ -56,6 +56,8 @@ namespace not_broforce
         /// </summary>
         private bool validRemove;
 
+        private bool reservedPlacesChanged;
+
         private Vector3 playerSize;
 
         private PlayerController playerCtrl;
@@ -92,6 +94,8 @@ namespace not_broforce
 
             validPlacement = false;
             validRemove = false;
+
+            reservedPlacesChanged = true;
 
             playerSideGridXCoords = new float[2];
 
@@ -158,13 +162,18 @@ namespace not_broforce
 
         private void ShowBoxPlaces()
         {
-            if (validBoxPlaces != null)
-            {
-                foreach (ValidBoxPlace vbp in validBoxPlaces)
-                {
-                    vbp.IsVisible = true;
-                }
-            }
+            // Updates valid box places and their
+            // markers, then turns them visible
+            UpdateValidBoxPlaces();
+
+            // Makes all box places visible
+            //if (validBoxPlaces != null)
+            //{
+            //    foreach (ValidBoxPlace vbp in validBoxPlaces)
+            //    {
+            //        vbp.IsVisible = true;
+            //    }
+            //}
         }
 
         public void HideBoxPlaces(bool hideReserved)
@@ -181,9 +190,30 @@ namespace not_broforce
             }
         }
 
+        public void HideReservedBoxPlaces()
+        {
+            if (validBoxPlaces != null)
+            {
+                foreach (ValidBoxPlace vbp in validBoxPlaces)
+                {
+                    if (vbp.IsReserved)
+                    {
+                        vbp.IsVisible = false;
+                    }
+                }
+            }
+        }
+
         public bool PlayerIsGrounded()
         {
-            return playerCtrl.GetGrounded();
+            if (playerCtrl != null)
+            {
+                return playerCtrl.GetGrounded();
+            }
+            else
+            {
+                return false;
+            }
         }
 
         /// <summary>
@@ -206,6 +236,8 @@ namespace not_broforce
         {
             reservedBoxPlaceCoords.Add(GridCoordinates);
 
+            reservedPlacesChanged = true;
+
             //Debug.Log("Reserved space added. Spaces: " +
             //          reservedBoxPlaceCoords.Count);
         }
@@ -227,9 +259,27 @@ namespace not_broforce
                     //Debug.Log("Reserved space removed. Spaces left: " +
                     //    reservedBoxPlaceCoords.Count);
 
+                    reservedPlacesChanged = true;
+
                     return;
                 }
             }
+        }
+
+        public void RemoveReservedBoxPlace(int index)
+        {
+            if (index >= 0 && index < reservedBoxPlaceCoords.Count)
+            {
+                reservedBoxPlaceCoords.RemoveAt(index);
+            }
+        }
+
+
+        public void ClearReservedBoxPlaces()
+        {
+            reservedBoxPlaceCoords.Clear();
+            HideReservedBoxPlaces();
+            reservedPlacesChanged = true;
         }
 
         public void UpdateReservedBoxPlaces()
@@ -239,14 +289,12 @@ namespace not_broforce
                 // The reserved grid coordinates
                 Vector2 reservedPlace = reservedBoxPlaceCoords[i];
 
-                // A box place in the same coordinates
-                //ValidBoxPlace vbp = ValidBoxPlaceInCoord(reservedPlace);
-
                 // If there is something in the same
                 // coordinates, the reservation is removed
                 if (Utils.GridCoordContainsObject(reservedPlace, groundMask))
                 {
                     reservedBoxPlaceCoords.RemoveAt(i);
+                    reservedPlacesChanged = true;
 
                     //Debug.Log("Reserved space removed. Spaces left: " +
                     //    reservedBoxPlaceCoords.Count);
@@ -254,12 +302,21 @@ namespace not_broforce
             }
         }
 
-        public void ClearReservedBoxPlaces()
+        private void UpdateReservedBoxPlaceMarkers()
         {
-            reservedBoxPlaceCoords.Clear();
+            if (reservedPlacesChanged)
+            {
+                reservedPlacesChanged = false;
 
-            // Hiding box places resets them
-            HideBoxPlaces(true);
+                int reservedAmount = reservedBoxPlaceCoords.Count;
+
+                for (int i = 0; i < reservedAmount; i++)
+                {
+                    InitPooledValidBoxPlace(i,
+                        reservedBoxPlaceCoords[i],
+                        false, true, true);
+                }
+            }
         }
 
         /// <summary>
@@ -335,17 +392,71 @@ namespace not_broforce
             if (visible)
             {
                 // Updates the player character's grid coordinates
-                PlayerGridCoord =
-                    LevelController.GetGridCoordinates(
-                        player.transform.position);
+                UpdatePlayerGridCoord();
 
-                UpdatePlayerSideGridXCoords();
+                // Updates reserved box places and their markers
+                UpdateReservedBoxPlaces();
+                UpdateReservedBoxPlaceMarkers();
 
+                // Updates valid box places and their markers
                 UpdateValidBoxPlaces();
                 //SetValidBoxPlaces();
 
+                // Updates whether a box can be placed or not
                 UpdatePlacementValidity();
             }
+        }
+
+        /// <summary>
+        /// Updates the player character's grid coordinates
+        /// </summary>
+        public void UpdatePlayerGridCoord()
+        {
+            PlayerGridCoord =
+                LevelController.GetGridCoordinates(
+                    player.transform.position);
+
+            // Updates the player character's
+            // left and right sides' grid coordinates
+            UpdatePlayerSideGridXCoords();
+        }
+
+        private void UpdatePlayerSideGridXCoords()
+        {
+            Vector3 pSize = playerSize;
+
+            // Error correction; it isn't enough if only
+            // a pixel is in the bordering grid node
+            pSize.x -= 0.1f;
+
+            // Left
+            playerSideGridXCoords[0] = LevelController.GetGridCoordinates
+                (player.transform.position + new Vector3(-1 * pSize.x / 2, 0)).x;
+
+            // Right
+            playerSideGridXCoords[1] = LevelController.GetGridCoordinates
+                (player.transform.position + new Vector3(pSize.x / 2, 0)).x;
+        }
+
+        private int PlayerExtraGridCoordSide()
+        {
+            // Defaults to middle: 0 (no extra grid coord side)
+            int side = 0;
+
+            //float[] playerSideGridXCoords = PlayerSideGridCoordXs();
+
+            // Left: -1
+            if (playerSideGridXCoords[0] < PlayerGridCoord.x)
+            {
+                side--;
+            }
+            // Right: 1
+            else if (playerSideGridXCoords[1] > PlayerGridCoord.x)
+            {
+                side++;
+            }
+
+            return side;
         }
 
         private void InitValidBoxPlaces()
@@ -379,9 +490,9 @@ namespace not_broforce
             Vector2[] boxPlacesWithinRange =
                 BoxPlacesWithinRange(PlayerExtraGridCoordSide());
 
-            // The current VBP index; stops the iteration
-            // when all VBPs have been initialized 
-            int currentVBP = 0;
+            // The current VBP index beginning after reserved box places;
+            // stops the iteration when all VBPs have been set 
+            int currentVBP = reservedBoxPlaceCoords.Count;
 
             for (int i = 0;
                  i < boxPlacesWithinRange.Length &&
@@ -393,56 +504,9 @@ namespace not_broforce
                 bool onEnvironment = Utils.GridCoordContainsObject(
                     boxPlacesWithinRange[i], groundMask);
 
-                bool alreadyReservedPlace = false;
-
-                //ValidBoxPlace VBPInCoord = ValidBoxPlaceInCoord(boxPlacesWithinRange[i]);
-
-                //bool reservedChecked = false;
-                //if (VBPInCoord != null)
-                //{
-                //    if (VBPInCoord == validBoxPlaces[currentVBP])
-                //    {
-                //        if (VBPInCoord.IsReserved && !onEnvironment)
-                //        {
-                //            alreadyReservedPlace = true;
-                //        }
-                //    }
-                //}
-
-                //while (validBoxPlaces[currentVBP].IsReserved) //if
-                //{
-                //    //alreadyReservedPlace = true;
-
-                //    currentVBP++;
-                //    if (currentVBP >= validBoxPlaces.Count)
-                //    {
-                //        return;
-                //    }
-                //}
-
-                //foreach (ValidBoxPlace vbp in validBoxPlaces)
-                //{
-                //    if (vbp.GridCoordinates == boxPlacesWithinRange[i])
-                //    {
-                //        if (vbp.IsReserved && !onEnvironment)
-                //        {
-                //            alreadyReservedPlace = true;
-                //        }
-
-                //        break;
-                //    }
-                //    else if (vbp == validBoxPlaces[currentVBP] && vbp.IsReserved)
-                //    {
-                //        currentVBP++;
-                //        if (currentVBP >= validBoxPlaces.Count)
-                //        {
-                //            return;
-                //        }
-                //    }
-                //}
-
-                bool emptyPlace = !onEnvironment && !alreadyReservedPlace;
-                //bool filledReservedPlace = onEnvironment && alreadyReservedPlace;
+                bool emptyPlace =
+                    !onEnvironment &&
+                    !InReservedBoxPlace(boxPlacesWithinRange[i]);
 
                 // Initializes a VBP if the coordinates
                 // are not blocked by environment
@@ -454,25 +518,19 @@ namespace not_broforce
 
                     bool nextToPlayer = NextToPlayer(boxPlacesWithinRange[i]);
 
-                    // Favors places on ground (option 1):
+                    // Determines the VBP's configuration
+                    // (when there's multiple possibilities,
+                    // favors places on ground)
 
-                    // In a reserved box place
-                    if (InReservedBoxPlace(boxPlacesWithinRange[i]))
-                    {
-                        InitPooledValidBoxPlace(currentVBP,
-                            boxPlacesWithinRange[i],
-                            false, true, true);
-                        currentVBP++;
-                    }
                     // On top of placed box
-                    else if (dirNextToPlacedBox == Utils.Direction.Up)
+                    if (dirNextToPlacedBox == Utils.Direction.Up)
                     {
                         InitPooledValidBoxPlace(currentVBP,
                             boxPlacesWithinRange[i],
                             true, false, dirNextToPlacedBox, true);
                         currentVBP++;
                     }
-                    // Next to the player character
+                    // On the ground next to the player character
                     else if (nextToPlayer)
                     {
                         InitPooledValidBoxPlace(currentVBP,
@@ -488,7 +546,7 @@ namespace not_broforce
                             true, false, dirNextToPlacedBox, true);
                         currentVBP++;
                     }
-                    // On a level new box place
+                    // In a level new box place
                     else if (InLevelNewBoxPlace(boxPlacesWithinRange[i]))
                     {
                         InitPooledValidBoxPlace(currentVBP,
@@ -497,12 +555,6 @@ namespace not_broforce
                         currentVBP++;
                     }
                 }
-                //else if (filledReservedPlace)
-                //{
-                //    Debug.Log("Reserved place filled");
-                //    validBoxPlaces[currentVBP].IsReserved = false;
-                //    validBoxPlaces[currentVBP].IsVisible = false;
-                //}
             }
         }
 
@@ -639,48 +691,11 @@ namespace not_broforce
         /// from the player</returns>
         private bool TooFarAwayFromPlayer_Coord(Vector2 gridCoordinates)
         {
-            //int playerExtraGCSide = PlayerExtraGridCoordSide();
-
-            //if (playerExtraGCSide != 0)
-            //{
-            //    if (gridCoordinates.x < playerGridCoord.x)
-            //    {
-            //        if (playerExtraGCSide < 0)
-            //        {
-
-            //        }
-            //    }
-            //    else if (playerExtraGCSide > 0)
-            //    {
-
-            //    }
-            //}
-
             bool horizontalOK = XCoordIsWithinPlayerRange(gridCoordinates.x);
             bool verticalOK = YCoordIsWithinPlayerRange(gridCoordinates.y);
 
-            //bool horizontalOK = 
-            //    Mathf.Abs(gridCoordinates.x - playerGridCoord.x)
-            //    <= maxDistFromPlayer;
-            //bool verticalOK =
-            //    Mathf.Abs(gridCoordinates.y - playerGridCoord.y)
-            //    <= maxDistFromPlayer;
-
             return (!horizontalOK || !verticalOK);
         }
-
-        //private bool TooFarAwayFromPlayer_Coord(Vector2 coord)
-        //{
-        //    return (Utils.Distance(LevelController.GetPosFromGridCoord(coord),
-        //                           player.transform.position)
-        //            > maxDistFromPlayer);
-        //}
-
-        //private bool TooFarAwayFromPlayer(Vector3 position)
-        //{
-        //    return (Utils.Distance(position, player.transform.position)
-        //            > maxDistFromPlayer);
-        //}
 
         private void InitNewBoxPlacesInLevel()
         {
@@ -746,44 +761,6 @@ namespace not_broforce
 
             // Returns the placed box
             return placedBox;
-        }
-
-        private void UpdatePlayerSideGridXCoords()
-        {
-            Vector3 pSize = playerSize;
-
-            // Error correction; it isn't enough if only
-            // a pixel is in the bordering grid node
-            pSize.x -= 0.1f;
-
-            // Left
-            playerSideGridXCoords[0] = LevelController.GetGridCoordinates
-                (player.transform.position + new Vector3(-1 * pSize.x / 2, 0)).x;
-
-            // Right
-            playerSideGridXCoords[1] = LevelController.GetGridCoordinates
-                (player.transform.position + new Vector3(pSize.x / 2, 0)).x;
-        }
-
-        private int PlayerExtraGridCoordSide()
-        {
-            // Defaults to middle: 0 (no extra grid coord side)
-            int side = 0;
-
-            //float[] playerSideGridXCoords = PlayerSideGridCoordXs();
-
-            // Left: -1
-            if (playerSideGridXCoords[0] < PlayerGridCoord.x)
-            {
-                side--;
-            }
-            // Right: 1
-            else if (playerSideGridXCoords[1] > PlayerGridCoord.x)
-            {
-                side++;
-            }
-
-            return side;
         }
 
         private bool InReservedBoxPlace(Vector2 gridCoordinates)
@@ -988,31 +965,6 @@ namespace not_broforce
         private bool YCoordIsWithinPlayerRange(float coordY)
         {
             return Mathf.Abs(PlayerGridCoord.y - coordY) <= maxDistFromPlayer;
-        }
-
-        private void PlaceBox()
-        {
-            // Testing purposes only
-            // Plays a sound
-            SFXPlayer.Instance.Play(Sound.Impact);
-
-            //if (BoxCanBePlaced())
-            //{
-
-            bool placed = boxController.PlaceBox(transform.position);
-
-            if (placed)
-            {
-                AddReservedBoxPlace();
-            }
-
-            //if (boxController.MovingBoxAmount() == 0)
-            //{
-            //    // Prints debug info
-            //    Debug.Log("Out of boxes to place");
-            //}
-
-            //}
         }
 
         private Vector2[] BoxPlacesWithinRange(int extraGridCoordSide)

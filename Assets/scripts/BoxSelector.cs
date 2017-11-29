@@ -76,10 +76,6 @@ namespace not_broforce
             // Sets the selector's size
             SetSize();
 
-            // Sets the selector's starting position (testing purposes only)
-            gridCoordinates = Vector2.zero;
-            transform.position = LevelController.gridOffset;
-
             validPlacement = false;
             validRemove = false;
             //playerGrounded = true;
@@ -180,8 +176,8 @@ namespace not_broforce
 
         private void ShowSelector()
         {
-            // Makes the selector visible
-            sr.enabled = true;
+            // Updates the player character's grid coordinates
+            placement.UpdatePlayerGridCoord();
 
             // If the game is played using the
             // mouse, the selector is moved under
@@ -198,6 +194,10 @@ namespace not_broforce
                 PlaceSelectorNextToPlayer();
             }
 
+            // Makes the selector visible
+            sr.enabled = true;
+
+            // Shows valid box places
             placement.ShowPlacement();
 
             // Testing purposes only
@@ -205,7 +205,7 @@ namespace not_broforce
             SFXPlayer.Instance.Play(Sound.Score);
         }
 
-        private void HideSelector()
+        public void HideSelector()
         {
             if (!isAlwaysShown)
             {
@@ -282,25 +282,29 @@ namespace not_broforce
         /// </summary>
         private void MouseMovevent()
         {
-            Vector2 newGridCoordinates =
-                LevelController.GetGridCoordinates(cursor.Position);
-
-            // If the new grid coordinates are different to the
-            // old ones, the selector is moved there or to the
-            // closest possible coordinates
-            if (newGridCoordinates != gridCoordinates)
+            // Cannot move when paused
+            if (Time.timeScale > 0f)
             {
-                // Moves the selector to the closest valid grid coordinates
-                gridCoordinates = placement.
-                    GetClosestValidGridCoord(newGridCoordinates);
+                Vector2 newGridCoordinates =
+                    LevelController.GetGridCoordinates(cursor.Position);
 
-                //gridCoordinates = Utils.GetClosestValidGridCoord(
-                //    newGridCoordinates, playerGridCoord,
-                //    maxDistFromPlayer, maxDistFromPlayer,
-                //    PlayerExtraGridCoordSide());
+                // If the new grid coordinates are different to the
+                // old ones, the selector is moved there or to the
+                // closest possible coordinates
+                if (newGridCoordinates != gridCoordinates)
+                {
+                    // Moves the selector to the closest valid grid coordinates
+                    gridCoordinates = placement.
+                        GetClosestValidGridCoord(newGridCoordinates);
 
-                // Moves the selector to the coordinates
-                MoveToGridCoordinates();
+                    //gridCoordinates = Utils.GetClosestValidGridCoord(
+                    //    newGridCoordinates, playerGridCoord,
+                    //    maxDistFromPlayer, maxDistFromPlayer,
+                    //    PlayerExtraGridCoordSide());
+
+                    // Moves the selector to the coordinates
+                    MoveToGridCoordinates();
+                }
             }
         }
 
@@ -359,7 +363,7 @@ namespace not_broforce
 
         private void RemoveBox()
         {
-            placement.UpdateReservedBoxPlaces();
+            //placement.UpdateReservedBoxPlaces();
 
             boxController.RemovePlacedBox();
             UnselectBox();

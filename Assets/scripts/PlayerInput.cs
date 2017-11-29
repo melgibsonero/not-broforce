@@ -6,16 +6,16 @@ namespace not_broforce
     [RequireComponent(typeof(PlayerController))]
     public class PlayerInput : MonoBehaviour
     {
-        PlayerController player;
-        BoxSelector boxSelector;
-        UIController ui;
+        private PlayerController player;
+        private BoxSelector boxSelector;
+        private UIController ui;
 
         // Game state: paused
-        bool paused;
+        private bool paused;
 
         // Settings which affect input
-        bool alwaysShowBoxSelector;
-        bool holdToActivateBoxSelector;
+        private bool alwaysShowBoxSelector;
+        private bool holdToActivateBoxSelector;
 
         // Use this for initialization
         private void Start()
@@ -128,6 +128,11 @@ namespace not_broforce
             if (Input.GetKeyDown(KeyCode.Escape))
             {
                 paused = ui.ToggleMenus();
+
+                if (paused && holdToActivateBoxSelector)
+                {
+                    boxSelector.HideSelector();
+                }
             }
 
             // Sets pause off if the Resume button
@@ -159,6 +164,11 @@ namespace not_broforce
         public void SetHoldToActivateBS(bool holdToActivateBS)
         {
             holdToActivateBoxSelector = holdToActivateBS;
+
+            if (holdToActivateBoxSelector)
+            {
+                boxSelector.HideSelector();
+            }
         }
     }
 }
