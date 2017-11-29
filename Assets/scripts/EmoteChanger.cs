@@ -15,6 +15,7 @@ public class EmoteChanger : MonoBehaviour {
         if(emoteName == sadName)
         {
             GetComponent<SpriteRenderer>().sprite = sad;
+            Debug.Log("Sad");
         } else if (emoteName == smileName)
         {
             GetComponent<SpriteRenderer>().sprite = smile;

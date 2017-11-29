@@ -46,7 +46,6 @@ namespace not_broforce {
 
         // Update is called once per frame
         void Update() {
-
             if(Input.GetKeyDown(KeyCode.Q)) {
                 RecallAllBoxes();
             }
@@ -140,7 +139,7 @@ namespace not_broforce {
         /// 
         public void CheckRemovingBoxes (Box box)
         {
-
+            removingBoxes.Clear();
             for (int i = 0; i < placedBoxes.Count; i++)
             {
                 if(placedBoxes[i] == box)
@@ -172,7 +171,6 @@ namespace not_broforce {
                 addBox(box);
                 box.BackToLine();
                 removingBoxes.RemoveAt(0);
-
             }
         }
 

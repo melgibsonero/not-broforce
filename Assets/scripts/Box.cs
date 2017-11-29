@@ -59,6 +59,8 @@ namespace not_broforce
 
         private SpriteRenderer childSR;
 
+        private Animator animator;
+
         public Vector2 GridCoordinates
         {
             get
@@ -88,6 +90,8 @@ namespace not_broforce
             selector = FindObjectOfType<BoxSelector>();
             spriteRend = GetComponent<SpriteRenderer>();
             childSR = GetComponentInChildren<EmoteChanger>().gameObject.GetComponent<SpriteRenderer>();
+            animator = GetComponentInChildren<Animator>();
+            animator.SetBool("sleeping", true);
         }
 
         // Update is called once per frame
@@ -99,6 +103,7 @@ namespace not_broforce
                 {
                     sleeping = false;
                     boxController.addBox(this);
+                    animator.SetBool("sleeping", false);
                 }
             }
             else if (teleportWait <= 0)
@@ -118,6 +123,7 @@ namespace not_broforce
                     followWaypoints = pathFinder.FindPath(transform.position, _target);
                     if(followWaypoints != null)
                     {
+                        animator.SetBool("confused", false);
                         pathNotFound = false;
                         if(followWaypoints.Count > 0)
                         {
@@ -125,17 +131,25 @@ namespace not_broforce
                             CheckFollowDistance();
                         }
                     }
-                    else if(followWaypoints == null && _takingPosition)
+                    else if(followWaypoints == null)
                     {
-                        selector.RemoveReservedBoxPlace(_target);
-                        BackToLine();
-                        boxController.addBox(this);
+                        animator.SetBool("confused", true);
+                        if(_takingPosition)
+                        {
+                            selector.RemoveReservedBoxPlace(_target);
+                            BackToLine();
+                            boxController.addBox(this);
+                        }
                     }
                 }
                 if(_takingPosition && Vector3.Distance(transform.position,
                     _target) < _followDistance && !_donePositionTaking)
                 {
                     ChangeProperties();
+                }
+                else if (_donePositionTaking)
+                {
+
                 }
                 else
                 {
@@ -155,6 +169,7 @@ namespace not_broforce
                         followWaypoints = pathFinder.FindPath(transform.position, _target);
                         if(followWaypoints != null)
                         {
+                            animator.SetBool("confused", false);
                             if(followWaypoints.Count > 0)
                             {
                                 _followTarget = followWaypoints[0];
@@ -163,6 +178,7 @@ namespace not_broforce
                         }
                         else
                         {
+                            animator.SetBool("confused", true);
                             pathNotFound = true;
                             if(_takingPosition)
                             {
@@ -209,18 +225,23 @@ namespace not_broforce
                     }
                     if(velocity.x > 0)
                     {
-                        if(spriteRend.flipX)
-                        {
-                            spriteRend.flipX = false;
-                            childSR.flipX = false;
-                        }
+                        //animator.SetBool("moving", true);
+                        //if(spriteRend.flipX)
+                        //{
+                        //    spriteRend.flipX = false;
+                        //    childSR.flipX = false;
+                        //}
                     } else if (velocity.x < 0)
                     {
-                        if(!spriteRend.flipX)
-                        {
-                            spriteRend.flipX = true;
-                            childSR.flipX = true;
-                        }
+                        //animator.SetBool("moving", true);
+                        //if(!spriteRend.flipX)
+                        //{
+                        //    spriteRend.flipX = true;
+                        //    childSR.flipX = true;
+                        //}
+                    } else
+                    {
+                        //animator.SetBool("moving", false);
                     }
                     controller.Move(velocity * Time.deltaTime);
                 }
@@ -331,6 +352,7 @@ namespace not_broforce
             followWaypoints = pathFinder.FindPath(transform.position, _target);
             if(followWaypoints == null)
             {
+                animator.SetBool("confused", true);
                 return false;
             }
 
