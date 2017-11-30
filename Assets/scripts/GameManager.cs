@@ -60,6 +60,8 @@ namespace not_broforce
         [SerializeField]
         public float effectVolume;
 
+        private bool sceneLoaded;
+
         private bool alwaysShowBoxSelector;
 
         private bool holdToActivateBoxSelector;
@@ -154,7 +156,7 @@ namespace not_broforce
 
         private void Init()
         {
-            input = FindObjectOfType<PlayerInput>();
+            InitInput();
 
             LoadGame();
 
@@ -173,6 +175,31 @@ namespace not_broforce
             if (debug_ResetData)
             {
                 Reset();
+            }
+        }
+
+        private void InitInput()
+        {
+            Debug.Log("init...");
+            if (input == null)
+            {
+                Debug.Log("init ok");
+                input = FindObjectOfType<PlayerInput>();
+
+                if (input != null)
+                {
+                    Debug.Log("init 100%");
+                }
+            }
+        }
+
+        private void ResetInput()
+        {
+            Debug.Log("reset...");
+            if (input != null)
+            {
+                Debug.Log("reset ok");
+                input = null;
             }
         }
 
@@ -301,12 +328,27 @@ namespace not_broforce
                 CurrentLevel = 0;
                 LoadScene("Hub");
             }
+
+            InitScene();
         }
 
         public void LoadScene(string sceneName)
         {
             Debug.Log("Loading scene: " + sceneName);
             SceneManager.LoadScene(sceneName);
+
+            sceneLoaded = true;
+        }
+
+        private void InitScene()
+        {
+            if (sceneLoaded)
+            {
+                sceneLoaded = false;
+
+                ResetInput();
+                InitInput();
+            }
         }
     }
 }
