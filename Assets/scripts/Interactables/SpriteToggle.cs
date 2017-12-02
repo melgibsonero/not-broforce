@@ -12,20 +12,26 @@ namespace not_broforce
         //private bool updateOnce;
 
         [SerializeField]
-        private Sprite inactiveSprite;
+        protected Sprite inactiveSprite;
 
         [SerializeField]
-        private Sprite activeSprite;
+        protected Sprite activeSprite;
 
-        private Activatable activatable;
+        protected Activatable activatable;
 
-        private SpriteRenderer sr;
+        protected SpriteRenderer sr;
 
-        private bool activated = false;
+        protected bool activated = false;
 
-        private void Awake()
+        protected virtual void Awake()
         {
             activatable = GetComponent<Activatable>();
+
+            if (activatable == null)
+            {
+                activatable = GetComponentInParent<Activatable>();
+            }
+            
             sr = GetComponent<SpriteRenderer>();
 
             if (activatable == null)
@@ -40,7 +46,7 @@ namespace not_broforce
             }
         }
 
-        private void Update()
+        protected virtual void Update()
         {
             if (activatable != null)
             {
@@ -60,7 +66,7 @@ namespace not_broforce
             //}
         }
 
-        public void Activate()
+        public virtual void Activate()
         {
             if (!activated)
             {
@@ -73,7 +79,7 @@ namespace not_broforce
             }
         }
 
-        public void Deactivate()
+        public virtual void Deactivate()
         {
             if (activated)
             {

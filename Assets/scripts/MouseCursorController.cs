@@ -7,11 +7,28 @@ namespace not_broforce
     public class MouseCursorController : MonoBehaviour
     {
         /// <summary>
-        /// The sprite renderer of the object. Needed
-        /// to hide the object but still update it.
+        /// The sprite renderer of the object.
         /// </summary>
-        private SpriteRenderer visibility;
+        private SpriteRenderer sr;
 
+        /// <summary>
+        /// The cursor texture
+        /// </summary>
+        private Texture2D cursorTexture;
+
+        /// <summary>
+        /// The cursor mode (Auto or ForceSoftware)
+        /// </summary>
+        private CursorMode cursorMode = CursorMode.Auto;
+
+        /// <summary>
+        /// The cursor's main point (in pixels)
+        /// </summary>
+        private Vector2 hotSpot;
+
+        /// <summary>
+        /// Is playing with the mouse enabled
+        /// </summary>
         private bool playingWithMouse;
 
         /// <summary>
@@ -20,39 +37,59 @@ namespace not_broforce
         private void Start()
         {
             PlayingUsingMouse = true;
-
-            // Initializes the 
-            InitVisibility();
-            Visible = true;
-
-            // Hides the operating system's cursor
-            Cursor.visible = false;
-        }
-
-        private void InitVisibility()
-        {
-            visibility = GetComponent<SpriteRenderer>();
+            InitSystemCursor();
         }
 
         /// <summary>
-        /// Gets or sets whether the game is played with the mouse.
+        /// Initializes the cursor.
+        /// The system cursor is used but with a custom texture.
         /// </summary>
-        public bool PlayingUsingMouse
+        private void InitSystemCursor()
         {
-            get
-            {
-                return playingWithMouse;
-            }
-            set
-            {
-                playingWithMouse = value;
+            // Gets the sprite renderer
+            sr = GetComponent<SpriteRenderer>();
 
-                if (visibility == null)
-                {
-                    InitVisibility();
-                }
-                Visible = value;
-            }
+            // Hides the custom cursor
+            Visible = false;
+
+            // Gets the cursor texture
+            cursorTexture = sr.sprite.texture;
+
+            // Sets the cursor's main point
+            hotSpot = new Vector2(cursorTexture.width / 2, cursorTexture.height / 2);
+
+            // Gives the game object's sprite to the system cursor
+            Cursor.SetCursor(cursorTexture, hotSpot, cursorMode);
+        }
+
+        /// <summary>
+        /// Initializes the cursor.
+        /// The custom cursor is used.
+        /// </summary>
+        private void InitCustomCursor()
+        {
+            // Gets the sprite renderer
+            sr = GetComponent<SpriteRenderer>();
+
+            // Hides the operating system's cursor
+            ShowSystemCursor(false);
+        }
+
+        /// <summary>
+        /// Shows or hides the operating system's cursor.
+        /// </summary>
+        /// <param name="show">will the cursor be shown</param>
+        private void ShowSystemCursor(bool show)
+        {
+            Cursor.visible = show;
+        }
+
+        /// <summary>
+        /// Resets the system cursor to default.
+        /// </summary>
+        private void ResetSystemCursor()
+        {
+            Cursor.SetCursor(null, Vector2.zero, cursorMode);
         }
 
         /// <summary>
@@ -62,11 +99,11 @@ namespace not_broforce
         {
             get
             {
-                return visibility.enabled;
+                return sr.enabled;
             }
             set
             {
-                visibility.enabled = value;
+                sr.enabled = value;
             }
         }
 
@@ -82,16 +119,34 @@ namespace not_broforce
         }
 
         /// <summary>
+        /// Gets or sets whether the game is played with the mouse.
+        /// </summary>
+        public bool PlayingUsingMouse
+        {
+            get
+            {
+                return playingWithMouse;
+            }
+            set
+            {
+                playingWithMouse = value;
+
+                if (sr == null)
+                {
+                    InitSystemCursor();
+                }
+
+                //Visible = value;
+                ShowSystemCursor(value);
+            }
+        }
+
+        /// <summary>
         /// Updates the mouse cursor.
         /// </summary>
         private void Update()
         {
             UpdatePosition();
-
-            if (Input.GetKeyDown(KeyCode.LeftAlt))
-            {
-                PlayingUsingMouse = !PlayingUsingMouse;
-            }
         }
 
         /// <summary>
@@ -109,6 +164,12 @@ namespace not_broforce
             transform.position = new Vector3(mousePosition.x,
                                              mousePosition.y,
                                              transform.position.z);
+        }
+
+
+        public void TogglePlayingWithMouse()
+        {
+            PlayingUsingMouse = !PlayingUsingMouse;
         }
     }
 }

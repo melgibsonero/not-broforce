@@ -308,14 +308,44 @@ namespace not_broforce
             {
                 reservedPlacesChanged = false;
 
-                int reservedAmount = reservedBoxPlaceCoords.Count;
+                HideFilledReservedBoxPlaceMarkers();
+                InitReservedBoxPlaceMarkers();
+            }
+        }
 
-                for (int i = 0; i < reservedAmount; i++)
+        private void HideFilledReservedBoxPlaceMarkers()
+        {
+            // This only matters when the selector is hidden
+            if (!visible)
+            {
+                foreach (ValidBoxPlace vbp in validBoxPlaces)
                 {
-                    InitPooledValidBoxPlace(i,
-                        reservedBoxPlaceCoords[i],
-                        false, true, true);
+                    if (vbp.IsReserved)
+                    {
+                        foreach (Vector2 reservedCoord in
+                                 reservedBoxPlaceCoords)
+                        {
+                            if (vbp.GridCoordinates == reservedCoord)
+                            {
+                                break;
+                            }
+                        }
+
+                        vbp.IsVisible = false;
+                    }
                 }
+            }
+        }
+
+        private void InitReservedBoxPlaceMarkers()
+        {
+            int reservedAmount = reservedBoxPlaceCoords.Count;
+
+            for (int i = 0; i < reservedAmount; i++)
+            {
+                InitValidBoxPlace(i,
+                    reservedBoxPlaceCoords[i],
+                    false, true, true);
             }
         }
 
@@ -325,19 +355,31 @@ namespace not_broforce
         /// <returns>a box in the current grid coordinates</returns>
         public Box GetSelectedBox()
         {
+            Box placedBox = null;
+
             if (PlayerIsGrounded())
             {
-                foreach (Box box in placedBoxes)
+                placedBox = GetPlacedBoxInCoord(GridCoordinates);
+            }
+
+            // If there's a placed box in the coordinates, validRemove is true
+            // (NOTE: validRemove is not used in anything important;
+            // instead, BoxSelector has it's own bool which is)
+            validRemove = (placedBox != null);
+            
+            return placedBox;
+        }
+
+        private Box GetPlacedBoxInCoord(Vector2 coordinates)
+        {
+            foreach (Box box in placedBoxes)
+            {
+                if (coordinates == box.GridCoordinates)
                 {
-                    if (GridCoordinates == box.GridCoordinates)
-                    {
-                        validRemove = true;
-                        return box;
-                    }
+                    return box;
                 }
             }
 
-            validRemove = false;
             return null;
         }
 
@@ -389,14 +431,14 @@ namespace not_broforce
         /// </summary>
         private void Update()
         {
+            // Updates reserved box places and their markers
+            UpdateReservedBoxPlaces();
+            UpdateReservedBoxPlaceMarkers();
+
             if (visible)
             {
                 // Updates the player character's grid coordinates
                 UpdatePlayerGridCoord();
-
-                // Updates reserved box places and their markers
-                UpdateReservedBoxPlaces();
-                UpdateReservedBoxPlaceMarkers();
 
                 // Updates valid box places and their markers
                 UpdateValidBoxPlaces();
@@ -525,7 +567,7 @@ namespace not_broforce
                     // On top of placed box
                     if (dirNextToPlacedBox == Utils.Direction.Up)
                     {
-                        InitPooledValidBoxPlace(currentVBP,
+                        InitValidBoxPlace(currentVBP,
                             boxPlacesWithinRange[i],
                             true, false, dirNextToPlacedBox, true);
                         currentVBP++;
@@ -533,7 +575,7 @@ namespace not_broforce
                     // On the ground next to the player character
                     else if (nextToPlayer)
                     {
-                        InitPooledValidBoxPlace(currentVBP,
+                        InitValidBoxPlace(currentVBP,
                             boxPlacesWithinRange[i],
                             false, false, true);
                         currentVBP++;
@@ -541,7 +583,7 @@ namespace not_broforce
                     // Next to a placed box, other than top
                     else if (dirNextToPlacedBox != Utils.Direction.None)
                     {
-                        InitPooledValidBoxPlace(currentVBP,
+                        InitValidBoxPlace(currentVBP,
                             boxPlacesWithinRange[i],
                             true, false, dirNextToPlacedBox, true);
                         currentVBP++;
@@ -549,7 +591,7 @@ namespace not_broforce
                     // In a level new box place
                     else if (InLevelNewBoxPlace(boxPlacesWithinRange[i]))
                     {
-                        InitPooledValidBoxPlace(currentVBP,
+                        InitValidBoxPlace(currentVBP,
                             boxPlacesWithinRange[i],
                             false, false, Utils.Direction.Middle, true);
                         currentVBP++;
@@ -669,14 +711,14 @@ namespace not_broforce
             validBoxPlaces.Add(vbp);
         }
 
-        private void InitPooledValidBoxPlace(int index, Vector2 gridCoord,
+        private void InitValidBoxPlace(int index, Vector2 gridCoord,
             bool attachedToBox, bool reservedPlace, Utils.Direction dir, bool visible)
         {
             validBoxPlaces[index].Set(gridCoord, attachedToBox, reservedPlace, dir);
             validBoxPlaces[index].IsVisible = visible;
         }
 
-        private void InitPooledValidBoxPlace(int index, Vector2 gridCoord,
+        private void InitValidBoxPlace(int index, Vector2 gridCoord,
             bool attachedToBox, bool reservedPlace, bool visible)
         {
             validBoxPlaces[index].Set(gridCoord, attachedToBox, reservedPlace);
@@ -738,29 +780,6 @@ namespace not_broforce
             }
 
             return false;
-        }
-
-        private Box PlacedBoxInSelectorCoord()
-        {
-            return PlacedBoxInCoord(GridCoordinates);
-        }
-
-        private Box PlacedBoxInCoord(Vector2 coordinates)
-        {
-            Box placedBox = null;
-
-            foreach (Box box in placedBoxes)
-            {
-                // If the box is in the same coordinates, it is chosen
-                if (coordinates == box.GridCoordinates)
-                {
-                    placedBox = box;
-                    break;
-                }
-            }
-
-            // Returns the placed box
-            return placedBox;
         }
 
         private bool InReservedBoxPlace(Vector2 gridCoordinates)

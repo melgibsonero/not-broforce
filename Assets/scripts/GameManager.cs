@@ -180,25 +180,16 @@ namespace not_broforce
 
         private void InitInput()
         {
-            Debug.Log("init...");
             if (input == null)
             {
-                Debug.Log("init ok");
                 input = FindObjectOfType<PlayerInput>();
-
-                if (input != null)
-                {
-                    Debug.Log("init 100%");
-                }
             }
         }
 
         private void ResetInput()
         {
-            Debug.Log("reset...");
             if (input != null)
             {
-                Debug.Log("reset ok");
                 input = null;
             }
         }

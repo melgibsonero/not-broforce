@@ -8,10 +8,10 @@ namespace not_broforce
     public abstract class SwitchInteractable : Switch, IGridObject
     {
         [SerializeField]
-        private GameObject player;
+        private Vector2 gridCoordinates;
 
         [SerializeField]
-        private Vector2 gridCoordinates;
+        private GameObject player;
 
         public Vector2 GridCoordinates
         {

@@ -740,5 +740,29 @@ namespace not_broforce
 
             return PlayerPrefs.GetInt(name, defaultNum) > 0;
         }
+
+        public static int Sum(List<int> numbers)
+        {
+            int sum = 0;
+
+            foreach (int number in numbers)
+            {
+                sum += number;
+            }
+
+            return sum;
+        }
+
+        public static int Sum(int[] numbers)
+        {
+            int sum = 0;
+
+            foreach (int number in numbers)
+            {
+                sum += number;
+            }
+
+            return sum;
+        }
     }
 }
