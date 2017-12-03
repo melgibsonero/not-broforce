@@ -15,7 +15,9 @@ namespace not_broforce
         private void Awake()
         {
             FindFade();
-            //FadeIn();
+
+            // Initializes the fade
+            Fade.InitAfterSceneChange(gameCamera);
         }
 
         private void FindFade()
@@ -63,9 +65,6 @@ namespace not_broforce
                     return;
                 }
             }
-
-            // Initializes the fade
-            Fade.InitAfterSceneChange(gameCamera);
         }
 
         private void FadeIn()

@@ -24,6 +24,9 @@ namespace not_broforce
         [SerializeField]
         private GameObject settings;
 
+        [SerializeField]
+        private GameObject backgroundImage;
+
         protected bool paused = false;
 
         protected bool endScreenActivated = false;
@@ -37,6 +40,7 @@ namespace not_broforce
             get { return paused; }
         }
 
+        public bool ChangingScene { get; private set; }
 
         private enum _sceneName
         {
@@ -85,7 +89,7 @@ namespace not_broforce
             currentScene = scene.name;
             DeactivateSettings();
             ShowPauseMenu(false);
-            
+            ShowBackground(false);
         }
 
 
@@ -93,7 +97,7 @@ namespace not_broforce
         {
             if(endScreenActivated && !paused)
             {
-                GameManager.Instance.LoadScene(SceneName(scene));
+                StartSceneChange(SceneName(scene));
             }
         }
        
@@ -101,11 +105,11 @@ namespace not_broforce
         {
             if(endScreenActivated || paused)
             {
-                if(paused)
-                {
-                    ContinueTime();
-                }
-                GameManager.Instance.LoadScene(currentScene);
+                //if(paused)
+                //{
+                //    ContinueTime();
+                //}
+                StartSceneChange(currentScene);
             }
         }
         
@@ -146,6 +150,8 @@ namespace not_broforce
                     DeactivateButtons();
                 }
 
+                ShowBackground(true);
+
             } else
             {
                 paused = false;
@@ -154,6 +160,8 @@ namespace not_broforce
                 {
                     ActivateButtons();
                 }
+
+                ShowBackground(false);
             }
             ShowPauseMenu(paused);
         }
@@ -173,6 +181,9 @@ namespace not_broforce
             settingsOpened = true;
             settings.SetActive(true);
             ShowPauseMenu(false);
+
+            backgroundImage.GetComponent<RectTransform>().sizeDelta
+                    = new Vector2(280, 300);
         }
 
         public void DeactivateSettings ()
@@ -188,14 +199,41 @@ namespace not_broforce
 
         public void BackToMainMenu ()
         {
-            ContinueTime();
-            GameManager.Instance.LoadScene("MainMenu");
+            StartSceneChange("MainMenu");
         }
 
         public void ShowPauseMenu (bool activate)
         {
             pauseMenu.SetActive(activate);
+
+            backgroundImage.GetComponent<RectTransform>().sizeDelta
+                    = new Vector2(460, 450);
         }
 
+        public void ShowBackground(bool activate)
+        {
+            backgroundImage.SetActive(activate);
+        }
+
+        private void DeactivateAll()
+        {
+            if (paused)
+            {
+                paused = false;
+                ContinueTime();
+            }
+
+            DeactivateButtons();
+            DeactivateSettings();
+            ShowPauseMenu(false);
+            ShowBackground(false);
+        }
+
+        private void StartSceneChange(string sceneName)
+        {
+            DeactivateAll();
+            ChangingScene = true;
+            GameManager.Instance.StartSceneChange(sceneName);
+        }
     }
 }

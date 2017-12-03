@@ -9,6 +9,7 @@ namespace not_broforce
         private PlayerController player;
         private BoxSelector boxSelector;
         private UIController ui;
+        private MouseCursorController cursor;
 
         // Game state: paused
         private bool paused;
@@ -23,6 +24,7 @@ namespace not_broforce
             player = GetComponent<PlayerController>();
             boxSelector = FindObjectOfType<BoxSelector>();
             ui = FindObjectOfType<UIController>();
+            cursor = FindObjectOfType<MouseCursorController>();
 
             alwaysShowBoxSelector = 
                 GameManager.Instance.AlwaysShowBoxSelector;
@@ -42,6 +44,7 @@ namespace not_broforce
             }
 
             CheckUIInput();
+            CheckIfPlayingUsingMouse();
         }
 
         private void CheckPlayerInput()
@@ -92,29 +95,32 @@ namespace not_broforce
 
         private void CheckBoxSelectorActivation()
         {
-            // TODO: Use the settings to determine controls
             // Activating and deactivating the box selector
 
             if (!alwaysShowBoxSelector)
             {
                 if (holdToActivateBoxSelector)
                 {
-                    if (Input.GetMouseButtonDown(1))
+                    if (Input.GetKeyDown(KeyCode.LeftShift) ||
+                        Input.GetMouseButtonDown(1))
                     {
                         boxSelector.Activate();
                     }
-                    else if (Input.GetMouseButtonUp(1))
+                    else if (Input.GetKeyUp(KeyCode.LeftShift) ||
+                             Input.GetMouseButtonUp(1))
                     {
                         boxSelector.Deactivate();
                     }
                 }
                 else
                 {
-                    if (Input.GetMouseButtonDown(0))
+                    if (Input.GetKeyDown(KeyCode.E) ||
+                        Input.GetMouseButtonDown(0))
                     {
                         boxSelector.Activate();
                     }
-                    else if (Input.GetMouseButtonDown(1))
+                    else if (Input.GetKeyDown(KeyCode.LeftShift) ||
+                             Input.GetMouseButtonDown(1))
                     {
                         boxSelector.ToggleActivation();
                     }
@@ -125,7 +131,7 @@ namespace not_broforce
         private void CheckUIInput()
         {
             // Pausing, resuming and retuning to the previous menu screen
-            if (Input.GetKeyDown(KeyCode.Escape))
+            if (Input.GetKeyDown(KeyCode.Escape) && GameManager.Instance.ClearFade)
             {
                 paused = ui.ToggleMenus();
 
@@ -155,10 +161,45 @@ namespace not_broforce
             }
         }
 
+        private void CheckIfPlayingUsingMouse()
+        {
+            if (cursor.PlayingUsingMouse)
+            {
+                // Using the arrow keys hides the mouse cursor
+                if (Input.GetKeyDown(KeyCode.UpArrow))
+                {
+                    cursor.PlayingUsingMouse = false;
+                }
+                else if (Input.GetKeyDown(KeyCode.DownArrow))
+                {
+                    cursor.PlayingUsingMouse = false;
+                }
+                else if (Input.GetKeyDown(KeyCode.LeftArrow))
+                {
+                    cursor.PlayingUsingMouse = false;
+                }
+                else if (Input.GetKeyDown(KeyCode.RightArrow))
+                {
+                    cursor.PlayingUsingMouse = false;
+                }
+            }
+
+            // Using mouse buttons shows the mouse cursor
+            else if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1))
+            {
+                cursor.PlayingUsingMouse = true;
+            }
+        }
+
         public void SetAlwaysShowBS(bool alwaysShowBS)
         {
             alwaysShowBoxSelector = alwaysShowBS;
             boxSelector.ShowAlways(alwaysShowBoxSelector);
+
+            //if (alwaysShowBoxSelector)
+            //{
+            //    SetHoldToActivateBS(false);
+            //}
         }
 
         public void SetHoldToActivateBS(bool holdToActivateBS)
@@ -167,7 +208,9 @@ namespace not_broforce
 
             if (holdToActivateBoxSelector)
             {
+                //SetAlwaysShowBS(false);
                 boxSelector.HideSelector();
+                //ui.SetAlwaysShowBSOff();
             }
         }
     }

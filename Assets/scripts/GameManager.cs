@@ -60,6 +60,12 @@ namespace not_broforce
         [SerializeField]
         public float effectVolume;
 
+        private FadeToColor fade;
+
+        private string nextScene = "";
+
+        private bool changingScene;
+
         private bool sceneLoaded;
 
         private bool alwaysShowBoxSelector;
@@ -156,7 +162,8 @@ namespace not_broforce
 
         private void Init()
         {
-            InitInput();
+            sceneLoaded = true;
+            InitScene();
 
             LoadGame();
 
@@ -201,6 +208,14 @@ namespace not_broforce
 
             // Overwrites the existing save!
             SaveGame();
+        }
+
+        public bool ClearFade
+        {
+            get
+            {
+                return (fade == null || fade.FadedIn);
+            }
         }
 
         public int CurrentLevel
@@ -317,18 +332,44 @@ namespace not_broforce
             {
                 debug_ReturnToHub = false;
                 CurrentLevel = 0;
-                LoadScene("Hub");
+                StartSceneChange("Hub");
             }
 
             InitScene();
+
+            if (changingScene &&
+                (fade == null || fade.FadedOut))
+            {
+                LoadScene();
+            }
+        }
+
+        public void StartSceneChange(string sceneName)
+        {
+            if (!changingScene)
+            {
+                nextScene = sceneName;
+                changingScene = true;
+
+                if (fade != null)
+                {
+                    fade.StartFadeOut();
+                }
+
+                Debug.Log("Next scene: " + sceneName);
+            }
+        }
+
+        public void LoadScene()
+        {
+            LoadScene(nextScene);
         }
 
         public void LoadScene(string sceneName)
         {
-            Debug.Log("Loading scene: " + sceneName);
-            SceneManager.LoadScene(sceneName);
-
+            changingScene = false;
             sceneLoaded = true;
+            SceneManager.LoadScene(sceneName);
         }
 
         private void InitScene()
@@ -339,6 +380,31 @@ namespace not_broforce
 
                 ResetInput();
                 InitInput();
+
+                ResetFade();
+                InitFade();
+            }
+        }
+
+        private void InitFade()
+        {
+            if (fade == null)
+            {
+                fade = FindObjectOfType<FadeToColor>();
+
+                if (fade == null)
+                {
+                    Debug.LogError("Could not find a FadeToColor " +
+                                   "object in the scene.");
+                }
+            }
+        }
+
+        private void ResetFade()
+        {
+            if (fade != null)
+            {
+                fade = null;
             }
         }
     }
