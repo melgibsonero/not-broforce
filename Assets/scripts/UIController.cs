@@ -9,11 +9,9 @@ namespace not_broforce
 {
     public class UIController: MonoBehaviour
     {
-        [SerializeField]
-        private Button restart;
 
         [SerializeField]
-        private Button nextLevel;
+        private GameObject endScreenButtons;
 
         [SerializeField]
         private _sceneName scene;
@@ -90,6 +88,7 @@ namespace not_broforce
             DeactivateSettings();
             ShowPauseMenu(false);
             ShowBackground(false);
+            endScreenButtons.SetActive(false);
         }
 
 
@@ -115,15 +114,13 @@ namespace not_broforce
         
         public void ActivateButtons()
         {
-            restart.gameObject.SetActive(true);
-            nextLevel.gameObject.SetActive(true);
+            endScreenButtons.SetActive(true);
             endScreenActivated = true;
         }
 
         private void DeactivateButtons()
         {
-            restart.gameObject.SetActive(false);
-            nextLevel.gameObject.SetActive(false);
+            endScreenButtons.SetActive(false);
         }
 
         public bool ToggleMenus ()
