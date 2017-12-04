@@ -7,6 +7,7 @@ namespace not_broforce
     public class PlayerInput : MonoBehaviour
     {
         private PlayerController player;
+        private BoxController boxController;
         private BoxSelector boxSelector;
         private UIController ui;
         private MouseCursorController cursor;
@@ -16,7 +17,11 @@ namespace not_broforce
         // Game state: paused
         private bool paused;
 
+        // Axis nullifier
+        private bool selectionAxisUsed;
+
         // Settings which affect input
+        private bool playingUsingMouse;
         private bool alwaysShowBoxSelector;
         private bool holdToActivateBoxSelector;
 
@@ -24,6 +29,7 @@ namespace not_broforce
         private void Start()
         {
             player = GetComponent<PlayerController>();
+            boxController = FindObjectOfType<BoxController>();
             boxSelector = FindObjectOfType<BoxSelector>();
             ui = FindObjectOfType<UIController>();
             cursor = FindObjectOfType<MouseCursorController>();
@@ -34,6 +40,8 @@ namespace not_broforce
                 GameManager.Instance.HoldToActivateBoxSelector;
 
             boxSelector.ShowAlways(alwaysShowBoxSelector);
+
+            playingUsingMouse = true;
         }
 
         // Update is called once per frame
@@ -43,6 +51,7 @@ namespace not_broforce
             {
                 CheckPlayerInput();
                 CheckBoxSelectorInput();
+                CheckBoxRecallInput();
             }
 
             CheckUIInput();
@@ -52,15 +61,18 @@ namespace not_broforce
         private void CheckPlayerInput()
         {
             //Left and right movement
-            directionalInput = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+            directionalInput =
+                new Vector2(Input.GetAxisRaw("Horizontal"),
+                            Input.GetAxisRaw("Vertical"));
+
             player.SetDirectionalInput(directionalInput);
 
             //Jumping
-            if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.W))
+            if (Input.GetButtonDown("Jump"))
             {
                 player.OnJumpInputDown();
             }
-            if (Input.GetKeyUp(KeyCode.Space) || Input.GetKeyUp(KeyCode.W))
+            if (Input.GetButtonUp("Jump"))
             {
                 player.OnJumpInputUp();
             }
@@ -68,30 +80,54 @@ namespace not_broforce
 
         private void CheckBoxSelectorInput()
         {
+            // Selector activation
             CheckBoxSelectorActivation();
 
-            // Moving the box selector with the arrow keys
-            if (Input.GetKeyDown(KeyCode.UpArrow))
-            {
-                boxSelector.DirectionalMovement(Utils.Direction.Up);
-            }
-            else if (Input.GetKeyDown(KeyCode.DownArrow))
-            {
-                boxSelector.DirectionalMovement(Utils.Direction.Down);
-            }
-            else if (Input.GetKeyDown(KeyCode.LeftArrow))
-            {
-                boxSelector.DirectionalMovement(Utils.Direction.Left);
-            }
-            else if (Input.GetKeyDown(KeyCode.RightArrow))
-            {
-                boxSelector.DirectionalMovement(Utils.Direction.Right);
-            }
-
             // Placing and removing a box
-            if (Input.GetKeyDown(KeyCode.E) || Input.GetMouseButtonDown(0))
+            if (Input.GetButtonDown("Place Box"))
             {
                 boxSelector.OnPlacementInputDown();
+            }
+
+            // Selector movement
+            Vector2 selectorMovementInput =
+                new Vector2(Input.GetAxisRaw("Horizontal Selection"),
+                            Input.GetAxisRaw("Vertical Selection"));
+
+            // Moving the box selector with the
+            // arrow keys or directional buttons
+            if (!selectionAxisUsed)
+            {
+                if (selectorMovementInput.y > 0)
+                {
+                    boxSelector.DirectionalMovement(Utils.Direction.Up);
+                }
+                else if (selectorMovementInput.y < 0)
+                {
+                    boxSelector.DirectionalMovement(Utils.Direction.Down);
+                }
+                else if (selectorMovementInput.x < 0)
+                {
+                    boxSelector.DirectionalMovement(Utils.Direction.Left);
+                }
+                else if (selectorMovementInput.x > 0)
+                {
+                    boxSelector.DirectionalMovement(Utils.Direction.Right);
+                }
+            }
+
+            // Nullifying the axis 
+            if (selectorMovementInput == Vector2.zero)
+            {
+                if (selectionAxisUsed)
+                {
+                    selectionAxisUsed = false;
+                }
+            }
+            else if (!selectionAxisUsed)
+            {
+                selectionAxisUsed = true;
+                playingUsingMouse = false;
             }
         }
 
@@ -103,26 +139,22 @@ namespace not_broforce
             {
                 if (holdToActivateBoxSelector)
                 {
-                    if (Input.GetKeyDown(KeyCode.LeftShift) ||
-                        Input.GetMouseButtonDown(1))
+                    if (Input.GetButtonDown("Activate Box Selector"))
                     {
                         boxSelector.Activate();
                     }
-                    else if (Input.GetKeyUp(KeyCode.LeftShift) ||
-                             Input.GetMouseButtonUp(1))
+                    else if (Input.GetButtonUp("Activate Box Selector"))
                     {
                         boxSelector.Deactivate();
                     }
                 }
                 else
                 {
-                    if (Input.GetKeyDown(KeyCode.E) ||
-                        Input.GetMouseButtonDown(0))
+                    if (Input.GetButtonDown("Place Box"))
                     {
                         boxSelector.Activate();
                     }
-                    else if (Input.GetKeyDown(KeyCode.LeftShift) ||
-                             Input.GetMouseButtonDown(1))
+                    else if (Input.GetButtonDown("Activate Box Selector"))
                     {
                         boxSelector.ToggleActivation();
                     }
@@ -130,10 +162,18 @@ namespace not_broforce
             }
         }
 
+        private void CheckBoxRecallInput()
+        {
+            if (Input.GetButtonDown("Recall Boxes"))
+            {
+                boxController.RecallAllBoxes();
+            }
+        }
+
         private void CheckUIInput()
         {
             // Pausing, resuming and retuning to the previous menu screen
-            if (Input.GetKeyDown(KeyCode.Escape) && GameManager.Instance.ClearFade)
+            if (Input.GetButtonDown("Pause") && GameManager.Instance.ClearFade)
             {
                 paused = ui.ToggleMenus();
 
@@ -150,46 +190,32 @@ namespace not_broforce
                 paused = false;
             }
 
-            // Changing level
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                ui.NextLevel();
-            }
+            //// Changing level
+            //if (Input.GetButtonDown("Accept"))
+            //{
+            //    ui.NextLevel();
+            //}
 
-            // Restarting level
-            if (Input.GetKeyDown(KeyCode.R))
-            {
-                ui.Restart();
-            }
+            //// Restarting level
+            //if (Input.GetButtonDown("Restart"))
+            //{
+            //    ui.Restart();
+            //}
         }
 
         private void CheckIfPlayingUsingMouse()
         {
-            if (cursor.PlayingUsingMouse)
+            if (!playingUsingMouse)
             {
-                // Using the arrow keys hides the mouse cursor
-                if (Input.GetKeyDown(KeyCode.UpArrow))
-                {
-                    cursor.PlayingUsingMouse = false;
-                }
-                else if (Input.GetKeyDown(KeyCode.DownArrow))
-                {
-                    cursor.PlayingUsingMouse = false;
-                }
-                else if (Input.GetKeyDown(KeyCode.LeftArrow))
-                {
-                    cursor.PlayingUsingMouse = false;
-                }
-                else if (Input.GetKeyDown(KeyCode.RightArrow))
-                {
-                    cursor.PlayingUsingMouse = false;
-                }
-            }
+                cursor.PlayingUsingMouse = false;
 
-            // Using mouse buttons shows the mouse cursor
-            else if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1))
-            {
-                cursor.PlayingUsingMouse = true;
+                // Using mouse buttons shows the mouse cursor
+                if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1))
+                {
+                    Debug.Log("mouse on");
+                    playingUsingMouse = true;
+                    cursor.PlayingUsingMouse = true;
+                }
             }
         }
 
