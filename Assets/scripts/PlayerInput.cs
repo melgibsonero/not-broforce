@@ -12,6 +12,8 @@ namespace not_broforce
         private UIController ui;
         private MouseCursorController cursor;
 
+        public Vector2 directionalInput;
+
         // Game state: paused
         private bool paused;
 
@@ -59,9 +61,10 @@ namespace not_broforce
         private void CheckPlayerInput()
         {
             //Left and right movement
-            Vector2 directionalInput =
+            directionalInput =
                 new Vector2(Input.GetAxisRaw("Horizontal"),
                             Input.GetAxisRaw("Vertical"));
+
             player.SetDirectionalInput(directionalInput);
 
             //Jumping
@@ -77,9 +80,17 @@ namespace not_broforce
 
         private void CheckBoxSelectorInput()
         {
+            // Selector activation
             CheckBoxSelectorActivation();
 
-            Vector2 directionalInput =
+            // Placing and removing a box
+            if (Input.GetButtonDown("Place Box"))
+            {
+                boxSelector.OnPlacementInputDown();
+            }
+
+            // Selector movement
+            Vector2 selectorMovementInput =
                 new Vector2(Input.GetAxisRaw("Horizontal Selection"),
                             Input.GetAxisRaw("Vertical Selection"));
 
@@ -87,25 +98,26 @@ namespace not_broforce
             // arrow keys or directional buttons
             if (!selectionAxisUsed)
             {
-                if (directionalInput.y > 0)
+                if (selectorMovementInput.y > 0)
                 {
                     boxSelector.DirectionalMovement(Utils.Direction.Up);
                 }
-                else if (directionalInput.y < 0)
+                else if (selectorMovementInput.y < 0)
                 {
                     boxSelector.DirectionalMovement(Utils.Direction.Down);
                 }
-                else if (directionalInput.x < 0)
+                else if (selectorMovementInput.x < 0)
                 {
                     boxSelector.DirectionalMovement(Utils.Direction.Left);
                 }
-                else if (directionalInput.x > 0)
+                else if (selectorMovementInput.x > 0)
                 {
                     boxSelector.DirectionalMovement(Utils.Direction.Right);
                 }
             }
 
-            if (directionalInput == Vector2.zero)
+            // Nullifying the axis 
+            if (selectorMovementInput == Vector2.zero)
             {
                 if (selectionAxisUsed)
                 {
@@ -116,12 +128,6 @@ namespace not_broforce
             {
                 selectionAxisUsed = true;
                 playingUsingMouse = false;
-            }
-
-            // Placing and removing a box
-            if (Input.GetButtonDown("Place Box"))
-            {
-                boxSelector.OnPlacementInputDown();
             }
         }
 

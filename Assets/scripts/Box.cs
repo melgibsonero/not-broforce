@@ -352,7 +352,7 @@ namespace not_broforce
             followWaypoints = pathFinder.FindPath(transform.position, _target);
             if(followWaypoints == null)
             {
-                animator.SetBool("confused", true);
+                animator.Play("Confused");
                 return false;
             }
 

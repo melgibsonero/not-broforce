@@ -34,7 +34,7 @@ AnimatorController:
     m_Controller: {fileID: 0}
   - m_Name: Blend
     m_Type: 1
-    m_DefaultFloat: 0
+    m_DefaultFloat: 0.6
     m_DefaultInt: 0
     m_DefaultBool: 0
     m_Controller: {fileID: 0}
@@ -470,8 +470,7 @@ AnimatorState:
   m_Transitions:
   - {fileID: 1101832888708606228}
   - {fileID: 1101114525718294174}
-  m_StateMachineBehaviours:
-  - {fileID: 114414827761085434}
+  m_StateMachineBehaviours: []
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1
@@ -501,12 +500,12 @@ AnimatorState:
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1
   m_Mirror: 0
-  m_SpeedParameterActive: 0
+  m_SpeedParameterActive: 1
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_Motion: {fileID: 7400000, guid: cf1951239df1e194f81d6162a5de52f2, type: 2}
   m_Tag: 
-  m_SpeedParameter: 
+  m_SpeedParameter: Blend
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
 --- !u!1107 &1107731311709550562
