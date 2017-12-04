@@ -47,6 +47,8 @@ namespace not_broforce{
         //SpriteRenderer _spriterer;
         Animator _animation;
 
+        public Controller2D Controller { get { return _controller; } }
+
         private void Awake()
         {
             gravity = -(2 * maxJumpHeight) / Mathf.Pow(timetoJumpApex, 2);
@@ -120,6 +122,7 @@ namespace not_broforce{
         {
                 if (wallSliding || earlyWalljump)
                 {
+                _animation.Play("WallJump");
                 faceDirOld = wallDirX;
                 extraGravity = 0;
                     if (_directionalInput.x == 0) //neutral
@@ -140,9 +143,10 @@ namespace not_broforce{
                     velocity.x = -wallDirX * wallLeap.x;
                     velocity.y = wallLeap.y;
                     }
-            }
+                }
                 if (_controller.collisions.below)
                 {
+                    _animation.Play("Jump");
                     velocity.y = maxJumpVelocity;
                 }
         }
@@ -181,18 +185,18 @@ namespace not_broforce{
             {
                 _animation.SetBool("moving", false);
             }
-            
+
             //Till we get an animation for it. I can't figure out that shit
-            //If Vertical movement is not zero.
-            if (!_animation.GetBool("jumping") && velocity.y > 0)
-            {
-                _animation.SetBool("jumping", true);
-            }
+            //Checks if player is grounded
             if (_controller.collisions.below)
             {
-                _animation.SetBool("jumping", false);
+                _animation.SetBool("grounded", true);
             }
-
+            else
+            {
+                _animation.SetBool("grounded", false);
+            }
+            
             if (!_animation.GetBool("wallsliding") && wallSliding)
             {
                 _animation.SetBool("wallsliding", true);
