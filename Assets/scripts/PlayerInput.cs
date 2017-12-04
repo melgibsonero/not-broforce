@@ -10,6 +10,8 @@ namespace not_broforce
         private BoxSelector boxSelector;
         private UIController ui;
 
+        public Vector2 directionalInput;
+
         // Game state: paused
         private bool paused;
 
@@ -47,7 +49,7 @@ namespace not_broforce
         private void CheckPlayerInput()
         {
             //Left and right movement
-            Vector2 directionalInput = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+            directionalInput = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
             player.SetDirectionalInput(directionalInput);
 
             //Jumping

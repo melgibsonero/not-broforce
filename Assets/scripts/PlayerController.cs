@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace not_broforce
-{
+namespace not_broforce{
     [RequireComponent(typeof(Controller2D))]
     public class PlayerController : MonoBehaviour
     {
@@ -41,7 +40,8 @@ namespace not_broforce
         Vector3 velocity;
         float velocityXSmoothing;
 
-        Vector2 _directionalInput;
+        [HideInInspector]
+        public Vector2 _directionalInput;
 
         Controller2D _controller;
         //SpriteRenderer _spriterer;
