@@ -129,15 +129,18 @@ namespace not_broforce
             }
             set
             {
-                playingWithMouse = value;
-
-                if (sr == null)
+                if (playingWithMouse != value)
                 {
-                    InitSystemCursor();
-                }
+                    playingWithMouse = value;
 
-                //Visible = value;
-                ShowSystemCursor(value);
+                    if (sr == null)
+                    {
+                        InitSystemCursor();
+                    }
+
+                    //Visible = value;
+                    ShowSystemCursor(value);
+                }
             }
         }
 
