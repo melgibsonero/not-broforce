@@ -15,7 +15,7 @@ namespace not_broforce
 
     public class LevelChanger_Hub : MonoBehaviour
     {
-        // TODO: Merge the LevelChangers
+        // TODO: Merge the LevelChangers or remove this
 
         [SerializeField]
         private SceneType scene;
@@ -45,21 +45,23 @@ namespace not_broforce
                 }
                 case SceneType.Level:
                 {
-                    if (levelNum == 1)
-                    {
-                        sceneName = "Level1";
-                    }
-                    else if (levelNum == 2)
+                    if (levelNum == 5)
                     {
                         sceneName = "TestZoneX";
                     }
-                    else if (levelNum == 3)
-                    {
-                        sceneName = "Valtterin Playground";
-                    }
-                    else if (levelNum == 4)
+                    //else if (levelNum == 6)
+                    //{
+                    //    sceneName = "Valtterin Playground";
+                    //}
+                    else if (levelNum == 7)
                     {
                         sceneName = "Katsoa saa muttei Koskela";
+                    }
+
+                    // TODO: In the final game, only this is used
+                    else
+                    {
+                        sceneName = "Level" + levelNum;
                     }
                     break;
                 }
@@ -145,14 +147,14 @@ namespace not_broforce
         public void GoToLevel()
         {
             levelTransition = false;
-            GameManager.Instance.LoadScene(SceneName(scene, targetLevelNum));
+            GameManager.Instance.StartSceneChange(SceneName(scene, targetLevelNum));
 
             // TODO: Start fade-in in a level's endScreen
         }
 
         public void RestartLevel()
         {
-            GameManager.Instance.LoadScene(currentScene);
+            GameManager.Instance.StartSceneChange(currentScene);
         }
     }
 }

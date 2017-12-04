@@ -23,6 +23,7 @@ GameObject:
   - component: {fileID: 61750096749808236}
   - component: {fileID: 114921012555645608}
   - component: {fileID: 114755926647563912}
+  - component: {fileID: 95988668856587182}
   m_Layer: 8
   m_Name: Box
   m_TagString: Untagged
@@ -99,6 +100,23 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.7, y: 1}
   m_EdgeRadius: 0
+--- !u!95 &95988668856587182
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1612238075370326}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 0}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
 --- !u!114 &114305556729355518
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -128,6 +146,7 @@ MonoBehaviour:
   _speed: 5.5
   _followDistance: 1.14
   _followDistanceX: 0.1
+  _followTarget: {x: 0, y: 0, z: 0}
   RepathTime: 1
   box: {fileID: 21300000, guid: efaa3bca597d82f4fae55dcff7f8f5bf, type: 3}
   boxLit: {fileID: 21300000, guid: f19cf51dee9840d449ca7ca158f66403, type: 3}

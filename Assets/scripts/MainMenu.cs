@@ -17,11 +17,18 @@ namespace not_broforce
         private FadeToColor fade;
 
         [SerializeField]
+        private GameObject levelMenu;
+
+        [SerializeField]
         private GameObject settings;
+
+        [SerializeField]
+        private GameObject submenuBGImage;
 
         [SerializeField]
         private GameObject menuButtons;
 
+        private bool levelMenuOpened = false;
         private bool settingsOpened = false;
 
         //private bool gameStarted;
@@ -64,7 +71,15 @@ namespace not_broforce
 
         public void StartGame()
         {
-            fade.StartFadeOut();
+            GameManager.Instance.StartSceneChange(
+                    LevelChanger_Hub.SceneName(scene, targetLevelNum));
+        }
+
+        public void StartLevel(int levelNum)
+        {
+            GameManager.Instance.StartSceneChange(
+                    LevelChanger_Hub.SceneName(SceneType.Level,
+                                               levelNum));
         }
 
         public void QuitGame()
@@ -72,36 +87,74 @@ namespace not_broforce
             Application.Quit();
         }
 
-        public void DeactivateSettings()
+        public void ActivateLevelMenu()
         {
-            GameManager.Instance.SaveSettings();
-            settingsOpened = false;
-            settings.SetActive(false);
-            menuButtons.SetActive(true);
+            ChangeLevelMenuVisibility(true);
+        }
+
+        public void DeactivateLevelMenu()
+        {
+            ChangeLevelMenuVisibility(false);
+        }
+
+        private void ChangeLevelMenuVisibility(bool activate)
+        {
+            levelMenuOpened = activate;
+            levelMenu.SetActive(activate);
+
+            if (activate)
+            {
+                submenuBGImage.GetComponent<RectTransform>().sizeDelta
+                    = new Vector2(300, 520);
+            }
+            submenuBGImage.SetActive(activate);
+
+            menuButtons.SetActive(!activate);
         }
 
         public void ActivateSettings()
         {
-            settingsOpened = true;
-            settings.SetActive(true);
-            menuButtons.SetActive(false);
+            ChangeSettingsVisibility(true);
+        }
+
+        public void DeactivateSettings()
+        {
+            GameManager.Instance.SaveSettings();
+            ChangeSettingsVisibility(false);
+        }
+
+        private void ChangeSettingsVisibility(bool activate)
+        {
+            settingsOpened = activate;
+            settings.SetActive(activate);
+
+            if (activate)
+            {
+                submenuBGImage.GetComponent<RectTransform>().sizeDelta
+                    = new Vector2(280, 300);
+            }
+            submenuBGImage.SetActive(activate);
+
+            menuButtons.SetActive(!activate);
         }
 
         private void Awake()
         {
+            DeactivateLevelMenu();
             DeactivateSettings();
         }
 
         private void Update()
         {
-            if (fade.FadedOut)
-            {
-                GameManager.Instance.LoadScene(
-                    LevelChanger_Hub.SceneName(scene, targetLevelNum));
-            }
+            // TODO: PlayerInput
+
             if(Input.GetKeyDown(KeyCode.Escape))
             {
-                if(settingsOpened)
+                if (levelMenuOpened)
+                {
+                    DeactivateLevelMenu();
+                }
+                else if (settingsOpened)
                 {
                     DeactivateSettings();
                 }

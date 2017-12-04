@@ -512,7 +512,7 @@ namespace not_broforce
 
             HideBoxPlaces(true);
 
-            Debug.Log("ValidBoxPlaces initialized");
+            //Debug.Log("ValidBoxPlaces initialized");
         }
 
         private void UpdateValidBoxPlaces()

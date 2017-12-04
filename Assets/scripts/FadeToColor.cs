@@ -48,13 +48,18 @@ namespace not_broforce
             }
         }
 
-        private void Start()
+        private void Awake()
         {
             sr = GetComponent<SpriteRenderer>();
 
             InitUsageInAllScenes();
 
             CheckForErrors();
+
+            if (!UsedInAllScenes)
+            {
+                InitAfterSceneChange(FindCamera());
+            }
         }
 
         /// <summary>
@@ -63,23 +68,24 @@ namespace not_broforce
         /// </summary>
         private void InitUsageInAllScenes()
         {
-            FadeCatcher catcher = FindObjectOfType<FadeCatcher>();
-            if (catcher == null)
-            {
-                UsedInAllScenes = true;
-                DontDestroyOnLoad(gameObject);
-            }
-            else
-            {
-                UsedInAllScenes = false;
-            }
+            //FadeCatcher catcher = FindObjectOfType<FadeCatcher>();
+            UsedInAllScenes = false;
+            //if (catcher == null)
+            //{
+            //    UsedInAllScenes = true;
+            //    DontDestroyOnLoad(gameObject);
+            //}
+            //else
+            //{
+            //    UsedInAllScenes = false;
+            //}
         }
 
         public void InitAfterSceneChange(Camera camera)
         {
             StartFadeIn();
             SetFollowedCamera(camera);
-            ResetCompatibleSwitches();
+            SetCompatibleSwitches();
         }
 
         private Camera FindCamera()
@@ -92,7 +98,7 @@ namespace not_broforce
             followedCamera = camera;
         }
 
-        private void ResetCompatibleSwitches()
+        private void SetCompatibleSwitches()
         {
             FadeActivator activator = GetComponent<FadeActivator>();
 

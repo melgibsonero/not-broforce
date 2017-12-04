@@ -167,7 +167,7 @@ namespace not_broforce
         }
 
 
-        public void TogglePlayingWithMouse()
+        public void TogglePlayingUsingMouse()
         {
             PlayingUsingMouse = !PlayingUsingMouse;
         }
