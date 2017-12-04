@@ -75,6 +75,7 @@ namespace not_broforce
                 gridCoordinates = value;
             }
         }
+        public Controller2D Controller { get { return controller; } }
 
         void Start() {
             player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
@@ -450,6 +451,18 @@ namespace not_broforce
             velocity.y = 0;
             boxController.addBox(this);
             teleportOut = true;
+        }
+        
+        public bool isMovingOnGround()
+        {
+            bool isMoving = false;
+
+            if (velocity.x != 0 && controller.collisions.below)
+            {
+                isMoving = true;
+            }
+
+            return isMoving;
         }
         
     }
