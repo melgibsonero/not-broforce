@@ -5,91 +5,177 @@ using UnityEngine;
 
 namespace not_broforce
 {
+    [Serializable]
+    public class NameAndNum
+    {
+        public string name;
+        public int number;
+    }
+
     public class AnimationChanger : MonoBehaviour
     {
         [SerializeField]
-        private float minAnimChangeTime;
+        private float minDurationBetweenAnims;
 
         [SerializeField]
-        private float maxAnimChangeTime;
+        private float maxDurationBetweenAnims;
 
         [SerializeField]
-        private List<string> animationNames;
+        private List<NameAndNum> animations;
 
-        [SerializeField]
-        private List<int> animationFrequencies;
+        //[SerializeField, Range(0, 5)]
+        //int randomNumMod;
+
+        private Animator animator;
 
         private string currentAnimName;
 
         private float startTime;
-        private float targetTime;
+        private float waitTime;
+
+        private bool active;
+        private bool justActivated;
 
         private System.Random random;
 
+        int freqSum;
+
+        // Testing
+        [SerializeField]
+        private float wait;
+
+        private float RandomFloat(int min, int max)
+        {
+            //if (randomNumMod >= 0 && randomNumMod <= 1)
+            //{
+            //    return random.Next(min, min + (max - min) / 2);
+            //}
+            //else if (randomNumMod > 1 && randomNumMod <= 3)
+            //{
+            //    return random.Next(min + (max - min) / 2, max);
+            //}
+            //else if(randomNumMod > 3 && randomNumMod <= 5)
+            //{
+            //    return random.Next(min, max);
+            //}
+
+            return random.Next(min, max);
+        }
+
         private void Start()
         {
-            currentAnimName = animationNames[0];
+            animator = GetComponent<Animator>();
 
-            int extraNames = animationNames.Count - animationFrequencies.Count;
-
-            if (extraNames > 0)
-            {
-                for (int i = animationFrequencies.Count;
-                     i < animationFrequencies.Count + extraNames; i++)
-                {
-                    animationFrequencies.Add(1);
-                }
-            }
+            currentAnimName = animations[0].name;
 
             random = new System.Random();
 
-            StartAnimIntermission();
+            int[] animationFrequencies = new int[animations.Count];
+
+            for (int i = 0; i < animations.Count; i++)
+            {
+                animationFrequencies[i] = animations[i].number;
+            }
+
+            freqSum = Utils.Sum(animationFrequencies);
         }
 
         private void Update()
         {
-            if (Time.time - startTime >= targetTime)
+            UpdateActive();
+
+            if (active)
             {
-                PlayAnim();
-                StartAnimIntermission();
+                wait = waitTime - (Time.time - startTime);
+
+                if ((Time.time - startTime) >= waitTime)
+                {
+                    if (!justActivated)
+                    {
+                        PlayAnim();
+                    }
+
+                    StartDelayBetweenAnims();
+                }
             }
         }
 
-        private void StartAnimIntermission()
+        private void UpdateActive()
+        {
+            bool sleeping = animator.GetBool("sleeping");
+            bool confused = animator.GetBool("confused");
+
+            if (!sleeping && !confused)
+            {
+                if (!active)
+                {
+                    active = true;
+                    justActivated = true;
+                }
+                else if (justActivated)
+                {
+                    justActivated = false;
+                }
+            }
+            else if (active)
+            {
+                active = false;
+                animator.Play("Idle");
+            }
+        }
+
+        private void StartDelayBetweenAnims()
         {
             startTime = Time.time;
-            targetTime = startTime + minAnimChangeTime;
+            waitTime = minDurationBetweenAnims;
 
-            int randInt = random.Next(0, 5);
+            float randFloat = RandomFloat(0, 5);
+            //float randFloat = random.Next(0, 5);
 
-            if (maxAnimChangeTime > minAnimChangeTime)
+            if (maxDurationBetweenAnims > minDurationBetweenAnims)
             {
-                targetTime +=
-                    ((maxAnimChangeTime - minAnimChangeTime) * (randInt / 5));
+                waitTime +=
+                    ((maxDurationBetweenAnims - minDurationBetweenAnims)
+                    * (randFloat / 5f));
             }
+
+            //if (targetTime - startTime > maxDurationBetweenAnims)
+            //{
+            //    targetTime = startTime + maxDurationBetweenAnims;
+            //}
         }
 
         private void PlayAnim()
         {
-            //int sum = Utils.Sum(animationFrequencies);
-            //int randInt = random.Next(1, sum);
-            //for ()
-            //{
-            //    for ()
-            //    {
+            //animator.SetBool(currentAnimName, false);
+            //Debug.Log("Animation ends: " + currentAnimName);
 
-            //    }
-            //}
+            currentAnimName = GetRandomAnimName();
 
+            animator.Play(currentAnimName);
+            //animator.SetBool(currentAnimName, true);
+            //animator.SetBool(currentAnimName, false);
+            Debug.Log("Animation plays: " + currentAnimName);
+        }
 
+        private string GetRandomAnimName()
+        {
+            int randAnim = (int) RandomFloat(0, freqSum) + 1;
+            //int randAnim = random.Next(0, freqSum) + 1;
+            //Debug.Log("Random number: " + randAnim);
 
-            //int randInt = random.Next(0, animationNames.Count - 1);
+            for (int i = 0; i < animations.Count; i++)
+            {
+                randAnim -= animations[i].number;
 
-            //Animator.SetBool(currentAnimName, false);
+                if (randAnim <= 0)
+                {
+                    return animations[i].name;
+                }
+            }
 
-            //currentAnimName = animationNames[randInt];
-
-            //Animator.SetBool(currentAnimName, true);
+            Debug.LogError("Invalid random animation number");
+            return animations[0].name;
         }
     }
 }
