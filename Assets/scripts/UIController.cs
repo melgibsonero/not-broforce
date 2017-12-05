@@ -96,6 +96,9 @@ namespace not_broforce
         {
             if(endScreenActivated && !paused)
             {
+                GameManager.Instance.SetLevel(
+                    GameManager.Instance.CurrentLevel + 1);
+
                 StartSceneChange(SceneName(scene));
             }
         }
@@ -194,8 +197,21 @@ namespace not_broforce
             }
         }
 
+        public void OnCancelInputDown()
+        {
+            if (settingsOpened)
+            {
+                DeactivateSettings();
+            }
+            else if (paused)
+            {
+                TogglePause();
+            }
+        }
+
         public void BackToMainMenu ()
         {
+            GameManager.Instance.SetLevel(0);
             StartSceneChange("MainMenu");
         }
 

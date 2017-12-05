@@ -175,8 +175,7 @@ namespace not_broforce
 
             if (debug_UnlockAll)
             {
-                // TODO: Decide how many levels are there in total.
-                LatestCompletedLevel = 10;
+                LatestCompletedLevel = 8;
             }
 
             if (debug_ResetData)
@@ -204,10 +203,9 @@ namespace not_broforce
         public void Reset()
         {
             CurrentLevel = 0;
-            LatestCompletedLevel = 0;
 
             // Overwrites the existing save!
-            SaveGame();
+            LatestCompletedLevel = 0;
         }
 
         public bool ClearFade
@@ -271,7 +269,7 @@ namespace not_broforce
 
             // TODO: Get the info about where the player goes
             // from endScreen and give it to GameManager
-            CurrentLevel = 0;
+            //CurrentLevel = 0;
         }
 
         private void SaveGame()

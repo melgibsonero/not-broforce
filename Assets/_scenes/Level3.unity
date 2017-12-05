@@ -151,11 +151,6 @@ Prefab:
       propertyPath: m_Name
       value: PlayerRobot
       objectReference: {fileID: 0}
-    - target: {fileID: 95806739205852684, guid: c8241509fb76e6e43a13b7916e220dc8,
-        type: 2}
-      propertyPath: m_Controller
-      value: 
-      objectReference: {fileID: 9100000, guid: 9bb40fa4f3c1bc94dbe4c6ea369306da, type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: c8241509fb76e6e43a13b7916e220dc8, type: 2}
   m_IsPrefabParent: 0
@@ -7745,11 +7740,6 @@ Prefab:
     - target: {fileID: 4321244154088012, guid: 21073a6d76432cd43abb2644e9394d97, type: 2}
       propertyPath: m_RootOrder
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114339993638616732, guid: 21073a6d76432cd43abb2644e9394d97,
-        type: 2}
-      propertyPath: roboCount
-      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 114064988790602954, guid: 21073a6d76432cd43abb2644e9394d97,
         type: 2}

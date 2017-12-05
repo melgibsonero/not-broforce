@@ -77,6 +77,7 @@ namespace not_broforce
 
         public void StartLevel(int levelNum)
         {
+            GameManager.Instance.SetLevel(levelNum);
             GameManager.Instance.StartSceneChange(
                     LevelChanger_Hub.SceneName(SceneType.Level,
                                                levelNum));
@@ -146,9 +147,7 @@ namespace not_broforce
 
         private void Update()
         {
-            // TODO: PlayerInput
-
-            if(Input.GetKeyDown(KeyCode.Escape))
+            if (Input.GetButtonDown("Cancel") || Input.GetButtonDown("Pause"))
             {
                 if (levelMenuOpened)
                 {

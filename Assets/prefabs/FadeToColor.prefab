@@ -53,8 +53,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   color: {r: 0, g: 0, b: 0, a: 1}
-  fadeOutTime: 2
-  fadeInTime: 1
+  fadeOutTime: 1
+  fadeInTime: 0.75
   followedCamera: {fileID: 0}
 --- !u!212 &212417336355886968
 SpriteRenderer:

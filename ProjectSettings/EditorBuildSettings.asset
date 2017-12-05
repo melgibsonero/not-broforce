@@ -8,12 +8,18 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/_scenes/MainMenu.unity
     guid: 3c8c461da62f9bb43b47906fb6c89977
-  - enabled: 1
+  - enabled: 0
     path: Assets/_scenes/Hub.unity
     guid: e286ed6aa4094a14a9dac04d594b8a23
   - enabled: 1
     path: Assets/_scenes/Level1.unity
     guid: 5f24970f3b0d49a488e16a6558b638bb
+  - enabled: 1
+    path: Assets/_scenes/Level2.unity
+    guid: 69f4d037dfa446945a060a40fe592c97
+  - enabled: 1
+    path: Assets/_scenes/Level3.unity
+    guid: 08209530acaa1bc47ad03facc6b87a2c
   - enabled: 1
     path: Assets/_scenes/TestZoneX.unity
     guid: c2b816e377ddd49439937972463cdb31
@@ -23,6 +29,3 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/_scenes/Katsoa saa muttei Koskela.unity
     guid: 28258274912c43a4eb85283912763f5a
-  - enabled: 1
-    path: Assets/_scenes/Level2.unity
-    guid: 69f4d037dfa446945a060a40fe592c97

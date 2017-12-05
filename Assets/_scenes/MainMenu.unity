@@ -492,8 +492,8 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
+  m_Sprite: {fileID: 21300000, guid: 90643b978f94eb743bb89cd83429f0cf, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -636,8 +636,8 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
+  m_Sprite: {fileID: 21300000, guid: 90643b978f94eb743bb89cd83429f0cf, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -1073,7 +1073,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: RETURN
+  m_Text: Return
 --- !u!222 &318435467
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1297,6 +1297,7 @@ GameObject:
   - component: {fileID: 517354755}
   - component: {fileID: 517354758}
   - component: {fileID: 517354757}
+  - component: {fileID: 517354759}
   - component: {fileID: 517354756}
   m_Layer: 5
   m_Name: Level 2
@@ -1355,7 +1356,7 @@ MonoBehaviour:
     m_HighlightedSprite: {fileID: 21300000, guid: c0ba0b6ea06b47141bda34e3fcee69a4,
       type: 3}
     m_PressedSprite: {fileID: 21300000, guid: 9b994352a4f2c9a47817dceeb2309b94, type: 3}
-    m_DisabledSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 21300000, guid: 2bba4a4995177324fbd1c79bc7421e9e, type: 3}
   m_AnimationTriggers:
     m_NormalTrigger: Normal
     m_HighlightedTrigger: Highlighted
@@ -1366,9 +1367,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 754508835}
-        m_MethodName: StartLevel
-        m_Mode: 3
+      - m_Target: {fileID: 517354759}
+        m_MethodName: OnClick
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -1414,6 +1415,19 @@ CanvasRenderer:
     type: 2}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 517354754}
+--- !u!114 &517354759
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 517354754}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3369442959c155d45a772e0c1991ed0c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mainMenu: {fileID: 754508835}
+  level: 2
 --- !u!1 &541557654
 GameObject:
   m_ObjectHideFlags: 0
@@ -1624,6 +1638,7 @@ GameObject:
   - component: {fileID: 575964930}
   - component: {fileID: 575964933}
   - component: {fileID: 575964932}
+  - component: {fileID: 575964934}
   - component: {fileID: 575964931}
   m_Layer: 5
   m_Name: Level 5
@@ -1682,7 +1697,7 @@ MonoBehaviour:
     m_HighlightedSprite: {fileID: 21300000, guid: c0ba0b6ea06b47141bda34e3fcee69a4,
       type: 3}
     m_PressedSprite: {fileID: 21300000, guid: 9b994352a4f2c9a47817dceeb2309b94, type: 3}
-    m_DisabledSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 21300000, guid: 2bba4a4995177324fbd1c79bc7421e9e, type: 3}
   m_AnimationTriggers:
     m_NormalTrigger: Normal
     m_HighlightedTrigger: Highlighted
@@ -1693,9 +1708,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 754508835}
-        m_MethodName: StartLevel
-        m_Mode: 3
+      - m_Target: {fileID: 575964934}
+        m_MethodName: OnClick
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -1741,6 +1756,19 @@ CanvasRenderer:
     type: 2}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 575964929}
+--- !u!114 &575964934
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 575964929}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3369442959c155d45a772e0c1991ed0c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mainMenu: {fileID: 754508835}
+  level: 5
 --- !u!1 &578964908
 GameObject:
   m_ObjectHideFlags: 0
@@ -2267,6 +2295,7 @@ GameObject:
   - component: {fileID: 865161733}
   - component: {fileID: 865161736}
   - component: {fileID: 865161735}
+  - component: {fileID: 865161737}
   - component: {fileID: 865161734}
   m_Layer: 5
   m_Name: Level 8
@@ -2325,7 +2354,7 @@ MonoBehaviour:
     m_HighlightedSprite: {fileID: 21300000, guid: c0ba0b6ea06b47141bda34e3fcee69a4,
       type: 3}
     m_PressedSprite: {fileID: 21300000, guid: 9b994352a4f2c9a47817dceeb2309b94, type: 3}
-    m_DisabledSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 21300000, guid: 2bba4a4995177324fbd1c79bc7421e9e, type: 3}
   m_AnimationTriggers:
     m_NormalTrigger: Normal
     m_HighlightedTrigger: Highlighted
@@ -2336,8 +2365,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 754508835}
-        m_MethodName: StartGame
+      - m_Target: {fileID: 865161737}
+        m_MethodName: OnClick
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2384,6 +2413,19 @@ CanvasRenderer:
     type: 2}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 865161732}
+--- !u!114 &865161737
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 865161732}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3369442959c155d45a772e0c1991ed0c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mainMenu: {fileID: 754508835}
+  level: 8
 --- !u!1 &923406097
 GameObject:
   m_ObjectHideFlags: 0
@@ -2623,6 +2665,7 @@ GameObject:
   - component: {fileID: 938761356}
   - component: {fileID: 938761359}
   - component: {fileID: 938761358}
+  - component: {fileID: 938761360}
   - component: {fileID: 938761357}
   m_Layer: 5
   m_Name: Level 7
@@ -2681,7 +2724,7 @@ MonoBehaviour:
     m_HighlightedSprite: {fileID: 21300000, guid: c0ba0b6ea06b47141bda34e3fcee69a4,
       type: 3}
     m_PressedSprite: {fileID: 21300000, guid: 9b994352a4f2c9a47817dceeb2309b94, type: 3}
-    m_DisabledSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 21300000, guid: 2bba4a4995177324fbd1c79bc7421e9e, type: 3}
   m_AnimationTriggers:
     m_NormalTrigger: Normal
     m_HighlightedTrigger: Highlighted
@@ -2692,9 +2735,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 754508835}
-        m_MethodName: StartLevel
-        m_Mode: 3
+      - m_Target: {fileID: 938761360}
+        m_MethodName: OnClick
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -2740,6 +2783,19 @@ CanvasRenderer:
     type: 2}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 938761355}
+--- !u!114 &938761360
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 938761355}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3369442959c155d45a772e0c1991ed0c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mainMenu: {fileID: 754508835}
+  level: 7
 --- !u!1 &992265449
 GameObject:
   m_ObjectHideFlags: 0
@@ -3322,7 +3378,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Start Game
+  m_Text: Play
 --- !u!222 &1242551237
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -3386,7 +3442,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 10901, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 21300000, guid: 32f9c3a685e3cab45b83163784b1b50f, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -3685,6 +3741,7 @@ GameObject:
   - component: {fileID: 1326592217}
   - component: {fileID: 1326592220}
   - component: {fileID: 1326592219}
+  - component: {fileID: 1326592221}
   - component: {fileID: 1326592218}
   m_Layer: 5
   m_Name: Level 1
@@ -3743,7 +3800,7 @@ MonoBehaviour:
     m_HighlightedSprite: {fileID: 21300000, guid: c0ba0b6ea06b47141bda34e3fcee69a4,
       type: 3}
     m_PressedSprite: {fileID: 21300000, guid: 9b994352a4f2c9a47817dceeb2309b94, type: 3}
-    m_DisabledSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 21300000, guid: 2bba4a4995177324fbd1c79bc7421e9e, type: 3}
   m_AnimationTriggers:
     m_NormalTrigger: Normal
     m_HighlightedTrigger: Highlighted
@@ -3754,9 +3811,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 754508835}
-        m_MethodName: StartLevel
-        m_Mode: 3
+      - m_Target: {fileID: 1326592221}
+        m_MethodName: OnClick
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -3802,6 +3859,19 @@ CanvasRenderer:
     type: 2}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1326592216}
+--- !u!114 &1326592221
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1326592216}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3369442959c155d45a772e0c1991ed0c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mainMenu: {fileID: 754508835}
+  level: 1
 --- !u!1 &1356976586
 GameObject:
   m_ObjectHideFlags: 0
@@ -3885,6 +3955,7 @@ GameObject:
   - component: {fileID: 1481277463}
   - component: {fileID: 1481277466}
   - component: {fileID: 1481277465}
+  - component: {fileID: 1481277467}
   - component: {fileID: 1481277464}
   m_Layer: 5
   m_Name: Level 4
@@ -3943,7 +4014,7 @@ MonoBehaviour:
     m_HighlightedSprite: {fileID: 21300000, guid: c0ba0b6ea06b47141bda34e3fcee69a4,
       type: 3}
     m_PressedSprite: {fileID: 21300000, guid: 9b994352a4f2c9a47817dceeb2309b94, type: 3}
-    m_DisabledSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 21300000, guid: 2bba4a4995177324fbd1c79bc7421e9e, type: 3}
   m_AnimationTriggers:
     m_NormalTrigger: Normal
     m_HighlightedTrigger: Highlighted
@@ -3954,9 +4025,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 754508835}
-        m_MethodName: StartLevel
-        m_Mode: 3
+      - m_Target: {fileID: 1481277467}
+        m_MethodName: OnClick
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -4002,6 +4073,19 @@ CanvasRenderer:
     type: 2}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1481277462}
+--- !u!114 &1481277467
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1481277462}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3369442959c155d45a772e0c1991ed0c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mainMenu: {fileID: 754508835}
+  level: 4
 --- !u!1 &1486247801
 GameObject:
   m_ObjectHideFlags: 0
@@ -4059,7 +4143,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 10901, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 21300000, guid: 32f9c3a685e3cab45b83163784b1b50f, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -4272,7 +4356,7 @@ RectTransform:
   m_GameObject: {fileID: 1610170145}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.0001, y: 1.0001, z: 1.0001}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1326592217}
   - {fileID: 517354755}
@@ -4458,7 +4542,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!222 &1642037403
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -4676,6 +4760,7 @@ GameObject:
   - component: {fileID: 1700903858}
   - component: {fileID: 1700903861}
   - component: {fileID: 1700903860}
+  - component: {fileID: 1700903862}
   - component: {fileID: 1700903859}
   m_Layer: 5
   m_Name: Level 3
@@ -4734,7 +4819,7 @@ MonoBehaviour:
     m_HighlightedSprite: {fileID: 21300000, guid: c0ba0b6ea06b47141bda34e3fcee69a4,
       type: 3}
     m_PressedSprite: {fileID: 21300000, guid: 9b994352a4f2c9a47817dceeb2309b94, type: 3}
-    m_DisabledSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 21300000, guid: 2bba4a4995177324fbd1c79bc7421e9e, type: 3}
   m_AnimationTriggers:
     m_NormalTrigger: Normal
     m_HighlightedTrigger: Highlighted
@@ -4745,9 +4830,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 754508835}
-        m_MethodName: StartLevel
-        m_Mode: 3
+      - m_Target: {fileID: 1700903862}
+        m_MethodName: OnClick
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -4793,6 +4878,19 @@ CanvasRenderer:
     type: 2}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1700903857}
+--- !u!114 &1700903862
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1700903857}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3369442959c155d45a772e0c1991ed0c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mainMenu: {fileID: 754508835}
+  level: 3
 --- !u!1 &1728507259
 GameObject:
   m_ObjectHideFlags: 0
@@ -4863,7 +4961,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: RETURN
+  m_Text: Return
 --- !u!222 &1728507262
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -5301,6 +5399,7 @@ GameObject:
   - component: {fileID: 2115565869}
   - component: {fileID: 2115565872}
   - component: {fileID: 2115565871}
+  - component: {fileID: 2115565873}
   - component: {fileID: 2115565870}
   m_Layer: 5
   m_Name: Level 6
@@ -5359,7 +5458,7 @@ MonoBehaviour:
     m_HighlightedSprite: {fileID: 21300000, guid: c0ba0b6ea06b47141bda34e3fcee69a4,
       type: 3}
     m_PressedSprite: {fileID: 21300000, guid: 9b994352a4f2c9a47817dceeb2309b94, type: 3}
-    m_DisabledSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 21300000, guid: 2bba4a4995177324fbd1c79bc7421e9e, type: 3}
   m_AnimationTriggers:
     m_NormalTrigger: Normal
     m_HighlightedTrigger: Highlighted
@@ -5370,9 +5469,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 754508835}
-        m_MethodName: StartLevel
-        m_Mode: 3
+      - m_Target: {fileID: 2115565873}
+        m_MethodName: OnClick
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -5418,6 +5517,19 @@ CanvasRenderer:
     type: 2}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 2115565868}
+--- !u!114 &2115565873
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2115565868}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3369442959c155d45a772e0c1991ed0c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mainMenu: {fileID: 754508835}
+  level: 6
 --- !u!1 &2122433719
 GameObject:
   m_ObjectHideFlags: 0

@@ -6,15 +6,16 @@ namespace not_broforce
 {
     public class MouseCursorController : MonoBehaviour
     {
-        /// <summary>
-        /// The sprite renderer of the object.
-        /// </summary>
-        private SpriteRenderer sr;
-
+        [SerializeField]
         /// <summary>
         /// The cursor texture
         /// </summary>
         private Texture2D cursorTexture;
+
+        /// <summary>
+        /// The sprite renderer of the object.
+        /// </summary>
+        private SpriteRenderer sr;
 
         /// <summary>
         /// The cursor mode (Auto or ForceSoftware)
@@ -27,9 +28,19 @@ namespace not_broforce
         private Vector2 hotSpot;
 
         /// <summary>
-        /// Is playing with the mouse enabled
+        /// Is playing with the mouse cursor not hidden
         /// </summary>
-        private bool playingWithMouse;
+        private bool playingUsingMouse;
+
+        /// <summary>
+        /// Was the mouse moved
+        /// </summary>
+        private bool mouseMoved;
+
+        /// <summary>
+        /// Where was the cursor in the last frame
+        /// </summary>
+        private Vector3 oldScreenPosition;
 
         /// <summary>
         /// Initializes the game object.
@@ -53,7 +64,7 @@ namespace not_broforce
             Visible = false;
 
             // Gets the cursor texture
-            cursorTexture = sr.sprite.texture;
+            //cursorTexture = sr.sprite.texture;
 
             // Sets the cursor's main point
             hotSpot = new Vector2(cursorTexture.width / 2, cursorTexture.height / 2);
@@ -108,7 +119,7 @@ namespace not_broforce
         }
 
         /// <summary>
-        /// Gets the mouse cursor's position.
+        /// Gets the mouse cursor's world position.
         /// </summary>
         public Vector3 Position
         {
@@ -119,19 +130,24 @@ namespace not_broforce
         }
 
         /// <summary>
+        /// Gets the mouse cursor's screen position.
+        /// </summary>
+        public Vector3 ScreenPosition { get; private set; }
+
+        /// <summary>
         /// Gets or sets whether the game is played with the mouse.
         /// </summary>
         public bool PlayingUsingMouse
         {
             get
             {
-                return playingWithMouse;
+                return playingUsingMouse;
             }
             set
             {
-                if (playingWithMouse != value)
+                if (playingUsingMouse != value)
                 {
-                    playingWithMouse = value;
+                    playingUsingMouse = value;
 
                     if (sr == null)
                     {
@@ -140,6 +156,14 @@ namespace not_broforce
 
                     //Visible = value;
                     ShowSystemCursor(value);
+
+                    if (!playingUsingMouse)
+                    {
+                        Debug.Log("cursor hidden");
+
+                        // Prevents the cursor being immediately shown again
+                        oldScreenPosition = ScreenPosition;
+                    }
                 }
             }
         }
@@ -150,6 +174,7 @@ namespace not_broforce
         private void Update()
         {
             UpdatePosition();
+            CheckIfPlayingUsingMouse();
         }
 
         /// <summary>
@@ -157,15 +182,23 @@ namespace not_broforce
         /// </summary>
         private void UpdatePosition()
         {
+            // Sets the cursor's old screen
+            // position for checking if it changed
+            oldScreenPosition = ScreenPosition;
+
             // Gets the system mouse cursor's position in screen coordinates
-            Vector3 mousePosition = Input.mousePosition;
+            ScreenPosition = Input.mousePosition;
+
+            // Sets whether the cursor was moved
+            //mouseMoved = (ScreenPosition != oldScreenPosition);
 
             // Translates the screen coordinates to world coordinates
-            mousePosition = Camera.main.ScreenToWorldPoint(mousePosition);
+            Vector3 worldPosition =
+                Camera.main.ScreenToWorldPoint(ScreenPosition);
 
             // Sets the game mouse cursor's position
-            transform.position = new Vector3(mousePosition.x,
-                                             mousePosition.y,
+            transform.position = new Vector3(worldPosition.x,
+                                             worldPosition.y,
                                              transform.position.z);
         }
 
@@ -173,6 +206,26 @@ namespace not_broforce
         public void TogglePlayingUsingMouse()
         {
             PlayingUsingMouse = !PlayingUsingMouse;
+
+            //if (!PlayingUsingMouse)
+            //{
+            //   // Prevents the cursor being immediately shown again
+            //   cursorPos = cursor.Position;
+            //}
+        }
+
+        private void CheckIfPlayingUsingMouse()
+        {
+            if (!PlayingUsingMouse)
+            {
+                // Moving the mouse or using its buttons shows the mouse cursor
+                if (ScreenPosition != oldScreenPosition ||
+                    Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1))
+                {
+                    Debug.Log("cursor shown");
+                    PlayingUsingMouse = true;
+                }
+            }
         }
     }
 }

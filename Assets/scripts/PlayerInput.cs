@@ -9,8 +9,8 @@ namespace not_broforce
         private PlayerController player;
         private BoxController boxController;
         private BoxSelector boxSelector;
-        private UIController ui;
         private MouseCursorController cursor;
+        private UIController ui;
 
         public Vector2 directionalInput;
 
@@ -25,14 +25,18 @@ namespace not_broforce
         private bool alwaysShowBoxSelector;
         private bool holdToActivateBoxSelector;
 
+        // Mouse cursor positions
+        private Vector2 cursorPos;
+        private Vector2 oldCursorPos;
+
         // Use this for initialization
         private void Start()
         {
             player = GetComponent<PlayerController>();
             boxController = FindObjectOfType<BoxController>();
             boxSelector = FindObjectOfType<BoxSelector>();
-            ui = FindObjectOfType<UIController>();
             cursor = FindObjectOfType<MouseCursorController>();
+            ui = FindObjectOfType<UIController>();
 
             alwaysShowBoxSelector = 
                 GameManager.Instance.AlwaysShowBoxSelector;
@@ -55,7 +59,7 @@ namespace not_broforce
             }
 
             CheckUIInput();
-            CheckIfPlayingUsingMouse();
+            //CheckIfPlayingUsingMouse();
         }
 
         private void CheckPlayerInput()
@@ -124,10 +128,11 @@ namespace not_broforce
                     selectionAxisUsed = false;
                 }
             }
+            // A directional button is used
             else if (!selectionAxisUsed)
             {
                 selectionAxisUsed = true;
-                playingUsingMouse = false;
+                HideCursor();
             }
         }
 
@@ -183,6 +188,12 @@ namespace not_broforce
                 }
             }
 
+            // Resuming and retuning to the previous menu screen
+            else if (Input.GetButtonDown("Cancel"))
+            {
+                ui.OnCancelInputDown();
+            }
+
             // Sets pause off if the Resume button
             // has been clicked in the pause menu
             if (paused && !ui.Paused)
@@ -203,16 +214,35 @@ namespace not_broforce
             //}
         }
 
+        private void HideCursor()
+        {
+            cursor.PlayingUsingMouse = false;
+
+            //if (playingUsingMouse)
+            //{
+            //    Debug.Log("input: cursor hidden");
+            //    playingUsingMouse = false;
+            //    cursor.PlayingUsingMouse = false;
+
+            //    // Prevents the cursor being immediately shown again
+            //    cursorPos = cursor.Position;
+            //}
+        }
+
         private void CheckIfPlayingUsingMouse()
         {
             if (!playingUsingMouse)
             {
-                cursor.PlayingUsingMouse = false;
+                // Sets the cursor's old and new
+                // positions for checking if it moved
+                oldCursorPos = cursorPos;
+                cursorPos = cursor.Position;
 
-                // Using mouse buttons shows the mouse cursor
-                if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1))
+                // Moving the mouse or using its buttons shows the mouse cursor
+                if (cursorPos != oldCursorPos ||
+                    Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1))
                 {
-                    Debug.Log("mouse on");
+                    Debug.Log("input: cursor shown");
                     playingUsingMouse = true;
                     cursor.PlayingUsingMouse = true;
                 }
