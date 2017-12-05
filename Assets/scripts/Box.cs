@@ -61,6 +61,8 @@ namespace not_broforce
 
         private Animator animator;
 
+        private int moveModifier = 0;
+
         public Vector2 GridCoordinates
         {
             get
@@ -73,6 +75,7 @@ namespace not_broforce
                 gridCoordinates = value;
             }
         }
+        public Controller2D Controller { get { return controller; } }
 
         void Start() {
             player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
@@ -96,6 +99,7 @@ namespace not_broforce
 
         // Update is called once per frame
         void Update() {
+            
             if(sleeping)
             {
                 if (Vector3.Distance(transform.position,
@@ -120,7 +124,15 @@ namespace not_broforce
                     _target) > _followDistance)
                 {
                     _repathTimer = RepathTime;
-                    followWaypoints = pathFinder.FindPath(transform.position, _target);
+                    if(!_takingPosition)
+                    {
+                        CheckModifier();
+                    }
+                    else
+                    {
+                        moveModifier = 0;
+                    }
+                    followWaypoints = pathFinder.FindPath(transform.position, new Vector3(_target.x + moveModifier, _target.y, _target.z));
                     if(followWaypoints != null)
                     {
                         animator.SetBool("confused", false);
@@ -165,8 +177,14 @@ namespace not_broforce
                     if(Vector3.Distance(transform.position,
                     _target) > _followDistance && followWaypoints == null && !pathNotFound)
                     {
-
-                        followWaypoints = pathFinder.FindPath(transform.position, _target);
+                        if(!_takingPosition)
+                        {
+                            CheckModifier();
+                        } else
+                        {
+                            moveModifier = 0;
+                        }
+                        followWaypoints = pathFinder.FindPath(transform.position, new Vector3(_target.x + moveModifier, _target.y, _target.z));
                         if(followWaypoints != null)
                         {
                             animator.SetBool("confused", false);
@@ -265,6 +283,20 @@ namespace not_broforce
 
         public void AddFollowTarget (Transform target) {
             this._UnitToFollow = target;
+        }
+
+        private void CheckModifier()
+        {
+            moveModifier = player.Controller.collisions.faceDir * -1;
+            if(!pathFinder.isGrounded(_target))
+            {
+                moveModifier = 0;
+            } else if (!pathFinder.isGrounded(new Vector3(_target.x + moveModifier, _target.y, _target.z)))
+            {
+                moveModifier = 0;
+            } else if (pathFinder.isGrounded(new Vector3(_target.x + moveModifier, _target.y + 1.5f, _target.z))) {
+                moveModifier = 0;
+            }
         }
 
         private void Move()
@@ -419,6 +451,18 @@ namespace not_broforce
             velocity.y = 0;
             boxController.addBox(this);
             teleportOut = true;
+        }
+        
+        public bool isMovingOnGround()
+        {
+            bool isMoving = false;
+
+            if (velocity.x != 0 && controller.collisions.below)
+            {
+                isMoving = true;
+            }
+
+            return isMoving;
         }
         
     }
