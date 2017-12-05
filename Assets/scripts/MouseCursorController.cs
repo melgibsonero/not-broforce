@@ -1,11 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 namespace not_broforce
 {
     public class MouseCursorController : MonoBehaviour
     {
+        public static bool cursorActive;
+
         [SerializeField]
         /// <summary>
         /// The cursor texture
@@ -92,7 +96,11 @@ namespace not_broforce
         /// <param name="show">will the cursor be shown</param>
         private void ShowSystemCursor(bool show)
         {
+            // Shows or hides the cursor
             Cursor.visible = show;
+
+            // Activates or deativates the cursor
+            //Cursor.
         }
 
         /// <summary>
@@ -148,6 +156,7 @@ namespace not_broforce
                 if (playingUsingMouse != value)
                 {
                     playingUsingMouse = value;
+                    cursorActive = value;
 
                     //if (sr == null)
                     //{
@@ -157,9 +166,19 @@ namespace not_broforce
                     //Visible = value;
                     ShowSystemCursor(value);
 
-                    if (!playingUsingMouse)
+                    if (playingUsingMouse)
                     {
-                        Debug.Log("cursor hidden");
+                        //Debug.Log("cursor shown");
+
+                        EventSystem.current.SetSelectedGameObject(null);
+                    }
+                    else
+                    {
+                        //Debug.Log("cursor hidden");
+
+                        ClearCursorHighlight();
+
+                        Utils.SelectButton(FindObjectOfType<Button>());
 
                         // Prevents the cursor being immediately shown again
                         oldScreenPosition = ScreenPosition;
@@ -216,16 +235,86 @@ namespace not_broforce
 
         private void CheckIfPlayingUsingMouse()
         {
-            if (!PlayingUsingMouse)
+            if (PlayingUsingMouse)
+            {
+                if (PlayerInput.GetSelectorDirection()
+                    != Utils.Direction.None)
+                {
+                    PlayingUsingMouse = false;
+                }
+            }
+            else
             {
                 // Moving the mouse or using its buttons shows the mouse cursor
                 if (ScreenPosition != oldScreenPosition ||
                     Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1))
                 {
-                    Debug.Log("cursor shown");
                     PlayingUsingMouse = true;
                 }
             }
+        }
+
+        private void ClearCursorHighlight()
+        {
+            PointerEventData pointer =
+                new PointerEventData(EventSystem.current);
+            pointer.position = ScreenPosition;
+
+            List<RaycastResult> raycastResults = new List<RaycastResult>();
+            EventSystem.current.RaycastAll(pointer, raycastResults);
+
+            foreach (RaycastResult raycastResult in raycastResults)
+            {
+                //Debug.Log(raycastResult.gameObject.name);
+                GameObject hoveredObj = raycastResult.gameObject;
+
+                bool success = ClearHighlight(hoveredObj, pointer);
+
+                // Sometimes, the child image may be interactable
+                // -> highlight from parent object is cleared
+                if (!success)
+                {
+                    ClearHighlight(
+                        hoveredObj.transform.parent.gameObject, pointer);
+                }
+            }
+        }
+
+        private bool ClearHighlight(GameObject uiElement,
+                                    PointerEventData pointer)
+        {
+            // Highlighted button
+            Button button = uiElement.GetComponent<Button>();
+
+            // Highlighted toggle
+            Toggle toggle = uiElement.GetComponent<Toggle>();
+
+            // Highlighted slider
+            Slider slider = uiElement.GetComponent<Slider>();
+
+            if (button != null)
+            {
+                button.OnPointerExit(pointer);
+                //Debug.Log("Button highlight cleared");
+
+                return true;
+            }
+            if (toggle != null)
+            {
+                toggle.OnPointerExit(pointer);
+                //Debug.Log("Toggle highlight cleared");
+
+                return true;
+            }
+            if (slider != null)
+            {
+                slider.OnPointerExit(pointer);
+                //Debug.Log("Slider highlight cleared");
+
+                return true;
+            }
+
+            return false;
         }
     }
 }

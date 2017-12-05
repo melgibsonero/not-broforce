@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace not_broforce
 {
@@ -739,6 +740,18 @@ namespace not_broforce
             int defaultNum = defaultValue ? 1 : 0;
 
             return PlayerPrefs.GetInt(name, defaultNum) > 0;
+        }
+
+        public static void SelectButton(Button button)
+        {
+            if (button != null && !MouseCursorController.cursorActive)
+            {
+                // Select the button
+                button.Select();
+
+                // Highlight the button
+                button.OnSelect(null);
+            }
         }
 
         public static int Sum(List<int> numbers)

@@ -21,7 +21,7 @@ namespace not_broforce
         private bool selectionAxisUsed;
 
         // Settings which affect input
-        private bool playingUsingMouse;
+        //private bool playingUsingMouse;
         private bool alwaysShowBoxSelector;
         private bool holdToActivateBoxSelector;
 
@@ -45,7 +45,7 @@ namespace not_broforce
 
             boxSelector.ShowAlways(alwaysShowBoxSelector);
 
-            playingUsingMouse = true;
+            //playingUsingMouse = true;
         }
 
         // Update is called once per frame
@@ -94,7 +94,7 @@ namespace not_broforce
             }
 
             // Selector movement
-            Utils.Direction selectorInputDir = SelectorDirection();
+            Utils.Direction selectorInputDir = GetSelectorDirection();
 
             // Moving the box selector with the
             // arrow keys or directional buttons
@@ -115,11 +115,11 @@ namespace not_broforce
             else if (!selectionAxisUsed)
             {
                 selectionAxisUsed = true;
-                HideCursor();
+                //HideCursor();
             }
         }
 
-        public static Utils.Direction SelectorDirection()
+        public static Utils.Direction GetSelectorDirection()
         {
             // Selector movement
             Vector2 selectorMovementInput =

@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 namespace not_broforce
 {
@@ -14,10 +16,10 @@ namespace not_broforce
         private int targetLevelNum;
 
         [SerializeField]
-        private FadeToColor fade;
+        private GameObject menuButtons;
 
         [SerializeField]
-        private GameObject levelMenu;
+        private GameObject levelMenuButtons;
 
         [SerializeField]
         private GameObject settings;
@@ -25,8 +27,15 @@ namespace not_broforce
         [SerializeField]
         private GameObject submenuBGImage;
 
+        //[SerializeField]
+        //private EventSystem eventSystem;
+
         [SerializeField]
-        private GameObject menuButtons;
+        private FadeToColor fade;
+
+        private Button[] mainButtons;
+        private Button level1Button;
+        private Button settingsReturn;
 
         private bool levelMenuOpened = false;
         private bool settingsOpened = false;
@@ -101,13 +110,22 @@ namespace not_broforce
         private void ChangeLevelMenuVisibility(bool activate)
         {
             levelMenuOpened = activate;
-            levelMenu.SetActive(activate);
+            levelMenuButtons.SetActive(activate);
 
             if (activate)
             {
+                // Select and highlight the first level button
+                Utils.SelectButton(level1Button);
+
                 submenuBGImage.GetComponent<RectTransform>().sizeDelta
                     = new Vector2(300, 520);
             }
+            else
+            {
+                // Select and highlight the start button
+                Utils.SelectButton(mainButtons[0]);
+            }
+
             submenuBGImage.SetActive(activate);
 
             menuButtons.SetActive(!activate);
@@ -115,34 +133,53 @@ namespace not_broforce
 
         public void ActivateSettings()
         {
-            ChangeSettingsVisibility(true);
+            ChangeSettingsVisibility(true, false);
         }
 
-        public void DeactivateSettings()
+        public void DeactivateSettings(bool init)
         {
             GameManager.Instance.SaveSettings();
-            ChangeSettingsVisibility(false);
+            ChangeSettingsVisibility(false, init);
         }
 
-        private void ChangeSettingsVisibility(bool activate)
+        private void ChangeSettingsVisibility(bool activate, bool init)
         {
             settingsOpened = activate;
             settings.SetActive(activate);
 
             if (activate)
             {
+                // Select and highlight the return button
+                Utils.SelectButton(settingsReturn);
+
                 submenuBGImage.GetComponent<RectTransform>().sizeDelta
                     = new Vector2(280, 300);
             }
+            else if (!init)
+            {
+                // Select and highlight the settings button
+                Utils.SelectButton(mainButtons[1]);
+            }
+
             submenuBGImage.SetActive(activate);
 
             menuButtons.SetActive(!activate);
         }
 
-        private void Awake()
+        private void Start()
         {
+            mainButtons =
+                menuButtons.GetComponentsInChildren<Button>(true);
+            level1Button =
+                levelMenuButtons.GetComponentInChildren<Button>(true);
+            settingsReturn =
+                settings.GetComponentInChildren<Button>(true);
+
             DeactivateLevelMenu();
-            DeactivateSettings();
+            DeactivateSettings(init: true);
+
+            // Select and highlight the start button
+            Utils.SelectButton(mainButtons[0]);
         }
 
         private void Update()
@@ -155,7 +192,7 @@ namespace not_broforce
                 }
                 else if (settingsOpened)
                 {
-                    DeactivateSettings();
+                    DeactivateSettings(false);
                 }
             }
         }
