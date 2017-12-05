@@ -155,7 +155,7 @@ namespace not_broforce
             animator.Play(currentAnimName);
             //animator.SetBool(currentAnimName, true);
             //animator.SetBool(currentAnimName, false);
-            Debug.Log("Animation plays: " + currentAnimName);
+            //Debug.Log("Animation plays: " + currentAnimName);
         }
 
         private string GetRandomAnimName()

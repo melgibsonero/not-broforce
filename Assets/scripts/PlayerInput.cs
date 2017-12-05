@@ -94,34 +94,17 @@ namespace not_broforce
             }
 
             // Selector movement
-            Vector2 selectorMovementInput =
-                new Vector2(Input.GetAxisRaw("Horizontal Selection"),
-                            Input.GetAxisRaw("Vertical Selection"));
+            Utils.Direction selectorInputDir = SelectorDirection();
 
             // Moving the box selector with the
             // arrow keys or directional buttons
-            if (!selectionAxisUsed)
+            if (!selectionAxisUsed && selectorInputDir != Utils.Direction.None)
             {
-                if (selectorMovementInput.y > 0)
-                {
-                    boxSelector.DirectionalMovement(Utils.Direction.Up);
-                }
-                else if (selectorMovementInput.y < 0)
-                {
-                    boxSelector.DirectionalMovement(Utils.Direction.Down);
-                }
-                else if (selectorMovementInput.x < 0)
-                {
-                    boxSelector.DirectionalMovement(Utils.Direction.Left);
-                }
-                else if (selectorMovementInput.x > 0)
-                {
-                    boxSelector.DirectionalMovement(Utils.Direction.Right);
-                }
+                boxSelector.DirectionalMovement(selectorInputDir);
             }
 
             // Nullifying the axis 
-            if (selectorMovementInput == Vector2.zero)
+            if (selectorInputDir == Utils.Direction.None)
             {
                 if (selectionAxisUsed)
                 {
@@ -133,6 +116,37 @@ namespace not_broforce
             {
                 selectionAxisUsed = true;
                 HideCursor();
+            }
+        }
+
+        public static Utils.Direction SelectorDirection()
+        {
+            // Selector movement
+            Vector2 selectorMovementInput =
+                new Vector2(Input.GetAxisRaw("Horizontal Selection"),
+                            Input.GetAxisRaw("Vertical Selection"));
+
+            // Moving the box selector with the
+            // arrow keys or directional buttons
+            if (selectorMovementInput.y > 0)
+            {
+                return Utils.Direction.Up;
+            }
+            else if (selectorMovementInput.y < 0)
+            {
+                return Utils.Direction.Down;
+            }
+            else if (selectorMovementInput.x < 0)
+            {
+                return Utils.Direction.Left;
+            }
+            else if (selectorMovementInput.x > 0)
+            {
+                return Utils.Direction.Right;
+            }
+            else
+            {
+                return Utils.Direction.None;
             }
         }
 
@@ -229,25 +243,25 @@ namespace not_broforce
             //}
         }
 
-        private void CheckIfPlayingUsingMouse()
-        {
-            if (!playingUsingMouse)
-            {
-                // Sets the cursor's old and new
-                // positions for checking if it moved
-                oldCursorPos = cursorPos;
-                cursorPos = cursor.Position;
+        //private void CheckIfPlayingUsingMouse()
+        //{
+        //    if (!playingUsingMouse)
+        //    {
+        //        // Sets the cursor's old and new
+        //        // positions for checking if it moved
+        //        oldCursorPos = cursorPos;
+        //        cursorPos = cursor.Position;
 
-                // Moving the mouse or using its buttons shows the mouse cursor
-                if (cursorPos != oldCursorPos ||
-                    Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1))
-                {
-                    Debug.Log("input: cursor shown");
-                    playingUsingMouse = true;
-                    cursor.PlayingUsingMouse = true;
-                }
-            }
-        }
+        //        // Moving the mouse or using its buttons shows the mouse cursor
+        //        if (cursorPos != oldCursorPos ||
+        //            Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1))
+        //        {
+        //            Debug.Log("input: cursor shown");
+        //            playingUsingMouse = true;
+        //            cursor.PlayingUsingMouse = true;
+        //        }
+        //    }
+        //}
 
         public void SetAlwaysShowBS(bool alwaysShowBS)
         {

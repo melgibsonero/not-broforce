@@ -1451,7 +1451,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   boxController: {fileID: 114339993638616732}
-  cursor: {fileID: 0}
+  cursor: {fileID: 114399356787153066}
   validPlacementColor: {r: 0.15884516, g: 0.8308824, b: 0.32204863, a: 1}
   invalidPlacementColor: {r: 0.7205882, g: 0.7205882, b: 0.7205882, a: 1}
   removeColor: {r: 1, g: 0.67545635, b: 0.2647059, a: 1}

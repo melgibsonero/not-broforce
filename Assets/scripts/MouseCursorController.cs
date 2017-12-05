@@ -15,17 +15,17 @@ namespace not_broforce
         /// <summary>
         /// The sprite renderer of the object.
         /// </summary>
-        private SpriteRenderer sr;
-
-        /// <summary>
-        /// The cursor mode (Auto or ForceSoftware)
-        /// </summary>
-        private CursorMode cursorMode = CursorMode.Auto;
+        //private SpriteRenderer sr;
 
         /// <summary>
         /// The cursor's main point (in pixels)
         /// </summary>
         private Vector2 hotSpot;
+
+        /// <summary>
+        /// The cursor mode (Auto or ForceSoftware)
+        /// </summary>
+        private CursorMode cursorMode = CursorMode.Auto;
 
         /// <summary>
         /// Is playing with the mouse cursor not hidden
@@ -58,10 +58,10 @@ namespace not_broforce
         private void InitSystemCursor()
         {
             // Gets the sprite renderer
-            sr = GetComponent<SpriteRenderer>();
+            //sr = GetComponent<SpriteRenderer>();
 
             // Hides the custom cursor
-            Visible = false;
+            //Visible = false;
 
             // Gets the cursor texture
             //cursorTexture = sr.sprite.texture;
@@ -77,14 +77,14 @@ namespace not_broforce
         /// Initializes the cursor.
         /// The custom cursor is used.
         /// </summary>
-        private void InitCustomCursor()
-        {
-            // Gets the sprite renderer
-            sr = GetComponent<SpriteRenderer>();
+        //private void InitCustomCursor()
+        //{
+        //    // Gets the sprite renderer
+        //    sr = GetComponent<SpriteRenderer>();
 
-            // Hides the operating system's cursor
-            ShowSystemCursor(false);
-        }
+        //    // Hides the operating system's cursor
+        //    ShowSystemCursor(false);
+        //}
 
         /// <summary>
         /// Shows or hides the operating system's cursor.
@@ -106,17 +106,17 @@ namespace not_broforce
         /// <summary>
         /// Gets or sets the mouse cursor's visibility.
         /// </summary>
-        public bool Visible
-        {
-            get
-            {
-                return sr.enabled;
-            }
-            set
-            {
-                sr.enabled = value;
-            }
-        }
+        //public bool Visible
+        //{
+        //    get
+        //    {
+        //        return sr.enabled;
+        //    }
+        //    set
+        //    {
+        //        sr.enabled = value;
+        //    }
+        //}
 
         /// <summary>
         /// Gets the mouse cursor's world position.
@@ -149,10 +149,10 @@ namespace not_broforce
                 {
                     playingUsingMouse = value;
 
-                    if (sr == null)
-                    {
-                        InitSystemCursor();
-                    }
+                    //if (sr == null)
+                    //{
+                    //    InitSystemCursor();
+                    //}
 
                     //Visible = value;
                     ShowSystemCursor(value);
