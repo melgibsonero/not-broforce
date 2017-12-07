@@ -7,8 +7,9 @@ namespace not_broforce{
     public class PlayerController : MonoBehaviour
     {
 
-        public GameObject landingDustCloud;
-        public Vector2 dustCloudOffset;
+        public GameObject SmalllandingDustCloud;
+        public GameObject MediumlandingDustCloud;
+        public GameObject LargelandingDustCloud;
         public float maxJumpHeight = 4;
         public float minJumpHeight = 1;
         public float timetoJumpApex = .4f;
@@ -30,6 +31,7 @@ namespace not_broforce{
         bool wallSliding;
         bool earlyWalljump;
         bool groundedStateOld;
+        float velocityYold;
 
         private float wallSlideSpeedMax;
         public float wallStickTime = .4f;
@@ -130,23 +132,26 @@ namespace not_broforce{
         {
                 if (wallSliding || earlyWalljump)
                 {
-                _animation.Play("WallJump");
                 faceDirOld = wallDirX;
                 extraGravity = 0;
                     if (_directionalInput.x == 0) //neutral
                     {
+
                         velocity.x = -wallDirX * wallJumpOff.x;
                         velocity.y = wallJumpOff.y;
+                        _animation.Play("Jump");
                     }
                     if (wallDirX == _directionalInput.x) //towards the wall
                     {
-                        jumpTimerActive = true;
+                    _animation.Play("Jump");
+                    jumpTimerActive = true;
                     velocity.x = -wallDirX * wallJump.x;
                     velocity.y = wallJump.y;
                     _directionalInput = Vector2.zero;
                     }
                     if (-wallDirX == _directionalInput.x) //away from the wall
                     {
+                    _animation.Play("Jump");
                     faceDirOld = wallDirX;
                     velocity.x = -wallDirX * wallLeap.x;
                     velocity.y = wallLeap.y;
@@ -175,14 +180,16 @@ namespace not_broforce{
         {
             var _walkParticles = _childParticleSystems[0].emission;
             int directionX = _controller.collisions.faceDir; //check facing direction
-            
-            if (directionX == -1)
+            if (!jumpTimerActive)
             {
-                transform.localScale = new Vector3(-1, 1, 1);
-            }
-            if (directionX == 1)
-            {
-                transform.localScale = new Vector3(1, 1, 1);
+                if (directionX == -1)
+                {
+                    transform.localScale = new Vector3(-1, 1, 1);
+                }
+                if (directionX == 1)
+                {
+                    transform.localScale = new Vector3(1, 1, 1);
+                }
             }
 
             //If horizontal movement is not zero.
@@ -237,11 +244,22 @@ namespace not_broforce{
             {
                 if(groundedStateOld != _controller.collisions.below)
                 {
-                    GameObject dustPuff = Instantiate(landingDustCloud);
+                    var landingCloud = SmalllandingDustCloud;
+                    if (velocityYold < -8.5f)
+                    {
+                        landingCloud = MediumlandingDustCloud;
+                    }
+                    if(velocityYold < -14f)
+                    {
+                        landingCloud = LargelandingDustCloud;
+                    }
+                    GameObject dustPuff = Instantiate(landingCloud);                   
                     dustPuff.transform.position = new Vector3(characterLocation.x, characterLocation.y, characterLocation.z+0.5f);
+                    Debug.Log(velocityYold);
                 }
             }
             groundedStateOld = _controller.collisions.below;
+            velocityYold = velocity.y;
 
         }
         private void HandleWallSliding()
@@ -249,7 +267,7 @@ namespace not_broforce{
             wallDirX = (_controller.collisions.wjLeft) ? -1 : 1;
             wallSliding = false;
             earlyWalljump = false;
-            if ((_controller.collisions.left || _controller.collisions.right) && !_controller.collisions.below/* && velocity.y < 0 */&& CompareWallDir(wallDirX))
+            if ((_controller.collisions.left || _controller.collisions.right) && !_controller.collisions.below && velocity.y <= 0 && CompareWallDir(wallDirX))
             {
                 wallSliding = true;
                 /*if (velocity.y < -wallSlideSpeedMax)
@@ -277,7 +295,7 @@ namespace not_broforce{
                     timeToWallUnstick = wallStickTime;
                 }
             }
-            if((_controller.collisions.wjLeft ||_controller.collisions.wjRight) && !_controller.collisions.below && velocity.y < 0 && CompareWallDir(wallDirX))
+            if((_controller.collisions.wjLeft ||_controller.collisions.wjRight) && !_controller.collisions.below && CompareWallDir(wallDirX))
             {
                 earlyWalljump = true;
             }
