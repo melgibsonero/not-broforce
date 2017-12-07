@@ -41,7 +41,7 @@ namespace not_broforce{
             if(focusArea.velocity.x != 0)
             {
                 lookAheadDirectionX = Mathf.Sign(focusArea.velocity.x);
-                if(Mathf.Sign(playerInput.directionalInput.x) == Mathf.Sign(focusArea.velocity.x) && playerInput.directionalInput.x != 0)
+                if(Mathf.Sign(playerInput.DirectionalInput.x) == Mathf.Sign(focusArea.velocity.x) && playerInput.DirectionalInput.x != 0)
                 {
                     lookAheadStopped = false;
                     targetLookAheadX = lookAheadDirectionX * lookAheadDistanceX;

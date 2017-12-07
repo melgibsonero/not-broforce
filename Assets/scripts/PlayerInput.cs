@@ -12,7 +12,7 @@ namespace not_broforce
         private MouseCursorController cursor;
         private UIController ui;
 
-        public Vector2 directionalInput;
+        Vector2 directionalInput;
 
         // Game state: paused
         private bool paused;
@@ -29,7 +29,9 @@ namespace not_broforce
         private Vector2 cursorPos;
         private Vector2 oldCursorPos;
 
-        // Use this for initialization
+
+        public Vector2 DirectionalInput { get { return directionalInput; } }
+
         private void Start()
         {
             player = GetComponent<PlayerController>();
