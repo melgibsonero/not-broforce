@@ -450,6 +450,7 @@ namespace not_broforce
             velocity.x = 0;
             velocity.y = 0;
             boxController.addBox(this);
+            GetComponent<Animator>().Play("TeleportVanish");
             teleportOut = true;
         }
         
