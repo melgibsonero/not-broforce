@@ -428,7 +428,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e3b971f7b927774883a5a3569e03da4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  directionalInput: {x: 0, y: 0}
 --- !u!114 &114742604460160212
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -460,9 +459,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f3a34b55eb03a844871358829d89a76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  landingDustCloud: {fileID: 1395812602730628, guid: bb1340d8e250b2e45aa1966550ec22af,
+  SmalllandingDustCloud: {fileID: 1395812602730628, guid: bb1340d8e250b2e45aa1966550ec22af,
     type: 2}
-  dustCloudOffset: {x: 0, y: 0}
+  MediumlandingDustCloud: {fileID: 1803689421665860, guid: a2834a7093f489a45badd453c4aa54d8,
+    type: 2}
+  LargelandingDustCloud: {fileID: 1679541797518742, guid: f9b9a137b1c118e459b1a81df7f0b1fe,
+    type: 2}
   maxJumpHeight: 1.5
   minJumpHeight: 0.7
   timetoJumpApex: 0.4
@@ -470,8 +472,8 @@ MonoBehaviour:
   accelerationTimeGrounded: 0.04
   moveSpeed: 5
   jumpTimer: 0.2
-  wallJump: {x: 6, y: 8}
-  wallJumpOff: {x: 14, y: 6}
+  wallJump: {x: 6, y: 9}
+  wallJumpOff: {x: 14, y: 8}
   wallLeap: {x: 6, y: 9}
   wallStickTime: 0.15
   gravity: 0
