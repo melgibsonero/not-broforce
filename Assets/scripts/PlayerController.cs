@@ -7,6 +7,8 @@ namespace not_broforce{
     public class PlayerController : MonoBehaviour
     {
 
+        public GameObject landingDustCloud;
+        public Vector2 dustCloudOffset;
         public float maxJumpHeight = 4;
         public float minJumpHeight = 1;
         public float timetoJumpApex = .4f;
@@ -19,6 +21,7 @@ namespace not_broforce{
         public Vector2 wallJumpOff;
         public Vector2 wallLeap;
 
+        Vector3 characterLocation;
         float _jumpTimer;
         bool jumpTimerActive;
         float extraGravity = 0;
@@ -26,6 +29,7 @@ namespace not_broforce{
         int faceDirOld;
         bool wallSliding;
         bool earlyWalljump;
+        bool groundedStateOld;
 
         private float wallSlideSpeedMax;
         public float wallStickTime = .4f;
@@ -46,6 +50,8 @@ namespace not_broforce{
         Controller2D _controller;
         //SpriteRenderer _spriterer;
         Animator _animation;
+        ParticleSystem[] _childParticleSystems;
+
 
         public Controller2D Controller { get { return _controller; } }
 
@@ -61,6 +67,7 @@ namespace not_broforce{
         {
             _controller = GetComponent<Controller2D>();
             _animation = GetComponent<Animator>();
+            _childParticleSystems = GetComponentsInChildren<ParticleSystem>();
 
             _jumpTimer = jumpTimer;
         }
@@ -91,6 +98,7 @@ namespace not_broforce{
                 faceDirOld = 0;
                 extraGravity = 0;
             }
+            characterLocation = new Vector3(transform.position.x, transform.position.y, transform.position.z);
             Animate();
         }
 
@@ -165,8 +173,9 @@ namespace not_broforce{
 
         void Animate() //Every reference to Animator should be here
         {
+            var _walkParticles = _childParticleSystems[0].emission;
             int directionX = _controller.collisions.faceDir; //check facing direction
-
+            
             if (directionX == -1)
             {
                 transform.localScale = new Vector3(-1, 1, 1);
@@ -180,10 +189,20 @@ namespace not_broforce{
             if (_directionalInput != Vector2.zero)
             {
                 _animation.SetBool("moving", true);
+
             }
             if(_directionalInput == Vector2.zero)
             {
                 _animation.SetBool("moving", false);
+            }
+            
+            if(_directionalInput != Vector2.zero && _controller.collisions.below)
+            {
+                _walkParticles.enabled = true;
+            }
+            else
+            {
+                _walkParticles.enabled = false;
             }
 
             //Till we get an animation for it. I can't figure out that shit
@@ -214,7 +233,16 @@ namespace not_broforce{
                 _animation.SetBool("walljumping", false);
             }
             */
-            
+            if (_controller.collisions.below)
+            {
+                if(groundedStateOld != _controller.collisions.below)
+                {
+                    GameObject dustPuff = Instantiate(landingDustCloud);
+                    dustPuff.transform.position = new Vector3(characterLocation.x, characterLocation.y, characterLocation.z+0.5f);
+                }
+            }
+            groundedStateOld = _controller.collisions.below;
+
         }
         private void HandleWallSliding()
         {

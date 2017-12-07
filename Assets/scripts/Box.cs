@@ -76,6 +76,7 @@ namespace not_broforce
             }
         }
         public Controller2D Controller { get { return controller; } }
+        public bool DonePositionTaking { get { return _donePositionTaking; } }
 
         void Start() {
             player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();

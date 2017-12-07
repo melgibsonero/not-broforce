@@ -38,6 +38,11 @@ namespace not_broforce{
             {
                 transform.rotation = new Quaternion(0, 0, 0, 0);
             }
+            if (box.DonePositionTaking)
+            {
+                var emitter = particles.emission;
+                emitter.enabled = false;
+            }
         }
     }
 }
