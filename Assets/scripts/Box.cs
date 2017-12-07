@@ -59,7 +59,7 @@ namespace not_broforce
 
         private SpriteRenderer childSR;
 
-        private Animator animator;
+        public Animator faceAnimator;
 
         private int moveModifier = 0;
 
@@ -93,8 +93,7 @@ namespace not_broforce
             selector = FindObjectOfType<BoxSelector>();
             spriteRend = GetComponent<SpriteRenderer>();
             childSR = GetComponentInChildren<EmoteChanger>().gameObject.GetComponent<SpriteRenderer>();
-            animator = GetComponentInChildren<Animator>();
-            animator.SetBool("sleeping", true);
+            faceAnimator.SetBool("sleeping", true);
         }
 
         // Update is called once per frame
@@ -107,7 +106,7 @@ namespace not_broforce
                 {
                     sleeping = false;
                     boxController.addBox(this);
-                    animator.SetBool("sleeping", false);
+                    faceAnimator.SetBool("sleeping", false);
                 }
             }
             else if (teleportWait <= 0)
@@ -135,7 +134,7 @@ namespace not_broforce
                     followWaypoints = pathFinder.FindPath(transform.position, new Vector3(_target.x + moveModifier, _target.y, _target.z));
                     if(followWaypoints != null)
                     {
-                        animator.SetBool("confused", false);
+                        faceAnimator.SetBool("confused", false);
                         pathNotFound = false;
                         if(followWaypoints.Count > 0)
                         {
@@ -145,7 +144,7 @@ namespace not_broforce
                     }
                     else if(followWaypoints == null)
                     {
-                        animator.SetBool("confused", true);
+                        faceAnimator.SetBool("confused", true);
                         if(_takingPosition)
                         {
                             selector.RemoveReservedBoxPlace(_target);
@@ -187,7 +186,7 @@ namespace not_broforce
                         followWaypoints = pathFinder.FindPath(transform.position, new Vector3(_target.x + moveModifier, _target.y, _target.z));
                         if(followWaypoints != null)
                         {
-                            animator.SetBool("confused", false);
+                            faceAnimator.SetBool("confused", false);
                             if(followWaypoints.Count > 0)
                             {
                                 _followTarget = followWaypoints[0];
@@ -196,7 +195,7 @@ namespace not_broforce
                         }
                         else
                         {
-                            animator.SetBool("confused", true);
+                            faceAnimator.SetBool("confused", true);
                             pathNotFound = true;
                             if(_takingPosition)
                             {
@@ -384,7 +383,7 @@ namespace not_broforce
             followWaypoints = pathFinder.FindPath(transform.position, _target);
             if(followWaypoints == null)
             {
-                animator.Play("Confused");
+                faceAnimator.Play("Confused");
                 return false;
             }
 

@@ -200,6 +200,7 @@ MonoBehaviour:
   RepathTime: 0.5
   box: {fileID: 21300000, guid: efaa3bca597d82f4fae55dcff7f8f5bf, type: 3}
   boxLit: {fileID: 21300000, guid: f19cf51dee9840d449ca7ca158f66403, type: 3}
+  faceAnimator: {fileID: 95492649369300080}
 --- !u!114 &114863979909829612
 MonoBehaviour:
   m_ObjectHideFlags: 1
