@@ -199,10 +199,6 @@ namespace not_broforce
 
             // Shows valid box places
             placement.ShowPlacement();
-
-            // Testing purposes only
-            // Plays a sound
-            SFXPlayer.Instance.Play(Sound.Score);
         }
 
         public void HideSelector()
@@ -349,10 +345,6 @@ namespace not_broforce
 
         private void PlaceBox()
         {
-            // Testing purposes only
-            // Plays a sound
-            SFXPlayer.Instance.Play(Sound.Impact);
-
             bool placed = boxController.PlaceBox(transform.position);
 
             if (placed)

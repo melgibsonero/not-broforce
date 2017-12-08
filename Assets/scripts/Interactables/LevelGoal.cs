@@ -27,7 +27,7 @@ namespace not_broforce
                               GameManager.Instance.CurrentLevel);
 
                     // Plays a sound
-                    SFXPlayer.Instance.Play(Sound.Success);
+                    SFXPlayer.Instance.Play(Sound.Score);
 
                     // Activates the level end screen
                     endScreen.ActivateButtons();

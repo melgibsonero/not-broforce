@@ -661,7 +661,7 @@ Prefab:
         type: 2}
       propertyPath: target
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 178909036}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 771b7dd36aeb4714dbe8838d30d6095e, type: 2}
   m_IsPrefabParent: 0
@@ -762,6 +762,11 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
+--- !u!1 &178909036 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 1574379849807626, guid: f438868ec84d6f94db60c6b0caf46d39,
+    type: 2}
+  m_PrefabInternal: {fileID: 1015072417}
 --- !u!1001 &179389922
 Prefab:
   m_ObjectHideFlags: 0
@@ -1710,12 +1715,12 @@ Prefab:
         type: 2}
       propertyPath: player
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 178909036}
     - target: {fileID: 114913677350232894, guid: e91e39b6c7ea80e4eb2e698523d9c803,
         type: 2}
       propertyPath: boxController
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 1642186129}
     - target: {fileID: 114913677350232894, guid: e91e39b6c7ea80e4eb2e698523d9c803,
         type: 2}
       propertyPath: gridCoordinates.x
@@ -2028,7 +2033,7 @@ Prefab:
         type: 2}
       propertyPath: player
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 178909036}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 21073a6d76432cd43abb2644e9394d97, type: 2}
   m_IsPrefabParent: 0
@@ -2320,12 +2325,12 @@ Prefab:
         type: 2}
       propertyPath: player
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 178909036}
     - target: {fileID: 114913677350232894, guid: e91e39b6c7ea80e4eb2e698523d9c803,
         type: 2}
       propertyPath: boxController
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 1642186129}
     - target: {fileID: 1682903965326336, guid: e91e39b6c7ea80e4eb2e698523d9c803, type: 2}
       propertyPath: m_Name
       value: PressurePlate (1)
@@ -3966,7 +3971,7 @@ Prefab:
         type: 2}
       propertyPath: player
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 178909036}
     - target: {fileID: 114811724615410478, guid: bd9e16a0da72243459f4642c43c143ab,
         type: 2}
       propertyPath: endScreen
@@ -7602,6 +7607,12 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
+--- !u!114 &1642186129 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 114339993638616732, guid: 21073a6d76432cd43abb2644e9394d97,
+    type: 2}
+  m_PrefabInternal: {fileID: 367200076}
+  m_Script: {fileID: 11500000, guid: dd73f4747d3d7b54f96fb0b03eed2117, type: 3}
 --- !u!1 &1653382747
 GameObject:
   m_ObjectHideFlags: 0
