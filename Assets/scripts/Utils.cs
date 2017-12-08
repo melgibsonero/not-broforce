@@ -777,5 +777,10 @@ namespace not_broforce
 
             return sum;
         }
+
+        public static bool ValidIndex<T>(int index, List<T> list)
+        {
+            return (index >= 0 && index < list.Count);
+        }
     }
 }

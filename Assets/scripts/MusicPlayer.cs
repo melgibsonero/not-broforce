@@ -10,6 +10,9 @@ namespace not_broforce
         #region Statics
         private static MusicPlayer instance;
 
+        /// <summary>
+        /// Gets or sets the Singleton instance 
+        /// </summary>
         public static MusicPlayer Instance
         {
             get
@@ -31,8 +34,19 @@ namespace not_broforce
         }
         #endregion Statics
 
-        [SerializeField]
+        /// <summary>
+        /// The track list
+        /// </summary>
+        [SerializeField,
+            Tooltip("The track list")]
         private List<AudioClip> tracks;
+
+        /// <summary>
+        /// The time between tracks
+        /// </summary>
+        [SerializeField, Tooltip("How much time must pass before " +
+            "the next track starts playing")]
+        private float timeBetweenTracks;
 
         /// <summary>
         /// The playback progress
@@ -41,34 +55,44 @@ namespace not_broforce
             Tooltip("The playback progress")]
         private float progress;
 
+        /// <summary>
+        /// Is playback paused
+        /// </summary>
         [SerializeField,
-            Tooltip("Starts the track (testing purposes only)")]
-        private bool play;
-
-        [SerializeField,
-            Tooltip("Is the playback paused")]
+            Tooltip("Is playback paused")]
         private bool paused;
 
+        /// <summary>
+        /// Is the music fading out
+        /// </summary>
         [SerializeField,
-            Tooltip("Should the music fade out")]
+            Tooltip("Is the music fading out")]
         private bool fadeOut;
 
+        /// <summary>
+        /// The current track
+        /// </summary>
         private int currentTrack = 0;
 
         private AudioSource audioSrc;
 
         private float oldProgress;
 
-        //private bool active;
+        private float waitStartTime;
+        
+        private float fadeSpeed;
 
         /// <summary>
-        /// Lets a new instance be created.
+        /// Lets a new Singleton instance be created.
         /// </summary>
         public void Create()
         {
-            // Does nothing
+            // Does nothing; only used for creating a new Singleton instance
         }
 
+        /// <summary>
+        /// The object is initialized on awake.
+        /// </summary>
         private void Awake()
         {
             if (instance == null)
@@ -84,34 +108,36 @@ namespace not_broforce
             Init();
         }
 
-        //private void Start()
-        //{
-        //    if (!active)
-        //    {
-        //        MusicPlayer[] musicPlayers =
-        //            FindObjectsOfType<MusicPlayer>();
-        //        if (musicPlayers.Length > 1)
-        //        {
-        //            Destroy(gameObject);
-        //        }
-        //        else
-        //        {
-        //            Init();
-        //        }
-        //    }
-        //}
-
+        /// <summary>
+        /// Initializes the music player.
+        /// </summary>
         private void Init()
         {
+            // Initializes the audio source
             audioSrc = GetComponent<AudioSource>();
-            audioSrc.volume = GameManager.Instance.MusicVolume;
-            //active = true;
 
+            // Initializes the volume
+            audioSrc.volume = GameManager.Instance.MusicVolume;
+
+            // Initializes the fade speed
+            fadeSpeed = audioSrc.volume / 5f;
+
+            // Corrects timeBetweenTracks' invalid value
+            if (timeBetweenTracks < 0)
+            {
+                timeBetweenTracks = 0;
+            }
+
+            // Sets the music player to not be destroyed when changing scene
             DontDestroyOnLoad(gameObject);
 
+            // Starts playing the first track
             Play();
         }
 
+        /// <summary>
+        /// Updates the object once per frame.
+        /// </summary>
         private void Update()
         {
             // The track is playing
@@ -119,14 +145,24 @@ namespace not_broforce
             {
                 UpdateWhenPlaying();
             }
+            // The track is unpaused or over
             else if (!paused)
             {
                 UpdateWhenNotPlaying();
             }
+            // Waiting for the next track
+            else if (progress == 1)
+            {
+                UpdateBetweenTracks();
+            }
         }
 
+        /// <summary>
+        /// Updates when the track is playing.
+        /// </summary>
         private void UpdateWhenPlaying()
         {
+            // The playback is paused in the editor
             if (paused)
             {
                 Pause();
@@ -139,36 +175,37 @@ namespace not_broforce
                 progress = audioSrc.time / tracks[currentTrack].length;
                 oldProgress = progress;
             }
-            // The playback progress has been changed in the editor
-            // and the playback time is adjusted accordingly
+            // If the playback progress has been changed in the
+            // editor, the playback time is adjusted accordingly
             else
             {
                 SetProgress(progress);
             }
 
+            // The track fades out
             if (fadeOut)
             {
                 UpdateFadeOut();
             }
         }
 
+        /// <summary>
+        /// Updates when the track is unpaused or over.
+        /// </summary>
         private void UpdateWhenNotPlaying()
         {
-            // Testing purposes only
-            // Starts playing the current track
-            if (play)
-            {
-                play = false;
-                Play();
-            }
-
-            // (Testing purposes only)
-            // The track is unpaused
+            // The playback is unpaused in the editor
             if (progress < 0.99f)
             {
                 Unpause();
-            }
 
+                // If the track had ended to a
+                // fade-out, it's restarted
+                if (!audioSrc.isPlaying)
+                {
+                    Play();
+                }
+            }
             // The track is over
             else
             {
@@ -176,45 +213,78 @@ namespace not_broforce
             }
         }
 
+        /// <summary>
+        /// Updates between tracks.
+        /// </summary>
+        private void UpdateBetweenTracks()
+        {
+            // The next track starts if enough time has passed
+            if ((Time.time - waitStartTime) >= timeBetweenTracks)
+            {
+                //Debug.Log("[MusicPlayer]: Next track starts");
+
+                Reset();
+                NextTrack();
+                Play();
+            }
+            // Otherwise prints debug info
+            //else
+            //{
+            //    Debug.Log("[MusicPlayer]: Next track in: " +
+            //        (timeBetweenTracks - (Time.time - waitStartTime)));
+            //}
+        }
+
+        /// <summary>
+        /// Sets the value of the progress bar.
+        /// </summary>
+        /// <param name="progress">the value of the progress bar</param>
         private void SetProgress(float progress)
         {
             audioSrc.time = progress * tracks[currentTrack].length;
             oldProgress = progress;
         }
 
+        /// <summary>
+        /// Starts playing the currently selected track.
+        /// </summary>
         public void Play()
         {
-            if (tracks.Count > 0 && currentTrack < tracks.Count)
+            PlayTrack(currentTrack);
+        }
+
+        /// <summary>
+        /// Starts playing a certain track.
+        /// </summary>
+        /// <param name="trackNum">the track's number in the rack list</param>
+        public void PlayTrack(int trackNum)
+        {
+            if (tracks.Count > 0 && trackNum < tracks.Count)
             {
+                if (paused)
+                {
+                    paused = false;
+                }
+
+                currentTrack = trackNum;
                 audioSrc.clip = tracks[currentTrack];
                 audioSrc.Play();
             }
         }
 
-        private void Finish()
-        {
-            Reset();
-            NextTrack();
-        }
-
-        public void Pause()
-        {
-            audioSrc.Pause();
-            paused = true;
-        }
-
-        public void Unpause()
-        {
-            audioSrc.UnPause();
-            paused = false;
-        }
-
+        /// <summary>
+        /// Stops playback and resets the track.
+        /// </summary>
         public void Stop()
         {
             audioSrc.Stop();
+            paused = true;
             Reset();
         }
 
+        /// <summary>
+        /// Resets the track.
+        /// </summary>
         private void Reset()
         {
             audioSrc.time = 0;
@@ -222,6 +292,43 @@ namespace not_broforce
             oldProgress = 0;
         }
 
+        /// <summary>
+        /// Finishes the currently playing track.
+        /// </summary>
+        private void Finish()
+        {
+            //Debug.Log("[MusicPlayer]: Track finished");
+
+            progress = 1;
+            paused = true;
+            waitStartTime = Time.time;
+        }
+
+        /// <summary>
+        /// Pauses playback.
+        /// </summary>
+        public void Pause()
+        {
+            //Debug.Log("[MusicPlayer]: Track paused");
+
+            audioSrc.Pause();
+            paused = true;
+        }
+
+        /// <summary>
+        /// Unpauses playback.
+        /// </summary>
+        public void Unpause()
+        {
+            //Debug.Log("[MusicPlayer]: Track unpaused");
+
+            audioSrc.UnPause();
+            paused = false;
+        }
+
+        /// <summary>
+        /// Selects the next track in the list.
+        /// </summary>
         private void NextTrack()
         {
             if (tracks.Count > 0)
@@ -231,10 +338,21 @@ namespace not_broforce
                 {
                     currentTrack = 0;
                 }
+            }
+        }
 
-                Play();
-
-                //Debug.Log("[MusicPlayer]: Next track");
+        /// <summary>
+        /// Selects the previous track in the list.
+        /// </summary>
+        private void PrevTrack()
+        {
+            if (tracks.Count > 0)
+            {
+                currentTrack--;
+                if (currentTrack < 0)
+                {
+                    currentTrack = tracks.Count - 1;
+                }
             }
         }
 
@@ -249,9 +367,17 @@ namespace not_broforce
             if (!fadeOut || volume < audioSrc.volume)
             {
                 audioSrc.volume = volume;
+
+                if (!fadeOut)
+                {
+                    fadeSpeed = audioSrc.volume / 5f;
+                }
             }
         }
 
+        /// <summary>
+        /// Starts fading out the track.
+        /// </summary>
         private void StartFadeOut()
         {
             fadeOut = true;
@@ -263,7 +389,6 @@ namespace not_broforce
         /// </summary>
         private void UpdateFadeOut()
         {
-            float fadeSpeed = 0.06f;
             float newVolume = audioSrc.volume - 
                 fadeSpeed * Time.deltaTime;
 
@@ -277,6 +402,10 @@ namespace not_broforce
             }
         }
 
+        /// <summary>
+        /// Finishes the fade-out by stopping playback
+        /// and setting the volume back to normal.
+        /// </summary>
         private void FinishFadeOut()
         {
             fadeOut = false;
