@@ -2,6 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// README:
+// In the AudioSource component, leave AudioClip empty and set
+// all bools (from Mute to Loop) to false. The volume can be controlled
+// with this script but it's not necessary. In our game, another
+// Singleton object called GameManager handles audio settings.
+// You need to adjust this script a bit to fit your game.
+
 namespace not_broforce
 {
     [RequireComponent(typeof(AudioSource))]
@@ -11,7 +18,7 @@ namespace not_broforce
         private static MusicPlayer instance;
 
         /// <summary>
-        /// Gets or sets the Singleton instance 
+        /// Gets or sets the Singleton instance.
         /// </summary>
         public static MusicPlayer Instance
         {
@@ -19,7 +26,7 @@ namespace not_broforce
             {
                 if (instance == null)
                 {
-                    // Note:
+                    // NOTE:
                     // There must be a Resources folder under Assets and
                     // MusicPlayer there for this to work. Not necessary if
                     // a MusicPlayer object is present in a scene from the
@@ -259,7 +266,8 @@ namespace not_broforce
         /// <param name="trackNum">the track's number in the rack list</param>
         public void PlayTrack(int trackNum)
         {
-            if (tracks.Count > 0 && trackNum < tracks.Count)
+            if (trackNum >= 0 &&
+                trackNum < tracks.Count)
             {
                 if (paused)
                 {
