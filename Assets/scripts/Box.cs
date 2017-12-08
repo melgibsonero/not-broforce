@@ -433,25 +433,28 @@ namespace not_broforce
 
         public void TeleportToPlayer ()
         {
-            if(_donePositionTaking)
+            if(!teleportIn && !teleportOut)
             {
-                BackToLine();
+                if(_donePositionTaking)
+                {
+                    BackToLine();
+                }
+                else if(_takingPosition)
+                {
+                    selector.RemoveReservedBoxPlace(_target);
+                    BackToLine();
+                }
+                else
+                {
+                    followWaypoints = null;
+                }
+                teleportWait = 1f;
+                velocity.x = 0;
+                velocity.y = 0;
+                boxController.addBox(this);
+                GetComponent<Animator>().Play("TeleportVanish");
+                teleportOut = true;
             }
-            else if(_takingPosition)
-            {
-                selector.RemoveReservedBoxPlace(_target);
-                BackToLine();
-            }
-            else
-            {
-                followWaypoints = null;
-            }
-            teleportWait = 1f;
-            velocity.x = 0;
-            velocity.y = 0;
-            boxController.addBox(this);
-            GetComponent<Animator>().Play("TeleportVanish");
-            teleportOut = true;
         }
         
         public bool isMovingOnGround()
