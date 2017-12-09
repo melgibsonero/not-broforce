@@ -7,6 +7,9 @@ namespace not_broforce
 {
     public class PassableObstacle : Activatable
     {
+        [SerializeField]
+        private bool activatedByDefault;
+
         private BoxCollider2D boxCollider;
 
         private List<Switch> compatibleSwitches;
@@ -21,12 +24,23 @@ namespace not_broforce
 
             InitCollider();
 
-            FindCompatibleSwitches();
+            compatibleSwitches = new List<Switch>();
+
+            if (!CodeIsUnusable())
+            {
+                FindCompatibleSwitches();
+            }
         }
 
         private void Start()
         {
             InitPathfinding();
+
+            if (activatedByDefault)
+            {
+                MakePassable();
+                UpdatePathfinding();
+            }
         }
 
         private void InitCollider()
@@ -95,15 +109,13 @@ namespace not_broforce
 
         private void FindCompatibleSwitches()
         {
-            compatibleSwitches = new List<Switch>();
-
             Switch[] allSwitches = FindObjectsOfType<Switch>();
 
             // Goes through the switch list and adds any switch which
             // has a compatible activation code to compatibleSwitches
             foreach (Switch activator in allSwitches)
             {
-                if (GetCode() == activator.GetCode())
+                if (activator.CodesMatch(GetCode()))
                 {
                     compatibleSwitches.Add(activator);
                 }
@@ -120,15 +132,30 @@ namespace not_broforce
 
         private void Update()
         {
+            CheckActivators();
+        }
+
+        private void CheckActivators()
+        {
             // The old and the new activation state of the obstacle
             bool oldState = IsActivated();
-            bool newState = false;
+            bool newState = activatedByDefault;
 
             foreach (Switch activator in compatibleSwitches)
             {
                 newState = activator.IsActivated();
 
-                if (newState == true)
+                // If the obstacle is activated
+                // by default, the activator being  
+                // activated yields the opposite result
+                if (activatedByDefault)
+                {
+                    newState = !newState;
+                }
+
+                // If the new state is opposite of the obstacle's
+                // default state, the search is stopped
+                if (newState != activatedByDefault)
                 {
                     break;
                 }
@@ -151,6 +178,8 @@ namespace not_broforce
 
         private void MakePassable()
         {
+            Debug.Log("Passable, default activation: " + activatedByDefault);
+
             Activate();
 
             if (boxCollider != null)
@@ -161,6 +190,8 @@ namespace not_broforce
 
         private void MakeImpassable()
         {
+            Debug.Log("Impassable, default activation: " + activatedByDefault);
+
             Deactivate();
 
             if (boxCollider != null)

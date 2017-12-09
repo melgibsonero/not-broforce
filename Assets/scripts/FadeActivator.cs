@@ -37,7 +37,7 @@ namespace not_broforce
             // has a compatible activation code to compatibleSwitches
             foreach (Switch activator in allSwitches)
             {
-                if (GetCode() == activator.GetCode())
+                if (activator.CodesMatch(GetCode()))
                 {
                     compatibleSwitches.Add(activator);
                 }

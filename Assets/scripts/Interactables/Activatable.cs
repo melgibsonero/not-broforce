@@ -22,6 +22,23 @@ namespace not_broforce
             return activationCode;
         }
 
+        public bool CodeIsUnusable()
+        {
+            return (activationCode <= 0);
+        }
+
+        public bool CodesMatch(int code)
+        {
+            if (CodeIsUnusable())
+            {
+                return false;
+            }
+            else
+            {
+                return (code == activationCode);
+            }
+        }
+
         public bool IsActivated()
         {
             return activated;
@@ -29,7 +46,14 @@ namespace not_broforce
 
         public bool IsActivated(int code)
         {
-            return (code == activationCode && activated);
+            if (CodeIsUnusable())
+            {
+                return activated;
+            }
+            else
+            {
+                return (code == activationCode && activated);
+            }
         }
 
         public virtual void Activate()
@@ -69,7 +93,7 @@ namespace not_broforce
                 // switch's activation code if it is not activated
                 else
                 {
-                    if (activationCode <= 0)
+                    if (CodeIsUnusable())
                     {
                         Gizmos.color = Color.black;
                     }
