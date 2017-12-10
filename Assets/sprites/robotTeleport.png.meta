@@ -1,12 +1,12 @@
 fileFormatVersion: 2
-guid: 982186b932f4c0a438d7b4ae4ab2e3e9
-timeCreated: 1512416497
+guid: a4ba0f4ed9454f04587f3ef93a0cbce4
+timeCreated: 1512937204
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
-    21300000: teleport_0
-    21300002: teleport_1
-    21300004: teleport_2
+    21300000: robotTeleport_0
+    21300002: robotTeleport_1
+    21300004: robotTeleport_2
   externalObjects: {}
   serializedVersion: 4
   mipmaps:
@@ -90,13 +90,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: teleport_0
+      name: robotTeleport_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
         width: 128
-        height: 128
+        height: 200
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -104,13 +104,13 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: teleport_1
+      name: robotTeleport_1
       rect:
         serializedVersion: 2
         x: 128
         y: 0
         width: 128
-        height: 128
+        height: 200
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -118,13 +118,13 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: teleport_2
+      name: robotTeleport_2
       rect:
         serializedVersion: 2
         x: 256
         y: 0
         width: 128
-        height: 128
+        height: 200
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
