@@ -224,7 +224,7 @@ namespace not_broforce
                             CheckFollowDistance();
                         }
                     }
-                    if(followWaypoints != null)
+                    if(followWaypoints != null && _followTarget.x != 0)
                     {
                         Move();
                     }
@@ -343,11 +343,7 @@ namespace not_broforce
                     Jump();
                 }
             }
-            
-            
-           
-            
-         }
+        }
 
         private void Jump () {
             Physics2D.queriesStartInColliders = false;
@@ -358,6 +354,7 @@ namespace not_broforce
 
         private void ChangeProperties () {
             transform.position = _target;
+            faceAnimator.SetBool("confused", false);
             if(!boxController.IsInStructure(this))
             {
                 selector.RemoveReservedBoxPlace(_target);

@@ -1088,7 +1088,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1290786281587938, guid: c85aa576d42822d409bf2e66aa74a1ac, type: 2}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 114275647534069766, guid: c85aa576d42822d409bf2e66aa74a1ac,
         type: 2}
@@ -1189,7 +1189,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1290786281587938, guid: c85aa576d42822d409bf2e66aa74a1ac, type: 2}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 114275647534069766, guid: c85aa576d42822d409bf2e66aa74a1ac,
         type: 2}
@@ -1437,34 +1437,6 @@ Prefab:
     - target: {fileID: 4564249651253236, guid: f438868ec84d6f94db60c6b0caf46d39, type: 2}
       propertyPath: m_RootOrder
       value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 114985241531155784, guid: f438868ec84d6f94db60c6b0caf46d39,
-        type: 2}
-      propertyPath: LargelandingDustCloud
-      value: 
-      objectReference: {fileID: 1679541797518742, guid: f9b9a137b1c118e459b1a81df7f0b1fe,
-        type: 2}
-    - target: {fileID: 114985241531155784, guid: f438868ec84d6f94db60c6b0caf46d39,
-        type: 2}
-      propertyPath: MediumlandingDustCloud
-      value: 
-      objectReference: {fileID: 1803689421665860, guid: a2834a7093f489a45badd453c4aa54d8,
-        type: 2}
-    - target: {fileID: 114985241531155784, guid: f438868ec84d6f94db60c6b0caf46d39,
-        type: 2}
-      propertyPath: SmalllandingDustCloud
-      value: 
-      objectReference: {fileID: 1395812602730628, guid: bb1340d8e250b2e45aa1966550ec22af,
-        type: 2}
-    - target: {fileID: 114985241531155784, guid: f438868ec84d6f94db60c6b0caf46d39,
-        type: 2}
-      propertyPath: wallJump.y
-      value: 9
-      objectReference: {fileID: 0}
-    - target: {fileID: 114985241531155784, guid: f438868ec84d6f94db60c6b0caf46d39,
-        type: 2}
-      propertyPath: wallJumpOff.y
-      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f438868ec84d6f94db60c6b0caf46d39, type: 2}
@@ -2197,7 +2169,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1290786281587938, guid: c85aa576d42822d409bf2e66aa74a1ac, type: 2}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 114275647534069766, guid: c85aa576d42822d409bf2e66aa74a1ac,
         type: 2}
