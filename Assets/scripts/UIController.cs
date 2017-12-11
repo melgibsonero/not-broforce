@@ -17,6 +17,9 @@ namespace not_broforce
         private _sceneName scene;
 
         [SerializeField]
+        private int levelNum;
+
+        [SerializeField]
         private GameObject pauseMenu;
 
         [SerializeField]
@@ -44,7 +47,7 @@ namespace not_broforce
         {
             HubLevel,
             NextLevel,
-            Level2,
+            Level,
             MainMenu
         }
 
@@ -65,9 +68,9 @@ namespace not_broforce
                         sceneName = "Valtterin Playground";
                         break;
                     }
-                case _sceneName.Level2:
+                case _sceneName.Level:
                     {
-                        sceneName = "Level2";
+                        sceneName = "Level" + levelNum;
                         break;
                     }
                 case _sceneName.MainMenu:
