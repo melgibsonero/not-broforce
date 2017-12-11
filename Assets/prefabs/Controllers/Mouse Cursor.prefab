@@ -52,6 +52,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3277c57d34cfaad46b36117d46952b30, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cursorTexture: {fileID: 2800000, guid: 36a2908e509e41a4eabc68771381b829, type: 3}
 --- !u!212 &212767855447902176
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -92,5 +93,3 @@ SpriteRenderer:
   m_Size: {x: 0.64, y: 0.64}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
