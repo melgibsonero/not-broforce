@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: 896a747ca3c7ea143b86361b2bcac51c
-timeCreated: 1512990182
+timeCreated: 1512991530
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
@@ -187,7 +187,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 512
-        y: 521
+        y: 512
         width: 256
         height: 256
       alignment: 0
@@ -215,7 +215,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 252
+        y: 256
         width: 256
         height: 256
       alignment: 0
@@ -257,7 +257,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 768
-        y: 257
+        y: 256
         width: 256
         height: 256
       alignment: 0
@@ -271,7 +271,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 1
+        y: 0
         width: 256
         height: 256
       alignment: 0
@@ -298,8 +298,8 @@ TextureImporter:
       name: ground_middle_L
       rect:
         serializedVersion: 2
-        x: 511
-        y: 3
+        x: 512
+        y: 0
         width: 256
         height: 256
       alignment: 0
@@ -313,7 +313,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 768
-        y: 5
+        y: 0
         width: 256
         height: 256
       alignment: 0
