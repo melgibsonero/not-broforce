@@ -178,8 +178,6 @@ namespace not_broforce
 
         private void MakePassable()
         {
-            Debug.Log("Passable, default activation: " + activatedByDefault);
-
             Activate();
 
             if (boxCollider != null)
@@ -190,8 +188,6 @@ namespace not_broforce
 
         private void MakeImpassable()
         {
-            Debug.Log("Impassable, default activation: " + activatedByDefault);
-
             Deactivate();
 
             if (boxCollider != null)

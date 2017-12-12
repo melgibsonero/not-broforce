@@ -53,7 +53,7 @@ namespace not_broforce
         // Update is called once per frame
         private void Update()
         {
-            if (!paused)
+            if (!paused) // && player.enabled
             {
                 CheckPlayerInput();
                 CheckBoxSelectorInput();

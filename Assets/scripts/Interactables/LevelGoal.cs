@@ -10,6 +10,15 @@ namespace not_broforce
         [SerializeField]
         private UIController endScreen;
 
+        private Animator teleportAnim;
+
+        private void Start()
+        {
+            // Sets the teleport animator
+            // (the child object's animator)
+            teleportAnim = GetComponentsInChildren<Animator>()[1];
+        }
+
         private void Update()
         {
             if (!IsActivated())
@@ -34,6 +43,17 @@ namespace not_broforce
 
                     // Sets the level completed and saves the game
                     GameManager.Instance.LevelCompleted();
+
+                    // Sets the player character inactive
+                    PlayerController player = FindObjectOfType<PlayerController>();
+                    player.gameObject.SetActive(false);
+
+                    // Moves the dummy player character to the actual pc's position
+                    teleportAnim.gameObject.transform.position =
+                        player.transform.position;
+
+                    // Plays teleport animation
+                    teleportAnim.Play("TeleportAway");
                 }
             }
         }
