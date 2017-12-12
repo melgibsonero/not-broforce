@@ -86,6 +86,9 @@ namespace not_broforce
 
         public void StartLevel(int levelNum)
         {
+            // Plays a sound
+            SFXPlayer.Instance.Play(Sound.Bell);
+
             GameManager.Instance.SetLevel(levelNum);
             GameManager.Instance.StartSceneChange(
                     LevelChanger_Hub.SceneName(SceneType.Level,
@@ -99,15 +102,18 @@ namespace not_broforce
 
         public void ActivateLevelMenu()
         {
-            ChangeLevelMenuVisibility(true);
+            ChangeLevelMenuVisibility(true, false);
+
+            // Plays a sound
+            SFXPlayer.Instance.Play(Sound.Ascend);
         }
 
-        public void DeactivateLevelMenu()
+        public void DeactivateLevelMenu(bool init)
         {
-            ChangeLevelMenuVisibility(false);
+            ChangeLevelMenuVisibility(false, init);
         }
 
-        private void ChangeLevelMenuVisibility(bool activate)
+        private void ChangeLevelMenuVisibility(bool activate, bool init)
         {
             levelMenuOpened = activate;
             levelMenuButtons.SetActive(activate);
@@ -119,11 +125,20 @@ namespace not_broforce
 
                 submenuBGImage.GetComponent<RectTransform>().sizeDelta
                     = new Vector2(300, 520);
+
+                // Plays a sound
+                SFXPlayer.Instance.Play(Sound.Ascend);
             }
             else
             {
                 // Select and highlight the start button
                 Utils.SelectButton(mainButtons[0]);
+
+                if (!init)
+                {
+                    // Plays a sound
+                    SFXPlayer.Instance.Play(Sound.Descend);
+                }
             }
 
             submenuBGImage.SetActive(activate);
@@ -134,12 +149,21 @@ namespace not_broforce
         public void ActivateSettings()
         {
             ChangeSettingsVisibility(true, false);
+
+            // Plays a sound
+            SFXPlayer.Instance.Play(Sound.Ascend);
         }
 
         public void DeactivateSettings(bool init)
         {
             GameManager.Instance.SaveSettings();
             ChangeSettingsVisibility(false, init);
+
+            if (!init)
+            {
+                // Plays a sound
+                SFXPlayer.Instance.Play(Sound.Descend);
+            }
         }
 
         private void ChangeSettingsVisibility(bool activate, bool init)
@@ -175,7 +199,7 @@ namespace not_broforce
             settingsReturn =
                 settings.GetComponentInChildren<Button>(true);
 
-            DeactivateLevelMenu();
+            DeactivateLevelMenu(init: true);
             DeactivateSettings(init: true);
 
             // Select and highlight the start button
@@ -188,7 +212,7 @@ namespace not_broforce
             {
                 if (levelMenuOpened)
                 {
-                    DeactivateLevelMenu();
+                    DeactivateLevelMenu(false);
                 }
                 else if (settingsOpened)
                 {

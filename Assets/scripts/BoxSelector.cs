@@ -350,15 +350,19 @@ namespace not_broforce
             if (placed)
             {
                 placement.AddReservedBoxPlace();
+
+                // Plays a sound
+                SFXPlayer.Instance.Play(Sound.Laser3);
             }
         }
 
         private void RemoveBox()
         {
-            //placement.UpdateReservedBoxPlaces();
-
             boxController.RemovePlacedBox();
             UnselectBox();
+
+            // Plays a sound
+            SFXPlayer.Instance.Play(Sound.Laser4);
         }
 
         private void SelectBox(Box box)

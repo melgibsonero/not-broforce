@@ -366,7 +366,7 @@ namespace not_broforce
         public void LoadScene(string sceneName)
         {
             // Stops all SFX
-            SFXPlayer.Instance.StopAllSFXPlayback();
+            //SFXPlayer.Instance.StopAllSFXPlayback();
 
             changingScene = false;
             sceneLoaded = true;

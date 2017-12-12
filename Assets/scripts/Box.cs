@@ -108,6 +108,9 @@ namespace not_broforce
                     sleeping = false;
                     boxController.addBox(this);
                     faceAnimator.SetBool("sleeping", false);
+
+                    // Plays a sound
+                    SFXPlayer.Instance.Play(Sound.Laser1);
                 }
             }
             else if (teleportWait <= 0)

@@ -12,11 +12,23 @@ namespace not_broforce
 
         private Animator teleportAnim;
 
+        private AudioSource teleportSound;
+
         private void Start()
         {
             // Sets the teleport animator
             // (the child object's animator)
-            teleportAnim = GetComponentsInChildren<Animator>()[1];
+
+            Transform child = transform.GetChild(0);
+
+            if (child != null)
+            {
+                teleportAnim = child.GetComponent<Animator>();
+            }
+            else
+            {
+                Debug.LogError("[LevelGoal]: No child object found");
+            }
         }
 
         private void Update()
@@ -35,8 +47,8 @@ namespace not_broforce
                     Debug.Log("Level completed: " +
                               GameManager.Instance.CurrentLevel);
 
-                    // Plays a sound
-                    SFXPlayer.Instance.Play(Sound.Score);
+                    // Plays the teleport start sound
+                    teleportSound = SFXPlayer.Instance.Play(Sound.TeleportStart);
 
                     // Activates the level end screen
                     endScreen.ActivateButtons();
@@ -56,6 +68,19 @@ namespace not_broforce
                     teleportAnim.Play("TeleportAway");
                 }
             }
+        }
+
+        /// <summary>
+        /// Finishes the teleport sound effect.
+        /// </summary>
+        public void FinishTeleport()
+        {
+            // Stops the teleport start sound
+            teleportSound.Stop();
+            teleportSound.enabled = false;
+
+            // Plays the teleport finish sound
+            SFXPlayer.Instance.Play(Sound.TeleportFinish);
         }
     }
 }

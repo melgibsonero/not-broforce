@@ -110,6 +110,9 @@ namespace not_broforce
                     newPosition.y = startY + slideDistance;
                     slideFinished = true;
                     ratio = 0f;
+
+                    // Plays a sound
+                    SFXPlayer.Instance.Play(Sound.DoorOpen);
                 }
                 else
                 {
@@ -129,6 +132,9 @@ namespace not_broforce
                     newPosition.y = startY;
                     slideFinished = true;
                     ratio = 0f;
+
+                    // Plays a sound
+                    SFXPlayer.Instance.Play(Sound.DoorShut);
                 }
                 else
                 {

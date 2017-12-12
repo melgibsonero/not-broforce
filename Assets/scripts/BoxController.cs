@@ -184,10 +184,20 @@ namespace not_broforce {
         {
             placedBoxes.Clear();
             movingBoxes.Clear();
-           selector.RemoveAllBoxes();
-           foreach(Box box in allBoxes)
+            selector.RemoveAllBoxes();
+
+            bool success = false;
+
+            foreach (Box box in allBoxes)
             {
                 box.TeleportToPlayer();
+                success = true;
+            }
+
+            if (success)
+            {
+                // Plays a sound
+                SFXPlayer.Instance.Play(Sound.TeleportFinish);
             }
         }
     }

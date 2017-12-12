@@ -23,20 +23,48 @@ namespace not_broforce
         // in this specific order for the right sound
         // to be played at the right time
 
-        Impact = 0,
-        Score = 1,
-        Success = 2,
-        Failure = 3,
-        RobotJump = 4,
-        RobotStep = 5,
-        RobotLand = 6,
-        BoxJump = 7,
-        BoxStep = 8,
-        BoxLand = 9
+        Angelic = 0,
+        Ascend = 1,
+        Descend = 2,
+        Bell = 3,
+        Chime = 4,
+        DoorOpen = 5,
+        DoorShut = 6,
+        EnergyBeam1 = 7,
+        EnergyBeam2 = 8,
+        EnergyBeam3 = 9,
+        Impact1 = 10,
+        Impact2 = 11,
+        Laser1 = 12,
+        Laser2 = 13,
+        Laser3 = 14,
+        Laser4 = 15,
+        Magic = 16,
+        Score = 17,
+        Step = 18,
+        Suspense = 19,
+        TeleportFull = 20,
+        TeleportStart = 21,
+        TeleportFinish = 22
     }
 
     public class SFXPlayer : MonoBehaviour
     {
+        private bool MustBePlayedOnceAtATime(int soundNum)
+        {
+            if (soundNum == (int) Sound.Angelic ||
+                soundNum == (int) Sound.Magic ||
+                soundNum == (int) Sound.Step ||
+                soundNum == (int) Sound.Suspense)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         #region Statics
         private static SFXPlayer instance;
 
@@ -104,6 +132,8 @@ namespace not_broforce
         /// </summary>
         private List<AudioSource> audioSrcPool;
 
+        private int[] noDuplicates; 
+
         /// <summary>
         /// The object is initialized on awake.
         /// </summary>
@@ -132,6 +162,11 @@ namespace not_broforce
 
             // Sets the volume
             volume = GameManager.Instance.EffectVolume;
+
+            noDuplicates = new int[3];
+            noDuplicates[0] = -1;
+            noDuplicates[1] = -1;
+            noDuplicates[2] = -1;
 
             // Sets the SFX player to not be destroyed when changing scene
             DontDestroyOnLoad(gameObject);
@@ -207,34 +242,115 @@ namespace not_broforce
         /// Plays a sound clip which corresponds with the given name.
         /// </summary>
         /// <param name="sound">a sound's name</param>
-        public void Play(Sound sound)
+        public AudioSource Play(Sound sound)
         {
-            Play((int) sound);
+            return Play((int) sound);
         }
 
         /// <summary>
         /// Plays a sound clip with the given number.
         /// </summary>
         /// <param name="soundNum">a sound clip's number</param>
-        public void Play(int soundNum)
+        public AudioSource Play(int soundNum)
         {
             if (soundNum >= 0 &&
                 soundNum < sounds.Count)
             {
-                Play(sounds[soundNum]);
+                // Prevents the same certain sound from being
+                // played more than once at the same time
+                //if (!IsForbiddenDuplicateSound(soundNum))
+                //{
+
+                // Plays the sound
+                return Play(sounds[soundNum]);
+
+                //}
             }
             else
             {
                 Debug.LogError("[SoundPlayer]: The requested sound " +
                                "clip cannot be played");
             }
+
+            return null;
+        }
+
+        private bool IsForbiddenDuplicateSound(int soundNum)
+        {
+            if (MustBePlayedOnceAtATime(soundNum))
+            {
+                foreach (int num in noDuplicates)
+                {
+                    if (num == soundNum)
+                    {
+                        return true;
+                    }
+                }
+
+                AddForbiddenDuplicate(soundNum);
+            }
+
+            return false;
+        }
+
+        private bool AddForbiddenDuplicate(int soundNum)
+        {
+            for (int i = 0; i < noDuplicates.Length; i++)
+            {
+                if (noDuplicates[i] < 0)
+                {
+                    noDuplicates[i] = soundNum;
+
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private bool RemoveForbiddenDuplicate(int soundNum)
+        {
+            if (MustBePlayedOnceAtATime(soundNum))
+            {
+                for (int i = 0; i < noDuplicates.Length; i++)
+                {
+                    if (noDuplicates[i] == soundNum)
+                    {
+                        noDuplicates[i] = -1;
+
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        private bool RemoveForbiddenDuplicate(string audioClipName)
+        {
+            int soundNum = -1;
+
+            for (int i = 0; i < sounds.Count; i++)
+            {
+                if (sounds[i].name.Equals(audioClipName))
+                {
+                    soundNum = i;
+                }
+            }
+
+            if (soundNum == -1)
+            {
+                return false;
+            }
+
+            return RemoveForbiddenDuplicate(soundNum);
         }
 
         /// <summary>
         /// Plays a sound clip.
         /// </summary>
         /// <param name="clip">a sound clip</param>
-        private void Play(AudioClip clip)
+        private AudioSource Play(AudioClip clip)
         {
             AudioSource audioSrc = GetAudioSrcFromPool();
 
@@ -250,6 +366,9 @@ namespace not_broforce
             // Plays a sound
             if (audioSrc != null)
             {
+                // Testing
+                //audioSrc.clip = clip;
+
                 audioSrc.PlayOneShot(clip, volume);
             }
             // Otherwise prints debug data
@@ -258,6 +377,8 @@ namespace not_broforce
             //    Debug.Log("[SoundPlayer]: All AudioSources are being used " +
             //              "and a new one could not be created");
             //}
+
+            return audioSrc;
         }
 
         /// <summary>
@@ -288,7 +409,7 @@ namespace not_broforce
             {
                 if (audioSrc.enabled && !audioSrc.isPlaying)
                 {
-                    audioSrc.enabled = false;
+                    DeactivateAudioSrc(audioSrc);
                 }
             }
         }
@@ -302,8 +423,14 @@ namespace not_broforce
             foreach (AudioSource audioSrc in audioSrcPool)
             {
                 audioSrc.Stop();
-                audioSrc.enabled = false;
+                DeactivateAudioSrc(audioSrc);
             }
+        }
+
+        private void DeactivateAudioSrc(AudioSource audioSrc)
+        {
+            //RemoveForbiddenDuplicate(audioSrc.clip.name);
+            audioSrc.enabled = false;
         }
 
         /// <summary>

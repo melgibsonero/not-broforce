@@ -42,5 +42,27 @@ namespace not_broforce
                 Deactivate();
             }
         }
+
+        public override void Activate()
+        {
+            if (!activated)
+            {
+                activated = true;
+
+                // Plays a sound
+                SFXPlayer.Instance.Play(Sound.Ascend);
+            }
+        }
+
+        public override void Deactivate()
+        {
+            if (activated)
+            {
+                activated = false;
+
+                // Plays a sound
+                SFXPlayer.Instance.Play(Sound.Descend);
+            }
+        }
     }
 }

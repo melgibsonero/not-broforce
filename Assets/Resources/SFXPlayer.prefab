@@ -52,11 +52,31 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sounds:
+  - {fileID: 8300000, guid: efcea8b8de56e964882dc8458516a985, type: 3}
+  - {fileID: 8300000, guid: d80337ac362dfea49af9e57ee4193673, type: 3}
+  - {fileID: 8300000, guid: 4b4503d271c1b70438405f62b7a02a48, type: 3}
+  - {fileID: 8300000, guid: da636fdb47b94384d87b5b1e3a031020, type: 3}
+  - {fileID: 8300000, guid: fa82602619306324eac847cc0d707b12, type: 3}
+  - {fileID: 8300000, guid: 49f4f4194601cfd4bb83f4786228cefb, type: 3}
+  - {fileID: 8300000, guid: d836f1a1e5e364e4787bffeb03094fdf, type: 3}
+  - {fileID: 8300000, guid: 49507d8aae606144391e77367f62bac9, type: 3}
+  - {fileID: 8300000, guid: 0aae98c81a648e141ab043adb1300a31, type: 3}
+  - {fileID: 8300000, guid: 801b0ee296b092c44b8fa8aec408766d, type: 3}
   - {fileID: 8300000, guid: 7f2d64ba88c992049bc6244575c271af, type: 3}
+  - {fileID: 8300000, guid: 2d483314555c6544ba507564a6bda487, type: 3}
+  - {fileID: 8300000, guid: 6f5cd761320a27549ba50ba010aa8d33, type: 3}
+  - {fileID: 8300000, guid: 8f44d6b77104aee479659e1231e35088, type: 3}
+  - {fileID: 8300000, guid: 50fe4d1957ab36c4a9c3bbd02ae31fc0, type: 3}
+  - {fileID: 8300000, guid: 540be9aea6c5b134084e5b9d54cc7798, type: 3}
+  - {fileID: 8300000, guid: 08e7698aef1e1224cb10fd3578f1a972, type: 3}
   - {fileID: 8300000, guid: 4188de9745ddcd84983c541f29b46016, type: 3}
-  - {fileID: 8300000, guid: 73fd71adf04fb5d41b587ab362068a5d, type: 3}
+  - {fileID: 8300000, guid: a85bb8433f3a23349b111bc7d5537005, type: 3}
+  - {fileID: 8300000, guid: 101a58fda73dd844a8e7f197a09b2dd9, type: 3}
+  - {fileID: 8300000, guid: 3462dd4aca70a7747988bb4e42a1d0cf, type: 3}
+  - {fileID: 8300000, guid: bfbf607a3bffb0b46813659262821831, type: 3}
+  - {fileID: 8300000, guid: 9f1a90a839d755d4a98f59e23e45052c, type: 3}
+  audioSrcPrefab: {fileID: 1984222959702222, guid: de76be9435d74a842ad8139d99631527,
+    type: 2}
   volume: 1
   audioSrcPoolSize: 10
   flexiblePoolSize: 0
-  audioSrcPrefab: {fileID: 1984222959702222, guid: de76be9435d74a842ad8139d99631527,
-    type: 2}

@@ -413,7 +413,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &1401045311377992
 GameObject:
   m_ObjectHideFlags: 0
@@ -697,7 +697,7 @@ GameObject:
   m_Icon: {fileID: -4087464717476244675, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &1755047294665360
 GameObject:
   m_ObjectHideFlags: 1
@@ -930,7 +930,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1401045311377992}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 19, y: 8, z: 0}
+  m_LocalPosition: {x: 19, y: 10, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4321244154088012}
@@ -1177,7 +1177,7 @@ MonoBehaviour:
   maxGroundPlaceDistX: 3
   maxGroundPlaceDistUp: 3
   maxGroundPlaceDistDown: 3
-  maxValidBoxPlaceAmount: 15
+  maxValidBoxPlaceAmount: 25
 --- !u!114 &114083996569308788
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1245,7 +1245,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   endScreenButtons: {fileID: 1388423694845152}
   scene: 2
-  levelNum: 0
+  levelNum: 4
   pauseMenu: {fileID: 1073577773666228}
   settings: {fileID: 1386814351306468}
   backgroundImage: {fileID: 1253096371521974}
@@ -1314,8 +1314,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   color: {r: 0, g: 0, b: 0, a: 1}
-  fadeOutTime: 2
-  fadeInTime: 1
+  fadeOutTime: 1
+  fadeInTime: 0.75
   followedCamera: {fileID: 0}
 --- !u!114 &114172259646950046
 MonoBehaviour:
@@ -2695,7 +2695,7 @@ MonoBehaviour:
   unwalkableMask:
     serializedVersion: 2
     m_Bits: 5120
-  gridWorldSize: {x: 38, y: 16}
+  gridWorldSize: {x: 38, y: 20}
   noderRadius: 0.5
 --- !u!114 &114856140969250826
 MonoBehaviour:
