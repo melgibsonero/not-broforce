@@ -33,7 +33,6 @@ namespace not_broforce{
         bool groundedStateOld;
         float velocityYold;
 
-        private float wallSlideSpeedMax;
         public float wallStickTime = .4f;
         private float timeToWallUnstick;
 
@@ -62,7 +61,6 @@ namespace not_broforce{
             gravity = -(2 * maxJumpHeight) / Mathf.Pow(timetoJumpApex, 2);
             maxJumpVelocity = Mathf.Abs(gravity) * timetoJumpApex;
             minJumpVelocity = Mathf.Sqrt(2 * Mathf.Abs(gravity) * minJumpHeight);
-            wallSlideSpeedMax = -gravity / 5;
         }
 
         private void Start()
@@ -132,6 +130,7 @@ namespace not_broforce{
         {
                 if (wallSliding || earlyWalljump)
                 {
+                SFXPlayer.Instance.Play(Sound.Ascend);
                 faceDirOld = wallDirX;
                 extraGravity = 0;
                     if (_directionalInput.x == 0) //neutral
@@ -160,6 +159,7 @@ namespace not_broforce{
                 if (_controller.collisions.below)
                 {
                     _animation.Play("Jump");
+                    SFXPlayer.Instance.Play(Sound.Ascend);
                     velocity.y = maxJumpVelocity;
                 }
         }
@@ -249,12 +249,13 @@ namespace not_broforce{
                     {
                         landingCloud = MediumlandingDustCloud;
                     }
-                    if(velocityYold < -14f)
+                    if(velocityYold < -16f)
                     {
                         landingCloud = LargelandingDustCloud;
                     }
-                    GameObject dustPuff = Instantiate(landingCloud);                   
-                    dustPuff.transform.position = new Vector3(characterLocation.x, characterLocation.y, characterLocation.z+0.5f);
+                    GameObject dustPuff = Instantiate(landingCloud);
+                    SFXPlayer.Instance.Play(Sound.Descend);
+                    dustPuff.transform.position = new Vector3(characterLocation.x, characterLocation.y, characterLocation.z+0.4f);
                     Debug.Log(velocityYold);
                 }
             }
