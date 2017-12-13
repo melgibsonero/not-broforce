@@ -370,6 +370,9 @@ namespace not_broforce
             GetComponent<Animator>().SetBool("Lit", true);
             Debug.Log("Changing sprite");
             selector.RefreshSelectedBox();
+
+            // Plays a sound
+            SFXPlayer.Instance.Play(Sound.Laser2);
         }
 
         public void RemoveFollowTarget () {

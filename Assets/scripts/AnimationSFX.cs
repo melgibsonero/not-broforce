@@ -11,7 +11,31 @@ namespace not_broforce
         /// </summary>
         public void PlayStepSound()
         {
-            SFXPlayer.Instance.Play(Sound.Step);
+            int random = Random.Range(0, 3);
+
+            switch (random)
+            {
+                case 0:
+                {
+                    SFXPlayer.Instance.Play(Sound.Step1);
+                    break;
+                }
+                case 1:
+                {
+                    SFXPlayer.Instance.Play(Sound.Step2);
+                    break;
+                }
+                case 2:
+                {
+                    SFXPlayer.Instance.Play(Sound.Step3);
+                    break;
+                }
+                case 3:
+                {
+                    SFXPlayer.Instance.Play(Sound.Step4);
+                    break;
+                }
+            }
         }
 
         /// <summary>
