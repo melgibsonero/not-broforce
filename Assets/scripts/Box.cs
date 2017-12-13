@@ -385,6 +385,12 @@ namespace not_broforce
             if(followWaypoints == null)
             {
                 faceAnimator.Play("Confused");
+
+                // Plays a sound
+                SFXPlayer.Instance.Play(Sound.Error2);
+
+                Debug.Log("bzrr");
+
                 return false;
             }
 
