@@ -665,11 +665,6 @@ Prefab:
       propertyPath: target
       value: 
       objectReference: {fileID: 87326182}
-    - target: {fileID: 114301286787235454, guid: 771b7dd36aeb4714dbe8838d30d6095e,
-        type: 2}
-      propertyPath: lookAheadDistanceX
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 771b7dd36aeb4714dbe8838d30d6095e, type: 2}
   m_IsPrefabParent: 0
