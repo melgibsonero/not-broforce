@@ -51,7 +51,9 @@ namespace not_broforce
         Step3 = 25,
         Step4 = 26,
         Error1 = 27,
-        Error2 = 28
+        Error2 = 28,
+        Jump1 = 29,
+        Jump2 = 30
     }
 
     public class SFXPlayer : MonoBehaviour

@@ -130,7 +130,7 @@ namespace not_broforce{
         {
                 if (wallSliding || earlyWalljump)
                 {
-                SFXPlayer.Instance.Play(Sound.Ascend);
+                SFXPlayer.Instance.Play(Sound.Jump2);
                 faceDirOld = wallDirX;
                 extraGravity = 0;
                     if (_directionalInput.x == 0) //neutral
@@ -159,7 +159,7 @@ namespace not_broforce{
                 if (_controller.collisions.below)
                 {
                     _animation.Play("Jump");
-                    SFXPlayer.Instance.Play(Sound.Ascend);
+                    SFXPlayer.Instance.Play(Sound.Jump1);
                     velocity.y = maxJumpVelocity;
                 }
         }
@@ -254,7 +254,7 @@ namespace not_broforce{
                         landingCloud = LargelandingDustCloud;
                     }
                     GameObject dustPuff = Instantiate(landingCloud);
-                    SFXPlayer.Instance.Play(Sound.Descend);
+                    SFXPlayer.Instance.Play(Sound.Knock);
                     dustPuff.transform.position = new Vector3(characterLocation.x, characterLocation.y, characterLocation.z+0.4f);
                     Debug.Log(velocityYold);
                 }
