@@ -70,11 +70,15 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 540be9aea6c5b134084e5b9d54cc7798, type: 3}
   - {fileID: 8300000, guid: 08e7698aef1e1224cb10fd3578f1a972, type: 3}
   - {fileID: 8300000, guid: 4188de9745ddcd84983c541f29b46016, type: 3}
-  - {fileID: 8300000, guid: a85bb8433f3a23349b111bc7d5537005, type: 3}
+  - {fileID: 8300000, guid: 12b27aaa368c08842b9f577aa073cf07, type: 3}
   - {fileID: 8300000, guid: 101a58fda73dd844a8e7f197a09b2dd9, type: 3}
   - {fileID: 8300000, guid: 3462dd4aca70a7747988bb4e42a1d0cf, type: 3}
   - {fileID: 8300000, guid: bfbf607a3bffb0b46813659262821831, type: 3}
   - {fileID: 8300000, guid: 9f1a90a839d755d4a98f59e23e45052c, type: 3}
+  - {fileID: 8300000, guid: d13833ea1d08fa448a0b2b042829fe57, type: 3}
+  - {fileID: 8300000, guid: bfefecc2652f042409f220d92849d927, type: 3}
+  - {fileID: 8300000, guid: fc6c546c629a61d4db373ac6fe0d3922, type: 3}
+  - {fileID: 8300000, guid: b6b16d92a125e2045825e35629c47517, type: 3}
   audioSrcPrefab: {fileID: 1984222959702222, guid: de76be9435d74a842ad8139d99631527,
     type: 2}
   volume: 1

@@ -41,11 +41,15 @@ namespace not_broforce
         Laser4 = 15,
         Magic = 16,
         Score = 17,
-        Step = 18,
+        Knock = 18,
         Suspense = 19,
         TeleportFull = 20,
         TeleportStart = 21,
-        TeleportFinish = 22
+        TeleportFinish = 22,
+        Step1 = 23,
+        Step2 = 24,
+        Step3 = 25,
+        Step4 = 26
     }
 
     public class SFXPlayer : MonoBehaviour
@@ -54,7 +58,7 @@ namespace not_broforce
         {
             if (soundNum == (int) Sound.Angelic ||
                 soundNum == (int) Sound.Magic ||
-                soundNum == (int) Sound.Step ||
+                soundNum == (int) Sound.Knock ||
                 soundNum == (int) Sound.Suspense)
             {
                 return true;
