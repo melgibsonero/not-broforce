@@ -55,8 +55,6 @@ namespace not_broforce
         private bool teleportIn = false;
         private bool teleportOut = false;
 
-        private SpriteRenderer spriteRend;
-
         private SpriteRenderer childSR;
 
         public Animator faceAnimator;
@@ -92,7 +90,6 @@ namespace not_broforce
             minJumpVelocity = player.minJumpVelocity;
             pathFinder = GameObject.FindGameObjectWithTag("PathFinder").GetComponent<PathFinding1>();
             selector = FindObjectOfType<BoxSelector>();
-            spriteRend = GetComponent<SpriteRenderer>();
             childSR = GetComponentInChildren<EmoteChanger>().gameObject.GetComponent<SpriteRenderer>();
             faceAnimator.SetBool("sleeping", true);
         }
@@ -370,8 +367,8 @@ namespace not_broforce
             _donePositionTaking = true;
             boxController.addPlacedBox(this);
             pathFinder.UpdateNode((int)transform.position.x, (int)transform.position.y, false);
-            GetComponent<SpriteRenderer>().sprite = boxLit;
-            
+            GetComponent<Animator>().SetBool("Lit", true);
+            Debug.Log("Changing sprite");
             selector.RefreshSelectedBox();
         }
 
@@ -406,7 +403,7 @@ namespace not_broforce
             gameObject.layer = LayerMask.NameToLayer("MovingBoxes");
             gameObject.GetComponent<BoxCollider2D>().size = new Vector2(0.7f, gameObject.GetComponent<BoxCollider2D>().size.y);
 
-            GetComponent<SpriteRenderer>().sprite = box;
+            GetComponent<Animator>().SetBool("Lit", false);
         }
 
         public void MoveToGridCoordinates()
