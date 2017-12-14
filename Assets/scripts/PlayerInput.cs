@@ -187,7 +187,15 @@ namespace not_broforce
         {
             if (Input.GetButtonDown("Recall Boxes"))
             {
-                boxController.RecallAllBoxes();
+                bool recalled = boxController.RecallAllBoxes();
+
+                if (recalled)
+                {
+                    boxSelector.InitBoxTeleport();
+
+                    // Plays a sound
+                    SFXPlayer.Instance.Play(Sound.TeleportFinish);
+                }
             }
         }
 

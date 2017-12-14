@@ -29,6 +29,10 @@ namespace not_broforce
 
         private Box selectedBox;
 
+        private bool boxesTeleporting;
+        private float boxTelStartTime;
+        private float boxTelDuration;
+
         /// <summary>
         /// The sprite renderer of the object.
         /// Needed to hide the object while still
@@ -76,9 +80,12 @@ namespace not_broforce
             // Sets the selector's size
             SetSize();
 
+            // Initializes functionality
             validPlacement = false;
             validRemove = false;
-            //playerGrounded = true;
+
+            // Initializes box teleport time
+            boxTelDuration = 1.2f;
 
             // Checks if any necessary objects are not attached
             CheckForErrors();
@@ -92,13 +99,12 @@ namespace not_broforce
 
         /// <summary>
         /// Gets whether the selector usable at its current state.
-        /// Returns true if the selector is visible, close enough to
-        /// the player character and the player character is on ground.
+        /// Returns true if the selector is visible.
         /// </summary>
         /// <returns>is the selector usable at its current state</returns>
         private bool IsUsable()
         {
-            return (sr.enabled); // && playerGrounded);
+            return sr.enabled;
         }
 
         private bool BoxCanBePlaced()
@@ -174,6 +180,23 @@ namespace not_broforce
             }
         }
 
+        public void InitBoxTeleport()
+        {
+            boxesTeleporting = true;
+            boxTelStartTime = Time.time;
+        }
+
+        private void UpdateBoxTeleport()
+        {
+            if (boxesTeleporting)
+            {
+                if (Time.time - boxTelStartTime >= boxTelDuration)
+                {
+                    boxesTeleporting = false;
+                }
+            }
+        }
+
         private void ShowSelector()
         {
             // Updates the player character's grid coordinates
@@ -235,14 +258,14 @@ namespace not_broforce
                     MouseMovevent();
                 }
 
-                //playerGrounded = placement.PlayerIsGrounded();
-
                 UpdateSelection();
             }
             else if (isAlwaysShown)
             {
                 ShowSelector();
             }
+
+            UpdateBoxTeleport();
         }
 
         /// <summary>
@@ -461,7 +484,7 @@ namespace not_broforce
         {
             // If the selector is in a usable state, it's 
             // checked what is in the current grid coordinates
-            if (IsUsable())
+            if (IsUsable() && !boxesTeleporting)
             {
                 CheckSelection();
             }

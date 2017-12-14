@@ -389,8 +389,6 @@ namespace not_broforce
                 // Plays a sound
                 SFXPlayer.Instance.Play(Sound.Error2);
 
-                Debug.Log("bzrr");
-
                 return false;
             }
 
@@ -437,11 +435,15 @@ namespace not_broforce
             }
         }
 
-        public void TeleportToPlayer ()
+        public bool TeleportToPlayer ()
         {
+            bool success = false;
+
             if(!teleportIn && !teleportOut)
             {
-                if(_donePositionTaking)
+                success = true;
+
+                if (_donePositionTaking)
                 {
                     BackToLine();
                 }
@@ -461,6 +463,8 @@ namespace not_broforce
                 GetComponent<Animator>().Play("TeleportVanish");
                 teleportOut = true;
             }
+
+            return success;
         }
         
         public bool isMovingOnGround()

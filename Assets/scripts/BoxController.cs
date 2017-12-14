@@ -180,25 +180,20 @@ namespace not_broforce {
             return box.FindPathInStructure(new Vector3(transform.position.x, transform.position.y - 1, 0), box);
         }
 
-        public void RecallAllBoxes()
+        public bool RecallAllBoxes()
         {
+            bool success = false;
+
             placedBoxes.Clear();
             movingBoxes.Clear();
             selector.RemoveAllBoxes();
 
-            bool success = false;
-
             foreach (Box box in allBoxes)
             {
-                box.TeleportToPlayer();
-                success = true;
+                success = box.TeleportToPlayer();
             }
 
-            if (success)
-            {
-                // Plays a sound
-                SFXPlayer.Instance.Play(Sound.TeleportFinish);
-            }
+            return success;
         }
     }
 }
