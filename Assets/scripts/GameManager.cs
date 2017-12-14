@@ -66,7 +66,7 @@ namespace not_broforce
 
         private bool changingScene;
 
-        private bool sceneLoaded;
+        private bool sceneChanged;
 
         private bool alwaysShowBoxSelector;
 
@@ -162,7 +162,7 @@ namespace not_broforce
 
         private void Init()
         {
-            sceneLoaded = true;
+            sceneChanged = true;
             InitScene();
 
             LoadGame();
@@ -366,21 +366,23 @@ namespace not_broforce
             //SFXPlayer.Instance.StopAllSFXPlayback();
 
             changingScene = false;
-            sceneLoaded = true;
+            sceneChanged = true;
             SceneManager.LoadScene(sceneName);
         }
 
         private void InitScene()
         {
-            if (sceneLoaded)
+            if (sceneChanged)
             {
-                sceneLoaded = false;
+                sceneChanged = false;
 
                 ResetInput();
                 InitInput();
 
                 ResetFade();
                 InitFade();
+
+                MenuExited = true;
             }
         }
 
@@ -403,6 +405,38 @@ namespace not_broforce
             if (fade != null)
             {
                 fade = null;
+            }
+        }
+
+        private bool menuExited = false;
+        private float exitTime = 0f;
+        private float exitDuration = 0.2f;
+
+        /// <summary>
+        /// Gets or sets whether a menu was just exited.
+        /// Setting this true starts a short timer after whose
+        /// completion the value returns to false.
+        /// </summary>
+        public bool MenuExited
+        {
+            get
+            {
+                if (menuExited &&
+                    Time.time - exitTime >= exitDuration)
+                {
+                    menuExited = false;
+                }
+
+                return menuExited;
+            }
+            set
+            {
+                menuExited = value;
+
+                if (value == true)
+                {
+                    exitTime = Time.time;
+                }
             }
         }
     }

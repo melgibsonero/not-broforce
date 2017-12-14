@@ -242,7 +242,8 @@ namespace not_broforce{
             */
             if (_controller.collisions.below)
             {
-                if(groundedStateOld != _controller.collisions.below)
+                if(!GameManager.Instance.MenuExited &&
+                   groundedStateOld != _controller.collisions.below)
                 {
                     var landingCloud = SmalllandingDustCloud;
                     if (velocityYold < -8.5f)

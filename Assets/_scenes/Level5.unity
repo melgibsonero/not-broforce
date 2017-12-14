@@ -2292,6 +2292,24 @@ Prefab:
       propertyPath: levelNum
       value: 6
       objectReference: {fileID: 0}
+    - target: {fileID: 114829618596791782, guid: 21073a6d76432cd43abb2644e9394d97,
+        type: 2}
+      propertyPath: gridWorldSize.x
+      value: 38
+      objectReference: {fileID: 0}
+    - target: {fileID: 4497893682983898, guid: 21073a6d76432cd43abb2644e9394d97, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 19
+      objectReference: {fileID: 0}
+    - target: {fileID: 114829618596791782, guid: 21073a6d76432cd43abb2644e9394d97,
+        type: 2}
+      propertyPath: gridWorldSize.y
+      value: 26
+      objectReference: {fileID: 0}
+    - target: {fileID: 4497893682983898, guid: 21073a6d76432cd43abb2644e9394d97, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 13
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 21073a6d76432cd43abb2644e9394d97, type: 2}
   m_IsPrefabParent: 0

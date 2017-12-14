@@ -1691,7 +1691,7 @@ Transform:
   - {fileID: 1314097496}
   - {fileID: 2118138676}
   m_Father: {fileID: 1212381661}
-  m_RootOrder: 24
+  m_RootOrder: 23
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!61 &559208629
 BoxCollider2D:
@@ -4158,8 +4158,8 @@ Transform:
   - {fileID: 656804242}
   - {fileID: 757240650}
   - {fileID: 2005970332}
-  - {fileID: 68045170}
   - {fileID: 559208628}
+  - {fileID: 68045170}
   - {fileID: 551679692}
   - {fileID: 1024719993}
   - {fileID: 726581853}
@@ -5573,19 +5573,28 @@ Prefab:
       propertyPath: player
       value: 
       objectReference: {fileID: 1213969179}
-    - target: {fileID: 114064988790602954, guid: 21073a6d76432cd43abb2644e9394d97,
-        type: 2}
-      propertyPath: maxValidBoxPlaceAmount
-      value: 25
-      objectReference: {fileID: 0}
     - target: {fileID: 114124752031201230, guid: 21073a6d76432cd43abb2644e9394d97,
         type: 2}
       propertyPath: levelNum
       value: 4
       objectReference: {fileID: 0}
-    - target: {fileID: 1931944829210862, guid: 21073a6d76432cd43abb2644e9394d97, type: 2}
-      propertyPath: m_IsActive
-      value: 1
+    - target: {fileID: 114829618596791782, guid: 21073a6d76432cd43abb2644e9394d97,
+        type: 2}
+      propertyPath: gridWorldSize.x
+      value: 36
+      objectReference: {fileID: 0}
+    - target: {fileID: 4497893682983898, guid: 21073a6d76432cd43abb2644e9394d97, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 18
+      objectReference: {fileID: 0}
+    - target: {fileID: 114829618596791782, guid: 21073a6d76432cd43abb2644e9394d97,
+        type: 2}
+      propertyPath: gridWorldSize.y
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 4497893682983898, guid: 21073a6d76432cd43abb2644e9394d97, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 10
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 21073a6d76432cd43abb2644e9394d97, type: 2}

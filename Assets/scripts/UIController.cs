@@ -95,6 +95,14 @@ namespace not_broforce
             ShowPauseMenu(false);
             ShowBackground(false);
             endScreenButtons.SetActive(false);
+
+            if (finalLevel)
+            {
+                Button nextLevelButton =
+                    endScreenButtons.GetComponentInChildren<Button>(true);
+
+                nextLevelButton.interactable = false;
+            }
         }
 
 
@@ -174,6 +182,7 @@ namespace not_broforce
         private void ContinueTime()
         {
             Time.timeScale = 1f;
+            GameManager.Instance.MenuExited = true;
         }
 
         private void StopTime()
@@ -252,6 +261,11 @@ namespace not_broforce
             DeactivateAll();
             ChangingScene = true;
             GameManager.Instance.StartSceneChange(sceneName);
+        }
+
+        public bool CurrentLevelIsFinal()
+        {
+            return finalLevel;
         }
     }
 }
