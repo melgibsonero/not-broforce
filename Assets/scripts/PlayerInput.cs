@@ -191,8 +191,6 @@ namespace not_broforce
 
                 if (recalled)
                 {
-                    boxSelector.InitBoxTeleport();
-
                     // Plays a sound
                     SFXPlayer.Instance.Play(Sound.TeleportFinish);
                 }

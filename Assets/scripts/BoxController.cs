@@ -184,13 +184,21 @@ namespace not_broforce {
         {
             bool success = false;
 
-            placedBoxes.Clear();
-            movingBoxes.Clear();
-            selector.RemoveAllBoxes();
-
-            foreach (Box box in allBoxes)
+            if (allBoxes.Count > 0 &&
+                !allBoxes[0].IsTeleporting())
             {
-                success = box.TeleportToPlayer();
+                success = true;
+
+                placedBoxes.Clear();
+                movingBoxes.Clear();
+
+                foreach (Box box in allBoxes)
+                {
+                    box.TeleportToPlayer();
+                }
+
+                selector.RemoveAllBoxes();
+                selector.InitBoxTeleport();
             }
 
             return success;

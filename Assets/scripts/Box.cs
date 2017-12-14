@@ -435,11 +435,16 @@ namespace not_broforce
             }
         }
 
+        public bool IsTeleporting()
+        {
+            return (teleportIn || teleportOut);
+        }
+
         public bool TeleportToPlayer ()
         {
             bool success = false;
 
-            if(!teleportIn && !teleportOut)
+            if (!IsTeleporting())
             {
                 success = true;
 
