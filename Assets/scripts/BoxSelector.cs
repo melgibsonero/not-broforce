@@ -397,8 +397,6 @@ namespace not_broforce
 
                 boxController.CheckRemovingBoxes(box);
 
-                //ChangeColor();
-
                 // Prints debug info
                 //Debug.Log("Box selected");
             }
@@ -412,8 +410,6 @@ namespace not_broforce
                 validRemove = false;
 
                 boxController.ClearRemovingBoxes();
-
-                //ChangeColor();
 
                 // Prints debug info
                 //Debug.Log("Box unselected");
@@ -435,8 +431,6 @@ namespace not_broforce
                 selectedBox = null;
                 validPlacement = true;
                 validRemove = false;
-
-                //ChangeColor();
 
                 // Prints debug info
                 //Debug.Log("New box place selected");

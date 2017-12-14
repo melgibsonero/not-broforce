@@ -1262,8 +1262,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   endScreenButtons: {fileID: 1388423694845152}
   scene: 2
-  levelNum: 6
-  finalLevel: 1
+  levelNum: 2
+  finalLevel: 0
   pauseMenu: {fileID: 1073577773666228}
   settings: {fileID: 1386814351306468}
   backgroundImage: {fileID: 1253096371521974}
@@ -1534,7 +1534,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   movingBoxes: []
   placedBoxes: []
-  roboCount: {fileID: 0}
+  roboCount: {fileID: 114446150753980930}
 --- !u!114 &114358287421733634
 MonoBehaviour:
   m_ObjectHideFlags: 1

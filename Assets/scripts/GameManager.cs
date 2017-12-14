@@ -257,7 +257,11 @@ namespace not_broforce
         public void SetLevel(int levelNum)
         {
             CurrentLevel = levelNum;
-            //Debug.Log("Level set: " + levelNum);
+        }
+
+        public void SetNextLevel()
+        {
+            CurrentLevel++;
         }
 
         public void LevelCompleted()
@@ -266,10 +270,6 @@ namespace not_broforce
             {
                 LatestCompletedLevel = currentLevel;
             }
-
-            // TODO: Get the info about where the player goes
-            // from endScreen and give it to GameManager
-            //CurrentLevel = 0;
         }
 
         private void SaveGame()
@@ -281,7 +281,6 @@ namespace not_broforce
             PlayerPrefs.SetFloat("musicVolume", musicVolume);
             PlayerPrefs.SetFloat("effectVolume", effectVolume);
 
-            // TODO: Put these to settings menu
             Utils.PlayerPrefsSetBool(
                 "alwaysShowBoxSelector", alwaysShowBoxSelector);
             Utils.PlayerPrefsSetBool(
@@ -298,7 +297,6 @@ namespace not_broforce
             musicVolume = PlayerPrefs.GetFloat("musicVolume", 0.5f);
             effectVolume = PlayerPrefs.GetFloat("effectVolume", 0.5f);
 
-            // TODO: Put these to settings menu
             alwaysShowBoxSelector =
                 Utils.PlayerPrefsGetBool("alwaysShowBoxSelector", false);
             holdToActivateBoxSelector =
@@ -313,7 +311,6 @@ namespace not_broforce
             PlayerPrefs.SetFloat("musicVolume", musicVolume);
             PlayerPrefs.SetFloat("effectVolume", effectVolume);
 
-            // TODO: Put these to settings menu
             Utils.PlayerPrefsSetBool(
                 "alwaysShowBoxSelector", alwaysShowBoxSelector);
             Utils.PlayerPrefsSetBool(

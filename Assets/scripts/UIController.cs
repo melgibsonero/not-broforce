@@ -100,10 +100,9 @@ namespace not_broforce
 
         public void NextLevel()
         {
-            if(endScreenActivated && !paused)
+            if (endScreenActivated && !paused)
             {
-                GameManager.Instance.SetLevel(
-                    GameManager.Instance.CurrentLevel + 1);
+                GameManager.Instance.SetNextLevel();
 
                 StartSceneChange(SceneName(scene));
             }

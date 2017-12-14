@@ -256,7 +256,7 @@ namespace not_broforce{
                     GameObject dustPuff = Instantiate(landingCloud);
                     SFXPlayer.Instance.Play(Sound.Knock);
                     dustPuff.transform.position = new Vector3(characterLocation.x, characterLocation.y, characterLocation.z+0.4f);
-                    Debug.Log(velocityYold);
+                    //Debug.Log(velocityYold);
                 }
             }
             groundedStateOld = _controller.collisions.below;
