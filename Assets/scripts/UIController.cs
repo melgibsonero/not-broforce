@@ -20,6 +20,9 @@ namespace not_broforce
         private int levelNum;
 
         [SerializeField]
+        private bool finalLevel;
+
+        [SerializeField]
         private GameObject pauseMenu;
 
         [SerializeField]

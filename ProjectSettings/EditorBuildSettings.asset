@@ -24,6 +24,9 @@ EditorBuildSettings:
     path: Assets/_scenes/Level4.unity
     guid: 63eb54cbc571a1547bdce59146052b3c
   - enabled: 1
+    path: Assets/_scenes/Level5.unity
+    guid: 92d058d2b9408b7439835ddef943a8b1
+  - enabled: 1
     path: Assets/_scenes/TestZoneX.unity
     guid: c2b816e377ddd49439937972463cdb31
   - enabled: 1
