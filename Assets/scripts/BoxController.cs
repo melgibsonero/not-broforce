@@ -48,10 +48,10 @@ namespace not_broforce {
         void Update() {
             if(movingBoxes.Count > 0 && roboCount != null)
             {
-                roboCount.text = "Robot count " + movingBoxes.Count;
+                roboCount.text = "Box count: " + movingBoxes.Count;
             } else if (roboCount != null)
             {
-                roboCount.text = "Robot count 0";
+                roboCount.text = "Box count: 0";
             }
         }
 
