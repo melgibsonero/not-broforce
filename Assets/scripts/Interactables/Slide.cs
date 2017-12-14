@@ -11,9 +11,6 @@ namespace not_broforce
         [SerializeField]
         private float slideTime = 1f;
 
-        //[SerializeField]
-        //private bool openByDefault;
-
         private float startTime;
 
         private float slideDistance;
@@ -47,6 +44,16 @@ namespace not_broforce
             startY = transform.localPosition.y;
         }
 
+        private void Start()
+        {
+            base.Update();
+
+            if (activated)
+            {
+                InstantActivate();
+            }
+        }
+
         public override void Activate()
         {
             if (!activated)
@@ -63,6 +70,17 @@ namespace not_broforce
                 activated = false;
                 InitSlide();
             }
+        }
+
+        public void InstantActivate()
+        {
+            activated = true;
+            slideFinished = true;
+            ratio = 0f;
+
+            Vector3 newPosition = transform.localPosition;
+            newPosition.y = startY + slideDistance;
+            transform.localPosition = newPosition;
         }
 
         private void InitSlide()
@@ -91,8 +109,6 @@ namespace not_broforce
 
         private void UpdateSlide()
         {
-            // TODO: The texture changes to be smaller
-
             Vector3 newPosition = transform.localPosition;
 
             float oldRatio = ratio;
