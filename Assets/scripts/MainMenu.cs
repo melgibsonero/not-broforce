@@ -27,9 +27,6 @@ namespace not_broforce
         [SerializeField]
         private GameObject submenuBGImage;
 
-        //[SerializeField]
-        //private EventSystem eventSystem;
-
         [SerializeField]
         private FadeToColor fade;
 
@@ -40,48 +37,15 @@ namespace not_broforce
         private bool levelMenuOpened = false;
         private bool settingsOpened = false;
 
-        //private bool gameStarted;
-
-        //private enum Scene
-        //{
-        //    TestZoneX,
-        //    ValtterinPlayground,
-        //    KatsoaSaaMutteiKoskela
-        //}
-
-        //private string SceneName(Scene scene)
-        //{
-        //    // TODO: Better way to change scene
-
-        //    string sceneName = "";
-
-        //    switch (scene)
-        //    {
-        //        case Scene.TestZoneX:
-        //        {
-        //            sceneName = "TestZoneX";
-        //            break;
-        //        }
-        //        case Scene.ValtterinPlayground:
-        //        {
-        //            sceneName = "Valtterin Playground";
-        //            break;
-        //        }
-        //        case Scene.KatsoaSaaMutteiKoskela:
-        //        {
-        //            sceneName = "Katsoa saa muttei Koskela";
-        //            break;
-        //        }
-        //    }
-
-        //    return sceneName;
-        //}
-
+        private string SceneName(int levelNum)
+        {
+            return ("Level" + levelNum);
+        }
 
         public void StartGame()
         {
             GameManager.Instance.StartSceneChange(
-                    LevelChanger_Hub.SceneName(scene, targetLevelNum));
+                SceneName(targetLevelNum));
         }
 
         public void StartLevel(int levelNum)
@@ -91,8 +55,7 @@ namespace not_broforce
 
             GameManager.Instance.SetLevel(levelNum);
             GameManager.Instance.StartSceneChange(
-                    LevelChanger_Hub.SceneName(SceneType.Level,
-                                               levelNum));
+                    SceneName(levelNum));
         }
 
         public void QuitGame()
