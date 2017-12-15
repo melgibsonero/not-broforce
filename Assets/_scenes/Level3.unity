@@ -6694,6 +6694,11 @@ Prefab:
       propertyPath: gridCoordinates.x
       value: 5
       objectReference: {fileID: 0}
+    - target: {fileID: 114913677350232894, guid: e91e39b6c7ea80e4eb2e698523d9c803,
+        type: 2}
+      propertyPath: gridCoordinates.y
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: e91e39b6c7ea80e4eb2e698523d9c803, type: 2}
   m_IsPrefabParent: 0

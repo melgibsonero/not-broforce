@@ -622,16 +622,6 @@ Prefab:
       propertyPath: target
       value: 
       objectReference: {fileID: 87326182}
-    - target: {fileID: 114301286787235454, guid: 771b7dd36aeb4714dbe8838d30d6095e,
-        type: 2}
-      propertyPath: lookAheadDistanceY
-      value: 1.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 114301286787235454, guid: 771b7dd36aeb4714dbe8838d30d6095e,
-        type: 2}
-      propertyPath: focusAreaSize.y
-      value: 2.9
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 771b7dd36aeb4714dbe8838d30d6095e, type: 2}
   m_IsPrefabParent: 0
@@ -1094,16 +1084,6 @@ Prefab:
     - target: {fileID: 4564249651253236, guid: f438868ec84d6f94db60c6b0caf46d39, type: 2}
       propertyPath: m_RootOrder
       value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 114985241531155784, guid: f438868ec84d6f94db60c6b0caf46d39,
-        type: 2}
-      propertyPath: wallJump.y
-      value: 8
-      objectReference: {fileID: 0}
-    - target: {fileID: 114985241531155784, guid: f438868ec84d6f94db60c6b0caf46d39,
-        type: 2}
-      propertyPath: wallLeap.y
-      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f438868ec84d6f94db60c6b0caf46d39, type: 2}

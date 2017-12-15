@@ -12,11 +12,17 @@ namespace not_broforce
 
         private List<Box> placedBoxes;
 
+        private ParticleSystem glowparticles;
+
         public override void Awake()
         {
             base.Awake();
 
             placedBoxes = boxController.GetPlacedBoxes();
+        }
+        private void Start()
+        {
+            glowparticles = GetComponentInChildren<ParticleSystem>();
         }
 
         private void Update()
@@ -51,6 +57,8 @@ namespace not_broforce
 
                 // Plays a sound
                 SFXPlayer.Instance.Play(Sound.Ascend);
+                var emission = glowparticles.emission;
+                emission.enabled = false;
             }
         }
 
@@ -62,6 +70,8 @@ namespace not_broforce
 
                 // Plays a sound
                 SFXPlayer.Instance.Play(Sound.Descend);
+                var emission = glowparticles.emission;
+                emission.enabled = true;
             }
         }
     }
