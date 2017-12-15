@@ -114,7 +114,7 @@ namespace not_broforce
             {
                 if(_UnitToFollow != null)
                 {
-                    _target = new Vector3(_UnitToFollow.position.x, _UnitToFollow.position.y - 0.5f, 0);
+                    _target = new Vector3(_UnitToFollow.position.x, _UnitToFollow.position.y, 0);
                 }
                 if(_repathTimer > 0)
                 {
@@ -368,7 +368,6 @@ namespace not_broforce
             boxController.addPlacedBox(this);
             pathFinder.UpdateNode((int)transform.position.x, (int)transform.position.y, false);
             GetComponent<Animator>().SetBool("Lit", true);
-            Debug.Log("Changing sprite");
             selector.RefreshSelectedBox();
 
             // Plays a sound
