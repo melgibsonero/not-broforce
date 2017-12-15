@@ -132,11 +132,16 @@ namespace not_broforce
         {
             endScreenButtons.SetActive(true);
             endScreenActivated = true;
+
+            backgroundImage.GetComponent<RectTransform>().sizeDelta
+                    = new Vector2(460, 500);
+            ShowBackground(true);
         }
 
         private void DeactivateButtons()
         {
             endScreenButtons.SetActive(false);
+            ShowBackground(false);
         }
 
         public bool ToggleMenus ()
