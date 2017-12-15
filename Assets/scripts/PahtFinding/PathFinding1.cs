@@ -26,8 +26,10 @@ namespace not_broforce
             List<Node1> openSet = new List<Node1>();
             HashSet<Node1> closedSet = new HashSet<Node1>();
             openSet.Add(startNode);
-            while(openSet.Count > 0)
+            int number = 0;
+            while(openSet.Count > 0 && number < 100)
             {
+                number++;
                 Node1 currentNode = openSet[0];
                 for(int i = 1; i < openSet.Count; i++)
                 {
@@ -37,7 +39,6 @@ namespace not_broforce
                         currentNode = openSet[i];
                     }
                 }
-
                 openSet.Remove(currentNode);
                 closedSet.Add(currentNode);
 

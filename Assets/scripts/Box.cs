@@ -368,7 +368,6 @@ namespace not_broforce
             boxController.addPlacedBox(this);
             pathFinder.UpdateNode((int)transform.position.x, (int)transform.position.y, false);
             GetComponent<Animator>().SetBool("Lit", true);
-            Debug.Log("Changing sprite");
             selector.RefreshSelectedBox();
 
             // Plays a sound
