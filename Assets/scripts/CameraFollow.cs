@@ -11,6 +11,7 @@ namespace not_broforce{
         
         public float verticalOffset;
         public float lookAheadDistanceX;
+        public float lookAheadDistanceY;
         public float lookSmoothTimeX;
         public float verticalSmoothTime;
         public Vector2 focusAreaSize;
@@ -55,11 +56,19 @@ namespace not_broforce{
                     }
                 }
             }
+            
 
 
             currentLookAheadX = Mathf.SmoothDamp(currentLookAheadX, targetLookAheadX, ref smoothLookVelocityX, lookSmoothTimeX);
-
-            focusPosition.y = Mathf.SmoothDamp(transform.position.y, focusPosition.y, ref smoothVelocityY, verticalSmoothTime);
+            if (playerInput.CheckSInput())
+            {
+                focusPosition.y = Mathf.SmoothDamp(transform.position.y, focusPosition.y - lookAheadDistanceY, ref smoothVelocityY, verticalSmoothTime);
+            }
+            else
+            {
+                focusPosition.y = Mathf.SmoothDamp(transform.position.y, focusPosition.y, ref smoothVelocityY, verticalSmoothTime);
+            }
+            
             focusPosition += Vector2.right * currentLookAheadX;
             transform.position = (Vector3)focusPosition + Vector3.forward * -10;
         }
@@ -106,6 +115,11 @@ namespace not_broforce{
                 }else if (targetBounds.max.y > top){
                     shiftY = targetBounds.max.y - top;
                 }
+                //if (playerInput.CheckSInput()&&!(targetBounds.max.y > top))
+                //{
+                //    shiftY -= 0.025f;
+                //}
+
                 top += shiftY;
                 bottom += shiftY;
                 centre = new Vector2((left + right) / 2, (top + bottom) / 2);

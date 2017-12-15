@@ -73,6 +73,8 @@ namespace not_broforce
 
             player.SetDirectionalInput(directionalInput);
 
+
+
             //Jumping
             if (Input.GetButtonDown("Jump"))
             {
@@ -82,6 +84,11 @@ namespace not_broforce
             {
                 player.OnJumpInputUp();
             }
+        }
+
+        public bool CheckSInput()
+        {
+            return Input.GetButton("Look down");
         }
 
         private void CheckBoxSelectorInput()
