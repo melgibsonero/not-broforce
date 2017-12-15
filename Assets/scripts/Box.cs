@@ -114,7 +114,7 @@ namespace not_broforce
             {
                 if(_UnitToFollow != null)
                 {
-                    _target = new Vector3(_UnitToFollow.position.x, _UnitToFollow.position.y - 0.5f, 0);
+                    _target = new Vector3(_UnitToFollow.position.x, _UnitToFollow.position.y, 0);
                 }
                 if(_repathTimer > 0)
                 {

@@ -21,8 +21,8 @@ namespace not_broforce
 
         public List<Vector2> FindPath( Vector3 startPos, Vector3 targetPos )
         {
-            Node1 startNode = grid.NodeFromWorldPoint(new Vector3(Mathf.FloorToInt(startPos.x) + grid.noderRadius, startPos.y,0));
-            Node1 targetNode = grid.NodeFromWorldPoint(new Vector3(Mathf.FloorToInt(targetPos.x) + grid.noderRadius, targetPos.y, 0));
+            Node1 startNode = grid.NodeFromWorldPoint(new Vector3(Mathf.FloorToInt(startPos.x) + grid.noderRadius, Mathf.FloorToInt(startPos.y) + grid.noderRadius, 0));
+            Node1 targetNode = grid.NodeFromWorldPoint(new Vector3(Mathf.FloorToInt(targetPos.x) + grid.noderRadius, Mathf.FloorToInt(targetPos.y) + grid.noderRadius, 0));
             List<Node1> openSet = new List<Node1>();
             HashSet<Node1> closedSet = new HashSet<Node1>();
             openSet.Add(startNode);
