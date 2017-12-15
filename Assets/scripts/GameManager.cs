@@ -266,6 +266,8 @@ namespace not_broforce
 
         public void LevelCompleted()
         {
+            input.LevelCompleted();
+
             if (CurrentLevel > LatestCompletedLevel)
             {
                 LatestCompletedLevel = currentLevel;

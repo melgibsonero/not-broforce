@@ -75,7 +75,7 @@ namespace not_broforce
 
             // Initializes the sprite renderer
             sr = GetComponent<SpriteRenderer>();
-            HideSelector();
+            HideSelector(forceHide: false);
 
             // Sets the selector's size
             SetSize();
@@ -150,12 +150,17 @@ namespace not_broforce
             }
         }
 
-        public void Deactivate()
+        public void Deactivate(bool forceHide)
         {
             // Hides the selector
             if (sr.enabled)
             {
-                HideSelector();
+                if (forceHide)
+                {
+                    ShowAlways(false);
+                }
+
+                HideSelector(forceHide);
             }
         }
 
@@ -175,7 +180,7 @@ namespace not_broforce
                 // Otherwise any selected box is unselected
                 else
                 {
-                    HideSelector();
+                    HideSelector(forceHide: false);
                 }
             }
         }
@@ -224,9 +229,9 @@ namespace not_broforce
             placement.ShowPlacement();
         }
 
-        public void HideSelector()
+        private void HideSelector(bool forceHide)
         {
-            if (!isAlwaysShown)
+            if (!isAlwaysShown || forceHide)
             {
                 sr.enabled = false;
                 InvalidateAll();

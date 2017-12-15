@@ -25,11 +25,6 @@ namespace not_broforce
         private bool alwaysShowBoxSelector;
         private bool holdToActivateBoxSelector;
 
-        // Mouse cursor positions
-        private Vector2 cursorPos;
-        private Vector2 oldCursorPos;
-
-
         public Vector2 DirectionalInput { get { return directionalInput; } }
 
         private void Start()
@@ -173,7 +168,7 @@ namespace not_broforce
                     }
                     else if (Input.GetButtonUp("Activate Box Selector"))
                     {
-                        boxSelector.Deactivate();
+                        boxSelector.Deactivate(forceHide: false);
                     }
                 }
                 else
@@ -213,7 +208,7 @@ namespace not_broforce
 
                 if (paused && holdToActivateBoxSelector)
                 {
-                    boxSelector.HideSelector();
+                    boxSelector.Deactivate(forceHide: false);
                 }
             }
 
@@ -258,25 +253,11 @@ namespace not_broforce
             //}
         }
 
-        //private void CheckIfPlayingUsingMouse()
-        //{
-        //    if (!playingUsingMouse)
-        //    {
-        //        // Sets the cursor's old and new
-        //        // positions for checking if it moved
-        //        oldCursorPos = cursorPos;
-        //        cursorPos = cursor.Position;
-
-        //        // Moving the mouse or using its buttons shows the mouse cursor
-        //        if (cursorPos != oldCursorPos ||
-        //            Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1))
-        //        {
-        //            Debug.Log("input: cursor shown");
-        //            playingUsingMouse = true;
-        //            cursor.PlayingUsingMouse = true;
-        //        }
-        //    }
-        //}
+        public void LevelCompleted()
+        {
+            // Hides the box selector
+            boxSelector.Deactivate(forceHide: true);
+        }
 
         public void SetAlwaysShowBS(bool alwaysShowBS)
         {
@@ -296,7 +277,7 @@ namespace not_broforce
             if (holdToActivateBoxSelector)
             {
                 //SetAlwaysShowBS(false);
-                boxSelector.HideSelector();
+                boxSelector.Deactivate(forceHide: false);
                 //ui.SetAlwaysShowBSOff();
             }
         }
