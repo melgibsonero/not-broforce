@@ -357,7 +357,7 @@ namespace not_broforce
         {
             Box placedBox = null;
 
-            if (PlayerIsGrounded())
+            if (PlayerIsGrounded() && WithinPlayerRange(GridCoordinates))
             {
                 placedBox = GetPlacedBoxInCoord(GridCoordinates);
             }
@@ -366,8 +366,27 @@ namespace not_broforce
             // (NOTE: validRemove is not used in anything important;
             // instead, BoxSelector has it's own bool which is)
             validRemove = (placedBox != null);
+
+            if (validRemove)
+            {
+                Debug.Log("box selected");
+            }
             
             return placedBox;
+        }
+
+        public bool ValidRemoveOutOfRange()
+        {
+            if (validRemove && !WithinPlayerRange(GridCoordinates))
+            {
+                Debug.Log("too far away");
+                validRemove = false;
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         private Box GetPlacedBoxInCoord(Vector2 coordinates)
@@ -384,14 +403,16 @@ namespace not_broforce
         }
 
         /// <summary>
-        /// Checks whether a box can be placed in the current
-        /// grid coordinates. The box selector uses this.
+        /// Changes validRemove's value to false if the
+        /// selector is outside of the player range.
         /// </summary>
-        /// <returns>can a box be placed in the
-        /// current grid coordinates</returns>
-        public bool PlacementIsValid()
+        private void UpdateRemoveValidity()
         {
-            return validPlacement && PlayerIsGrounded();
+            if (validRemove && !WithinPlayerRange(GridCoordinates))
+            {
+                Debug.Log("too far away");
+                validRemove = false;
+            }
         }
 
         /// <summary>
@@ -411,6 +432,17 @@ namespace not_broforce
             {
                 validPlacement = true;
             }
+        }
+
+        /// <summary>
+        /// Checks whether a box can be placed in the current
+        /// grid coordinates. The box selector uses this.
+        /// </summary>
+        /// <returns>can a box be placed in the
+        /// current grid coordinates</returns>
+        public bool PlacementIsValid()
+        {
+            return validPlacement && PlayerIsGrounded();
         }
 
         private ValidBoxPlace ValidBoxPlaceInCoord(Vector2 gridCoordinates)
@@ -443,6 +475,9 @@ namespace not_broforce
                 // Updates valid box places and their markers
                 UpdateValidBoxPlaces();
                 //SetValidBoxPlaces();
+
+                // Updates whether a box can be removed or not
+                //UpdateRemoveValidity();
 
                 // Updates whether a box can be placed or not
                 UpdatePlacementValidity();
@@ -725,20 +760,6 @@ namespace not_broforce
             validBoxPlaces[index].IsVisible = visible;
         }
 
-        /// <summary>
-        /// Checks if the given grid coordinates are 
-        /// outside of the range around the player character.
-        /// </summary>
-        /// <returns>are the grid coordinates too far away
-        /// from the player</returns>
-        private bool TooFarAwayFromPlayer_Coord(Vector2 gridCoordinates)
-        {
-            bool horizontalOK = XCoordIsWithinPlayerRange(gridCoordinates.x);
-            bool verticalOK = YCoordIsWithinPlayerRange(gridCoordinates.y);
-
-            return (!horizontalOK || !verticalOK);
-        }
-
         private void InitNewBoxPlacesInLevel()
         {
             newBoxPlacesInLevel = new List<NewBoxPlace>();
@@ -896,23 +917,6 @@ namespace not_broforce
             return false;
         }
 
-        private bool SelectorIsWithinRange(float leftCoordX,
-                                             float rightCoordX)
-        {
-            return XCoordIsWithinRange(GridCoordinates.x, leftCoordX, rightCoordX);
-        }
-
-        private bool SelectorXIsWithinRange(float leftCoordX,
-                                             float rightCoordX)
-        {
-            return XCoordIsWithinRange(GridCoordinates.x, leftCoordX, rightCoordX);
-        }
-
-        private bool SelectorYIsWithinRange(float otherGridCoordY)
-        {
-            return YCoordIsWithinRange(GridCoordinates.y, otherGridCoordY);
-        }
-
         /// <summary>
         /// Checks if the given x-coordinate is within
         /// range of one of the other x-coordinates.
@@ -984,6 +988,21 @@ namespace not_broforce
         private bool YCoordIsWithinPlayerRange(float coordY)
         {
             return Mathf.Abs(PlayerGridCoord.y - coordY) <= maxDistFromPlayer;
+        }
+
+
+        /// <summary>
+        /// Checks if the given grid coordinates are 
+        /// within the larger range around the player character.
+        /// </summary>
+        /// <returns>are the grid coordinates too far away
+        /// from the player</returns>
+        private bool WithinPlayerRange(Vector2 gridCoordinates)
+        {
+            bool horizontalOK = XCoordIsWithinPlayerRange(gridCoordinates.x);
+            bool verticalOK = YCoordIsWithinPlayerRange(gridCoordinates.y);
+
+            return (horizontalOK && verticalOK);
         }
 
         private Vector2[] BoxPlacesWithinRange(int extraGridCoordSide)

@@ -507,22 +507,26 @@ namespace not_broforce
             {
                 SelectBox(box);
             }
-
-            // If there are boxes following the player,
-            // checks if it's possible to place a box
-            // in the grid coordinates
-            else if (boxController.MovingBoxAmount() > 0)
+            else // if (placement.ValidRemoveOutOfRange())
             {
-                // Validates placement 
-                if (placement.PlacementIsValid())
-                {
-                    ValidatePlacement();
-                }
+                UnselectBox();
 
-                // Otherwise the selector cannot be used
-                else
+                // If there are boxes following the player,
+                // checks if it's possible to place a box
+                // in the grid coordinates
+                if (boxController.MovingBoxAmount() > 0)
                 {
-                    InvalidateAll();
+                    // Validates placement 
+                    if (placement.PlacementIsValid())
+                    {
+                        ValidatePlacement();
+                    }
+
+                    // Otherwise the selector cannot be used
+                    else
+                    {
+                        InvalidateAll();
+                    }
                 }
             }
 
