@@ -226,7 +226,8 @@ namespace not_broforce
         private void UpdateBetweenTracks()
         {
             // The next track starts if enough time has passed
-            if ((Time.time - waitStartTime) >= timeBetweenTracks)
+            if (timeBetweenTracks <= 0 ||
+                (Time.time - waitStartTime) >= timeBetweenTracks)
             {
                 //Debug.Log("[MusicPlayer]: Next track starts");
 
