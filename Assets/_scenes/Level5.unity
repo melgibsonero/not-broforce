@@ -734,7 +734,7 @@ GameObject:
   - component: {fileID: 122465692}
   - component: {fileID: 122465693}
   m_Layer: 10
-  m_Name: rightColorBG
+  m_Name: rightSideBG
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2471,6 +2471,11 @@ Prefab:
       propertyPath: m_Name
       value: Door (3)
       objectReference: {fileID: 0}
+    - target: {fileID: 212376222375426454, guid: a322dc2fbb095124996f5d1879882581,
+        type: 2}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: dfb72081f98128549846d2fb35f87dd7, type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: a322dc2fbb095124996f5d1879882581, type: 2}
   m_IsPrefabParent: 0
@@ -3568,6 +3573,11 @@ Prefab:
       propertyPath: m_Name
       value: Door (5)
       objectReference: {fileID: 0}
+    - target: {fileID: 212376222375426454, guid: a322dc2fbb095124996f5d1879882581,
+        type: 2}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: dfb72081f98128549846d2fb35f87dd7, type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: a322dc2fbb095124996f5d1879882581, type: 2}
   m_IsPrefabParent: 0
@@ -3760,6 +3770,11 @@ Prefab:
       propertyPath: activationCode
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 212376222375426454, guid: a322dc2fbb095124996f5d1879882581,
+        type: 2}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: dfb72081f98128549846d2fb35f87dd7, type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: a322dc2fbb095124996f5d1879882581, type: 2}
   m_IsPrefabParent: 0
@@ -4820,7 +4835,7 @@ GameObject:
   - component: {fileID: 1120611118}
   - component: {fileID: 1120611119}
   m_Layer: 10
-  m_Name: stripedWallBG 2
+  m_Name: highlight 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7712,7 +7727,7 @@ GameObject:
   - component: {fileID: 1700062041}
   - component: {fileID: 1700062042}
   m_Layer: 10
-  m_Name: stripedWallBG
+  m_Name: highlight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8020,6 +8035,11 @@ Prefab:
       propertyPath: m_Name
       value: Door (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 212376222375426454, guid: a322dc2fbb095124996f5d1879882581,
+        type: 2}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: dfb72081f98128549846d2fb35f87dd7, type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: a322dc2fbb095124996f5d1879882581, type: 2}
   m_IsPrefabParent: 0
