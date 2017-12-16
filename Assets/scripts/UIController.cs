@@ -110,16 +110,19 @@ namespace not_broforce
         {
             if (endScreenActivated && !paused)
             {
-                // Increases the current level number
-                if (levelNum > 0)
+                if (scene == _sceneName.Level)
                 {
-                    GameManager.Instance.SetNextLevel();
-                }
-                // If the next level button is clicked and the level number
-                // is invalid, the next scene will be the main menu
-                else
-                {
-                    scene = _sceneName.MainMenu;
+                    // Increases the current level number
+                    if (levelNum > 0)
+                    {
+                        GameManager.Instance.SetNextLevel();
+                    }
+                    // If the next level button is clicked and the level number
+                    // is invalid, the next scene will be the main menu
+                    else
+                    {
+                        scene = _sceneName.MainMenu;
+                    }
                 }
 
                 // Starts the scene change

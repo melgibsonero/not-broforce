@@ -90,7 +90,7 @@ namespace not_broforce
                 Utils.SelectButton(level1Button);
 
                 submenuBGImage.GetComponent<RectTransform>().sizeDelta
-                    = new Vector2(300, 520);
+                    = new Vector2(300, 550);
 
                 // Plays a sound
                 SFXPlayer.Instance.Play(Sound.Ascend);

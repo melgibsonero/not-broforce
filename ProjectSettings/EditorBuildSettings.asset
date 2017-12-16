@@ -19,22 +19,25 @@ EditorBuildSettings:
     guid: 69f4d037dfa446945a060a40fe592c97
   - enabled: 1
     path: Assets/_scenes/Level3.unity
-    guid: 08209530acaa1bc47ad03facc6b87a2c
+    guid: 5db2295993aa4664884442e2c8310851
   - enabled: 1
     path: Assets/_scenes/Level4.unity
     guid: 63eb54cbc571a1547bdce59146052b3c
   - enabled: 1
     path: Assets/_scenes/Level5.unity
-    guid: 92d058d2b9408b7439835ddef943a8b1
-  - enabled: 1
-    path: Assets/_scenes/Level6.unity
     guid: 862171ef0e0d20641b51fbee99a318f3
   - enabled: 1
+    path: Assets/_scenes/Level6.unity
+    guid: c3fea4bc255eabc48beb61c92135cad4
+  - enabled: 1
     path: Assets/_scenes/Level7.unity
-    guid: fc0d10d29f586de4b96066881325eb56
+    guid: 08209530acaa1bc47ad03facc6b87a2c
   - enabled: 1
     path: Assets/_scenes/Level8.unity
-    guid: c3fea4bc255eabc48beb61c92135cad4
+    guid: 92d058d2b9408b7439835ddef943a8b1
+  - enabled: 1
+    path: Assets/_scenes/Level9.unity
+    guid: fc0d10d29f586de4b96066881325eb56
   - enabled: 1
     path: Assets/_scenes/TestZoneX.unity
     guid: c2b816e377ddd49439937972463cdb31
