@@ -28,6 +28,9 @@ namespace not_broforce
         private GameObject submenuBGImage;
 
         [SerializeField]
+        private GameObject credits;
+
+        [SerializeField]
         private FadeToColor fade;
 
         private Button[] mainButtons;
@@ -104,7 +107,7 @@ namespace not_broforce
                 }
             }
 
-            submenuBGImage.SetActive(activate);
+            ChangeSubmenuBGVisibility(activate);
 
             menuButtons.SetActive(!activate);
         }
@@ -148,9 +151,15 @@ namespace not_broforce
                 Utils.SelectButton(mainButtons[1]);
             }
 
-            submenuBGImage.SetActive(activate);
+            ChangeSubmenuBGVisibility(activate);
 
             menuButtons.SetActive(!activate);
+        }
+
+        private void ChangeSubmenuBGVisibility(bool activate)
+        {
+            submenuBGImage.SetActive(activate);
+            credits.SetActive(!activate);
         }
 
         private void Start()

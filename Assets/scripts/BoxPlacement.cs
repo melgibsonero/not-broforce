@@ -367,26 +367,7 @@ namespace not_broforce
             // instead, BoxSelector has it's own bool which is)
             validRemove = (placedBox != null);
 
-            if (validRemove)
-            {
-                Debug.Log("box selected");
-            }
-            
             return placedBox;
-        }
-
-        public bool ValidRemoveOutOfRange()
-        {
-            if (validRemove && !WithinPlayerRange(GridCoordinates))
-            {
-                Debug.Log("too far away");
-                validRemove = false;
-                return true;
-            }
-            else
-            {
-                return false;
-            }
         }
 
         private Box GetPlacedBoxInCoord(Vector2 coordinates)
@@ -400,19 +381,6 @@ namespace not_broforce
             }
 
             return null;
-        }
-
-        /// <summary>
-        /// Changes validRemove's value to false if the
-        /// selector is outside of the player range.
-        /// </summary>
-        private void UpdateRemoveValidity()
-        {
-            if (validRemove && !WithinPlayerRange(GridCoordinates))
-            {
-                Debug.Log("too far away");
-                validRemove = false;
-            }
         }
 
         /// <summary>
@@ -475,9 +443,6 @@ namespace not_broforce
                 // Updates valid box places and their markers
                 UpdateValidBoxPlaces();
                 //SetValidBoxPlaces();
-
-                // Updates whether a box can be removed or not
-                //UpdateRemoveValidity();
 
                 // Updates whether a box can be placed or not
                 UpdatePlacementValidity();
