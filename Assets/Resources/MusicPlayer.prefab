@@ -134,9 +134,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tracks:
-  - {fileID: 8300000, guid: 7206626c2d2d52e46870cad85d72064f, type: 3}
-  - {fileID: 8300000, guid: c1e9aec3b471f5d4aa91bed86630aa44, type: 3}
-  timeBetweenTracks: 1
+  - {fileID: 8300000, guid: 8fecf102ae0e0784da019441078f13cb, type: 3}
+  timeBetweenTracks: 0
   progress: 0
   paused: 0
   fadeOut: 0

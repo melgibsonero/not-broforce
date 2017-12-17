@@ -282,6 +282,11 @@ namespace not_broforce
             GameManager.Instance.StartSceneChange(sceneName);
         }
 
+        public int CurrentLevel()
+        {
+            return levelNum - 1;
+        }
+
         public bool CurrentLevelIsFinal()
         {
             return finalLevel;

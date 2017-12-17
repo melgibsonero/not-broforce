@@ -36,7 +36,7 @@ Transform:
   m_GameObject: {fileID: 1775731834090980}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.78125, y: 0.78125, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -55,10 +55,10 @@ MonoBehaviour:
   glowSprite: {fileID: 21300000, guid: e9e79f5341b79ea4f8c99cd0153173de, type: 3}
   wallMagnetGlowSprite: {fileID: 21300000, guid: d648cfc9b9a23874da591b654bb45549,
     type: 3}
-  reservedSprite: {fileID: 21300000, guid: 586e3cc272cfe6b48b4b03e75db0c7ad, type: 3}
+  reservedSprite: {fileID: 21300000, guid: d0b10176ae21e434eb5bc586fd108ce7, type: 3}
   attachedToBoxColor: {r: 0.49019608, g: 0.9372549, b: 0.57254905, a: 1}
   basicColor: {r: 0.49019608, g: 0.9372549, b: 0.57254905, a: 1}
-  reservedColor: {r: 1, g: 0.6745098, b: 0.26666668, a: 0.50980395}
+  reservedColor: {r: 1, g: 0.6745098, b: 0.26666668, a: 1}
 --- !u!212 &212065913111852384
 SpriteRenderer:
   m_ObjectHideFlags: 1

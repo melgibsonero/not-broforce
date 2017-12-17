@@ -78,7 +78,7 @@ namespace not_broforce
             HideSelector(forceHide: false);
 
             // Sets the selector's size
-            SetSize();
+            //SetSize();
 
             // Initializes functionality
             validPlacement = false;

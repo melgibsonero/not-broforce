@@ -14,6 +14,14 @@ namespace not_broforce
         [SerializeField]
         private Sprite gameCompletedSprite;
 
+        [SerializeField]
+        private Text levelCompletedText;
+
+        [SerializeField]
+        private Text gameCompletedText;
+
+        private int levelNum;
+
         private bool finalLevel;
 
         private void Start()
@@ -23,6 +31,7 @@ namespace not_broforce
 
             if (ui != null)
             {
+                levelNum = ui.CurrentLevel();
                 finalLevel = ui.CurrentLevelIsFinal();
             }
             else
@@ -38,7 +47,11 @@ namespace not_broforce
             else
             {
                 image.sprite = levelCompletedSprite;
+                levelCompletedText.text = "Level " + levelNum + " Completed!";
             }
+
+            levelCompletedText.enabled = !finalLevel;
+            gameCompletedText.enabled = finalLevel;
         }
     }
 }

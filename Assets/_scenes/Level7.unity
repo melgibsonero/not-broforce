@@ -5722,33 +5722,6 @@ Prefab:
       propertyPath: player
       value: 
       objectReference: {fileID: 1213969179}
-    - target: {fileID: 114124752031201230, guid: 21073a6d76432cd43abb2644e9394d97,
-        type: 2}
-      propertyPath: levelNum
-      value: 8
-      objectReference: {fileID: 0}
-    - target: {fileID: 114829618596791782, guid: 21073a6d76432cd43abb2644e9394d97,
-        type: 2}
-      propertyPath: gridWorldSize.x
-      value: 36
-      objectReference: {fileID: 0}
-    - target: {fileID: 4497893682983898, guid: 21073a6d76432cd43abb2644e9394d97, type: 2}
-      propertyPath: m_LocalPosition.x
-      value: 18
-      objectReference: {fileID: 0}
-    - target: {fileID: 114829618596791782, guid: 21073a6d76432cd43abb2644e9394d97,
-        type: 2}
-      propertyPath: gridWorldSize.y
-      value: 20
-      objectReference: {fileID: 0}
-    - target: {fileID: 4497893682983898, guid: 21073a6d76432cd43abb2644e9394d97, type: 2}
-      propertyPath: m_LocalPosition.y
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 1931944829210862, guid: 21073a6d76432cd43abb2644e9394d97, type: 2}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 21073a6d76432cd43abb2644e9394d97, type: 2}
   m_IsPrefabParent: 0
