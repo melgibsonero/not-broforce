@@ -179,7 +179,15 @@ namespace not_broforce{
         void Animate() //Every reference to Animator should be here
         {
             var _walkParticles = _childParticleSystems[0].emission;
-            int directionX = _controller.collisions.faceDir; //check facing direction
+            float directionX;
+            if (_directionalInput != Vector2.zero)
+            {
+                directionX = Mathf.Sign(_directionalInput.x); //check facing direction
+            }
+            else
+            {
+                directionX = 0;
+            }
             if (!jumpTimerActive)
             {
                 if (directionX == -1)
