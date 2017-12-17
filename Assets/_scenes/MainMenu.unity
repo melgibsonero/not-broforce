@@ -3770,8 +3770,8 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: '(2017) A game by Team AF: Max Louhio, Valtteri Ojanen, Henrietta Kontio,
-    Lauri Kosonen'
+  m_Text: '(2017) A game by Team AF: Max Louhio, Valtteri Ojanen, Henrietta Kontio
+    & Lauri Kosonen'
 --- !u!222 &1244565379
 CanvasRenderer:
   m_ObjectHideFlags: 0
