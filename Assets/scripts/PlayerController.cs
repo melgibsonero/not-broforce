@@ -181,7 +181,7 @@ namespace not_broforce{
             {
                 directionX = 0;
             }
-            if (!jumpTimerActive)
+            if (!jumpTimerActive&&!wallSliding)
             {
                 if (directionX == -1)
                 {
@@ -273,11 +273,6 @@ namespace not_broforce{
             if ((_controller.collisions.left || _controller.collisions.right) && !_controller.collisions.below && velocity.y <= 0 && CompareWallDir(wallDirX))
             {
                 wallSliding = true;
-                /*if (velocity.y < -wallSlideSpeedMax)
-                {
-                    velocity.y = -wallSlideSpeedMax;
-                }
-                */
 
                 if (timeToWallUnstick > 0)
                 {
@@ -302,10 +297,12 @@ namespace not_broforce{
             {
                 earlyWalljump = true;
             }
-            if ((wallSliding || earlyWalljump) && (-wallDirX == _directionalInput.x) && timeToWallUnstick <= 0) //away from the wall
+            bool wallJumpInitiated = false;
+            if ((wallSliding || earlyWalljump) && (-wallDirX == _directionalInput.x) && timeToWallUnstick <= 0)
             {
+                Debug.Log("Jumped!");
                 SFXPlayer.Instance.Play(Sound.Jump2);
-                extraGravity = extraGravity/7;
+                extraGravity = extraGravity / 7;
                 _animation.Play("Jump");
                 faceDirOld = wallDirX;
                 velocity.x = -wallDirX * wallLeap.x;
