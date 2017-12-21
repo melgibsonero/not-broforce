@@ -147,14 +147,7 @@ namespace not_broforce{
                     velocity.x = -wallDirX * wallJump.x;
                     velocity.y = wallJump.y;
                     _directionalInput = Vector2.zero;
-                    }
-                    if (-wallDirX == _directionalInput.x) //away from the wall
-                    {
-                    _animation.Play("Jump");
-                    faceDirOld = wallDirX;
-                    velocity.x = -wallDirX * wallLeap.x;
-                    velocity.y = wallLeap.y;
-                    }
+                    }                   
                 }
                 if (_controller.collisions.below)
                 {
@@ -309,6 +302,15 @@ namespace not_broforce{
             {
                 earlyWalljump = true;
             }
+            if ((wallSliding || earlyWalljump) && (-wallDirX == _directionalInput.x) && timeToWallUnstick <= 0) //away from the wall
+            {
+                SFXPlayer.Instance.Play(Sound.Jump2);
+                extraGravity = extraGravity/7;
+                _animation.Play("Jump");
+                faceDirOld = wallDirX;
+                velocity.x = -wallDirX * wallLeap.x;
+                velocity.y = wallLeap.y;
+            }
         }
 
         private void CalculateVelocity()
@@ -316,7 +318,7 @@ namespace not_broforce{
             float targetVelocityX = _directionalInput.x * moveSpeed;
             velocity.x = Mathf.SmoothDamp(velocity.x, targetVelocityX, ref velocityXSmoothing, (_controller.collisions.below) ? accelerationTimeGrounded : accelerationTimeAirborne);
 			if (wallSliding && velocity.y < 0) {
-				velocity.y += gravity / 3 * Time.deltaTime;
+				velocity.y += gravity * 0.25f * Time.deltaTime;
 			} else {
 				velocity.y += gravity * Time.deltaTime + gravity * extraGravity * Time.deltaTime;
 			}
