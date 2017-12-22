@@ -297,10 +297,8 @@ namespace not_broforce{
             {
                 earlyWalljump = true;
             }
-            bool wallJumpInitiated = false;
             if ((wallSliding || earlyWalljump) && (-wallDirX == _directionalInput.x) && timeToWallUnstick <= 0)
-            {
-                Debug.Log("Jumped!");
+            {               
                 SFXPlayer.Instance.Play(Sound.Jump2);
                 extraGravity = extraGravity / 7;
                 _animation.Play("Jump");
