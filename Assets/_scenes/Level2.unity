@@ -5129,7 +5129,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: d6b04e8f43e86e44da8e21ea8d3982f4, type: 3}
+  m_Sprite: {fileID: 21300000, guid: dd930d34fc803534a8dd3ae32368a84d, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -5212,7 +5212,7 @@ ParticleSystem:
   moveWithTransform: 0
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
-  randomSeed: -1773393710
+  randomSeed: -494797439
   InitialModule:
     serializedVersion: 3
     enabled: 1
