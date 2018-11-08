@@ -300,7 +300,7 @@ namespace not_broforce
             effectVolume = PlayerPrefs.GetFloat("effectVolume", 0.5f);
 
             alwaysShowBoxSelector =
-                Utils.PlayerPrefsGetBool("alwaysShowBoxSelector", false);
+                Utils.PlayerPrefsGetBool("alwaysShowBoxSelector", true);
             holdToActivateBoxSelector =
                 Utils.PlayerPrefsGetBool("holdToActivateBoxSelector", false);
 
